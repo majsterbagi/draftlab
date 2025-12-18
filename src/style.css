@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* --- Custom Base Styles --- */
+body {
+    background-color: #0a0a0a;
+    color: #e5e5e5;
+    font-family: 'JetBrains Mono', monospace;
+    background-size: 40px 40px;
+}
+
+/* --- Utilities & Animations --- */
+.cursor-blink {
+    animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+}
+
+.scanline {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.1));
+    background-size: 100% 4px;
+    pointer-events: none;
+    z-index: 50;
+    opacity: 0.3;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0a0a0a;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #00ff9d;
+}
+
+/* --- Timeline Component (Changelog) --- */
+.timeline-line {
+    position: absolute;
+    left: 7px;
+    top: 24px;
+    bottom: -24px;
+    width: 1px;
+    background: #2a2a2a;
+    z-index: 0;
+}
+
+.timeline-item:last-child .timeline-line {
+    display: none;
+}

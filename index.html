@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pl" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DraftLab.pl | Warsztat Web AI</title>
+
+    <link rel="stylesheet" href="./src/style.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+
+
+    <script type="module" src="./src/main.js"></script>
+</head>
+
+<body
+    class="font-mono bg-tech-bg bg-grid-pattern min-h-screen flex flex-col relative overflow-x-hidden selection:bg-tech-green selection:text-black">
+
+    <div class="scanline"></div>
+    <dl-header></dl-header>
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 w-full">
+
+        <section class="py-20 md:py-32 border-l border-r border-tech-gray border-dashed px-6 relative">
+            <div class="absolute top-0 left-0 w-4 h-4 border-t border-l border-tech-green"></div>
+            <div class="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-tech-green"></div>
+
+            <div class="max-w-3xl mx-auto text-center md:text-left">
+                <p class="text-tech-green mb-4 text-sm tracking-widest uppercase">> Inicjalizacja warsztatu...</p>
+                <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+                    Eksperymentalny <br>
+                    Warsztat Web <span class="text-tech-green">AI</span><span class="cursor-blink">_</span>
+                </h1>
+                <p class="text-tech-dim text-lg md:text-xl leading-relaxed mb-8 max-w-2xl">
+                    Kolekcja aplikacji webowych współtworzonych z modelami językowymi.
+                    Od promptu do wdrożenia. Testuję granice kodu i wyobraźni.
+                </p>
+                <div class="flex flex-wrap gap-4 justify-center md:justify-start">
+                    <a href="#projekty"
+                        class="group relative px-6 py-3 bg-transparent border border-tech-green text-tech-green hover:bg-tech-green hover:text-black transition-all duration-300 font-bold uppercase text-sm tracking-wider">
+                        <span
+                            class="absolute -top-1 -left-1 w-2 h-2 border-t border-l border-tech-green opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                        Przeglądaj Projekty
+                        <span
+                            class="absolute -bottom-1 -right-1 w-2 h-2 border-b border-r border-tech-green opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="projekty" class="py-20 border-t border-tech-gray border-dashed">
+            <div class="flex items-center justify-between mb-12 border-b border-tech-gray pb-4">
+                <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                    <i data-lucide="folder-git-2" class="text-tech-green"></i> REPOZYTORIUM
+                </h2>
+                <span class="text-xs text-tech-dim hidden sm:inline-block">/PUBLIC/APPS</span>
+            </div>
+
+            <dl-projects></dl-projects>
+        </section>
+
+        <section class="py-16 border-t border-tech-gray border-dashed mb-12">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+
+                <div>
+                    <h3
+                        class="text-tech-green font-bold mb-6 uppercase tracking-widest text-sm flex items-center gap-2">
+                        <i data-lucide="terminal" width="16"></i> Dziennik Systemowy
+                    </h3>
+                    <dl-news></dl-news>
+                </div>
+
+                <div class="space-y-8">
+                    <div>
+                        <h3 class="text-tech-green font-bold mb-4 uppercase tracking-widest text-sm">/ Manifest</h3>
+                        <p class="text-tech-dim leading-relaxed text-sm">
+                            DraftLab.pl to mój cyfrowy brudnopis. Tutaj testuję granice współpracy człowiek-maszyna,
+                            zamieniając prompty w kod.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3 class="text-tech-green font-bold mb-4 uppercase tracking-widest text-sm">/ Tech Stack</h3>
+                        <ul
+                            class="text-sm text-tech-dim space-y-3 border border-tech-gray/30 p-6 bg-[#0f0f0f]/30 border-dashed">
+                            <li class="flex items-center gap-3">
+                                <span class="w-1.5 h-1.5 bg-tech-green rounded-full shadow-[0_0_5px_#00ff9d]"></span>
+                                <span>AI: Gemini 3 Pro / GPT-5.2</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <span class="w-1.5 h-1.5 bg-tech-green rounded-full shadow-[0_0_5px_#00ff9d]"></span>
+                                <span>Frontend: HTML5 / Tailwind CSS</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <span class="w-1.5 h-1.5 bg-tech-green rounded-full shadow-[0_0_5px_#00ff9d]"></span>
+                                <span>Architecture: Vanilla JS Modules</span>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <dl-footer></dl-footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>

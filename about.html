@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DraftLab | Profil w budowie</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { mono: ['"JetBrains Mono"', 'monospace'] },
+                    colors: {
+                        'tech-bg': '#0a0a0a',
+                        'tech-green': '#00ff9d',
+                        'tech-gray': '#2a2a2a',
+                        'tech-dim': '#888888',
+                    },
+                    backgroundImage: {
+                        'grid-pattern': "linear-gradient(to right, #1a1a1a 1px, transparent 1px), linear-gradient(to bottom, #1a1a1a 1px, transparent 1px)",
+                        'striped-bar': "repeating-linear-gradient(45deg, #2a2a2a, #2a2a2a 10px, #333 10px, #333 20px)"
+                    },
+                    animation: {
+                        'blink': 'blink 1s step-end infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            background-color: #0a0a0a;
+            color: #e5e5e5;
+            font-family: 'JetBrains Mono', monospace;
+            background-size: 40px 40px;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+
+        .cursor-blink {
+            animation: blink 1s step-end infinite;
+        }
+    </style>
+
+    <script type="module" src="./src/main.js"></script>
+</head>
+
+<body class="bg-tech-bg bg-grid-pattern min-h-screen flex flex-col relative overflow-hidden">
+
+    <dl-header></dl-header>
+
+    <main class="flex-grow flex items-center justify-center p-4 relative z-10">
+
+        <div
+            class="max-w-md w-full border border-tech-gray bg-[#0f0f0f]/90 backdrop-blur-md p-1 relative overflow-hidden group">
+
+            <div class="h-2 w-full bg-striped-bar border-b border-tech-gray"></div>
+
+            <div class="p-8 text-center">
+
+                <div
+                    class="mx-auto w-16 h-16 bg-tech-gray/30 rounded-full flex items-center justify-center mb-6 border border-tech-gray group-hover:border-yellow-500/50 transition-colors">
+                    <i data-lucide="construction" class="text-yellow-500" width="32" height="32"></i>
+                </div>
+
+                <h1 class="text-2xl font-bold text-white mb-2 tracking-tight">STREFA ROBOCZA</h1>
+                <p class="text-tech-dim text-sm mb-8 leading-relaxed">
+                    Moduł profilu osobowego (@Kamil) jest obecnie w fazie kompilacji. Algorytmy AI układają wspomnienia
+                    i umiejętności w logiczną całość.
+                </p>
+
+                <div class="text-left mb-8">
+                    <div class="flex justify-between text-[10px] font-mono text-tech-dim mb-1">
+                        <span>COMPILING_DATA...</span>
+                        <span class="text-yellow-500">64%</span>
+                    </div>
+                    <div class="h-1.5 w-full bg-tech-gray rounded-full overflow-hidden">
+                        <div class="h-full bg-yellow-500 w-[64%] shadow-[0_0_10px_rgba(234,179,8,0.5)]"></div>
+                    </div>
+                </div>
+
+                <div
+                    class="text-left bg-black border border-tech-gray/50 p-4 font-mono text-[10px] text-tech-dim space-y-1 mb-8 opacity-70">
+                    <div class="text-tech-green">> init_profile_sequence()</div>
+                    <div>> loading: avatar.jpg ... [OK]</div>
+                    <div>> loading: bio_data.json ... [PENDING]</div>
+                    <div>> error: coffee_level_low</div>
+                    <div class="flex items-center gap-1">
+                        > retrying<span class="w-1.5 h-3 bg-tech-green cursor-blink"></span>
+                    </div>
+                </div>
+
+                <a href="index.html"
+                    class="inline-flex items-center gap-2 px-6 py-2 border border-tech-gray hover:border-tech-green hover:text-tech-green text-white text-xs font-bold uppercase tracking-widest transition-all">
+                    <i data-lucide="arrow-left" width="14"></i>
+                    Powrót do bazy
+                </a>
+            </div>
+
+            <div class="absolute top-0 left-0 w-2 h-2 border-t border-l border-tech-dim"></div>
+            <div class="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-tech-dim"></div>
+        </div>
+
+    </main>
+
+    <dl-footer></dl-footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>
