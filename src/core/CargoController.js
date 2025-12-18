@@ -1,13 +1,13 @@
 /**
- * CargoController v4.0 - Base64 Upload
- * Encodes file chunks as Base64 text to bypass tmp folder issues
+ * CargoController v5.0 - Base64 Upload (Mobile-optimized)
+ * Uses FormData instead of URLSearchParams for better mobile compatibility
  */
 export class CargoController {
     constructor(options) {
         this.options = options;
-        // Smaller chunks to prevent 503 errors on shared hosting
-        // 1MB binary = ~1.3MB as Base64
-        this.CHUNK_SIZE = 1 * 1024 * 1024; // 1MB chunks
+        // Very small chunks for mobile compatibility
+        // 512KB binary = ~700KB as Base64
+        this.CHUNK_SIZE = 512 * 1024; // 512KB chunks
         this.init();
     }
 
@@ -48,6 +48,8 @@ export class CargoController {
         const fileId = 'cargo_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
         const totalChunks = Math.ceil(file.size / this.CHUNK_SIZE);
 
+        console.log(`[Cargo] Starting upload: ${file.name}, ${totalChunks} chunks`);
+
         for (let i = 0; i < totalChunks; i++) {
             const start = i * this.CHUNK_SIZE;
             const end = Math.min(file.size, start + this.CHUNK_SIZE);
@@ -58,7 +60,8 @@ export class CargoController {
                 const progress = ((i + 1) / totalChunks) * 100;
                 this.options.onProgress(progress, end, file.size);
             } catch (err) {
-                this.options.onError(`Błąd transmisji: ${err.message || 'Nieznany błąd'}`);
+                console.error(`[Cargo] Error on chunk ${i}:`, err);
+                this.options.onError(`Błąd transmisji (chunk ${i + 1}/${totalChunks}): ${err.message || 'Nieznany błąd'}`);
                 return;
             }
         }
@@ -70,10 +73,19 @@ export class CargoController {
             const reader = new FileReader();
             reader.onloadend = () => {
                 // Remove the data:*/*;base64, prefix
-                const base64 = reader.result.split(',')[1];
+                const result = reader.result;
+                if (!result || typeof result !== 'string') {
+                    reject(new Error('FileReader returned empty result'));
+                    return;
+                }
+                const base64 = result.split(',')[1];
+                if (!base64) {
+                    reject(new Error('Could not extract Base64 data'));
+                    return;
+                }
                 resolve(base64);
             };
-            reader.onerror = reject;
+            reader.onerror = () => reject(new Error('FileReader error'));
             reader.readAsDataURL(blob);
         });
     }
@@ -82,23 +94,28 @@ export class CargoController {
         // Convert chunk to Base64
         const base64Data = await this.blobToBase64(chunk);
 
-        // Send as regular POST data (not as file upload!)
-        const params = new URLSearchParams();
-        params.append('chunkData', base64Data);
-        params.append('chunkIndex', index);
-        params.append('totalChunks', total);
-        params.append('fileId', id);
-        params.append('fileName', name);
+        if (!base64Data) {
+            throw new Error('Base64 conversion failed');
+        }
+
+        console.log(`[Cargo] Sending chunk ${index}/${total}, base64 length: ${base64Data.length}`);
+
+        // Use FormData for better mobile compatibility
+        const formData = new FormData();
+        formData.append('chunkData', base64Data);
+        formData.append('chunkIndex', index.toString());
+        formData.append('totalChunks', total.toString());
+        formData.append('fileId', id);
+        formData.append('fileName', name);
 
         const response = await fetch('../api/upload.php', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: params.toString()
+            body: formData // FormData sets Content-Type automatically
         });
 
         if (!response.ok) {
+            const text = await response.text();
+            console.error(`[Cargo] Server error ${response.status}:`, text);
             throw new Error(`Serwer zwrócił kod ${response.status}`);
         }
 
