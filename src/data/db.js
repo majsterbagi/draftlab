@@ -2,7 +2,13 @@ export const SITE_DATA = {
     config: {
         title: "DraftLab.pl",
         status: "ONLINE",
-        mode: "EXPLORATION"
+        mode: "EXPLORATION",
+        techStack: [
+            { label: "AI", value: "Antigravity Codebase Agent / Gemini 2.0" },
+            { label: "Build", value: "Vite / PostCSS / Tailwind (Native)" },
+            { label: "Core", value: "Web Components / ES Modules" },
+            { label: "VCS", value: "Git / GitHub" }
+        ]
     },
     menu: [
         { name: "WARSZTAT", url: "index.html" },
