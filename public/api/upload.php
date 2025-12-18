@@ -6,7 +6,7 @@
 
 header('Content-Type: application/json');
 
-$uploadDir = __DIR__ . '/../../uploads/';
+$uploadDir = __DIR__ . '/../uploads/';
 if (!file_exists($uploadDir)) {
     mkdir($uploadDir, 0777, true);
 }
@@ -17,8 +17,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $fileId = $_POST['fileId'] ?? null;
-$chunkIndex = isset($_POST['chunkIndex']) ? (int)$_POST['chunkIndex'] : null;
-$totalChunks = isset($_POST['totalChunks']) ? (int)$_POST['totalChunks'] : null;
+$chunkIndex = isset($_POST['chunkIndex']) ? (int) $_POST['chunkIndex'] : null;
+$totalChunks = isset($_POST['totalChunks']) ? (int) $_POST['totalChunks'] : null;
 $fileName = $_POST['fileName'] ?? 'unknown';
 
 if (!$fileId || $chunkIndex === null || !$totalChunks) {
@@ -53,7 +53,7 @@ if ($out) {
 if ($chunkIndex === $totalChunks - 1) {
     $finalPath = $uploadDir . $fileId . '-' . $safeFileName;
     rename($tempFile, $finalPath);
-    
+
     // Save metadata for the downloader and cron
     $metaData = [
         'originalName' => $fileName,

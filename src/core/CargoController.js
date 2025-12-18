@@ -56,8 +56,7 @@ export class CargoController {
                 const progress = ((i + 1) / totalChunks) * 100;
                 this.options.onProgress(progress, end, file.size);
             } catch (err) {
-                this.options.onError("Connection lost. Retrying chunk " + (i + 1));
-                // In a real app, we would retry i-- here
+                this.options.onError(`Błąd transmisji: ${err.message || 'Nieznany błąd'}. Upewnij się, że aplikacja jest na serwerze PHP.`);
                 return;
             }
         }
@@ -71,10 +70,15 @@ export class CargoController {
         formData.append('fileId', id);
         formData.append('fileName', name);
 
-        const response = await fetch('api/upload.php', {
+        // Path is ../api/... because the HTML is in /apps/
+        const response = await fetch('../api/upload.php', {
             method: 'POST',
             body: formData
         });
+
+        if (!response.ok) {
+            throw new Error(`Serwer zwrócił kod ${response.status}`);
+        }
 
         const result = await response.json();
         if (!result.success) throw new Error(result.error);
