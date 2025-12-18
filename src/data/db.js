@@ -23,6 +23,7 @@ export const SITE_DATA = {
             version: "v.0.3.0",
             url: "apps/SunTrack.html",
             changelogUrl: "apps/changelog.html?id=suntrack",
+            icon: "sun",
             active: true,
             color: "yellow",
 
@@ -102,6 +103,7 @@ export const SITE_DATA = {
             version: "v.0.4.0",
             url: "apps/DraftCargo.html",
             changelogUrl: "apps/changelog.html?id=draftcargo",
+            icon: "package",
             active: true,
             color: "blue",
 
