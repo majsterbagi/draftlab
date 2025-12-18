@@ -1,6 +1,6 @@
 /**
- * CargoController - Client-side file transfer logic
- * Handles chunking large files (up to 1GB) for stable upload.
+ * CargoController v2.0 - RAW Upload Client
+ * Sends binary data directly without FormData
  */
 export class CargoController {
     constructor(options) {
@@ -38,7 +38,7 @@ export class CargoController {
 
     async handleFiles(file) {
         if (file.size > 1024 * 1024 * 1024) {
-            this.options.onError("File too large. Max 1GB.");
+            this.options.onError("Plik za duży. Maksymalny rozmiar: 1GB.");
             return;
         }
 
@@ -56,24 +56,24 @@ export class CargoController {
                 const progress = ((i + 1) / totalChunks) * 100;
                 this.options.onProgress(progress, end, file.size);
             } catch (err) {
-                this.options.onError(`Błąd transmisji: ${err.message || 'Nieznany błąd'}. Upewnij się, że aplikacja jest na serwerze PHP.`);
+                this.options.onError(`Błąd transmisji: ${err.message || 'Nieznany błąd'}`);
                 return;
             }
         }
     }
 
     async uploadChunk(chunk, index, total, id, name) {
-        const formData = new FormData();
-        formData.append('chunk', chunk);
-        formData.append('chunkIndex', index);
-        formData.append('totalChunks', total);
-        formData.append('fileId', id);
-        formData.append('fileName', name);
-
-        // Path is ../api/... because the HTML is in /apps/
+        // Send RAW binary data with metadata in headers
         const response = await fetch('../api/upload.php', {
             method: 'POST',
-            body: formData
+            headers: {
+                'Content-Type': 'application/octet-stream',
+                'X-File-Id': id,
+                'X-Chunk-Index': index.toString(),
+                'X-Total-Chunks': total.toString(),
+                'X-File-Name': name
+            },
+            body: chunk // Send Blob directly, not FormData
         });
 
         if (!response.ok) {

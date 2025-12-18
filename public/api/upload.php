@@ -1,10 +1,20 @@
 <?php
 /**
- * DraftCargo - Chunked Upload Handler
- * Optimized for home.pl (Apache/PHP)
+ * DraftCargo - RAW Upload Handler (v2.0)
+ * Optimized for home.pl - bypasses $_FILES and tmp directory
  */
 
-// Enable error logging for debugging (will save to api/error.log)
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, X-File-Id, X-Chunk-Index, X-Total-Chunks, X-File-Name');
+
+// Handle preflight
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    exit(0);
+}
+
+// Enable error logging
 ini_set('log_errors', 1);
 ini_set('error_log', __DIR__ . '/php_error.log');
 
@@ -15,71 +25,73 @@ if (!file_exists($uploadDir)) {
     }
 }
 
-// Basic security: only Allow POST
+// Only allow POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     die(json_encode(['error' => 'Method not allowed']));
 }
 
-$fileId = $_POST['fileId'] ?? null;
-$chunkIndex = isset($_POST['chunkIndex']) ? (int) $_POST['chunkIndex'] : null;
-$totalChunks = isset($_POST['totalChunks']) ? (int) $_POST['totalChunks'] : null;
-$fileName = $_POST['fileName'] ?? 'unknown';
+// Read metadata from headers (sent by frontend)
+$fileId = $_SERVER['HTTP_X_FILE_ID'] ?? null;
+$chunkIndex = isset($_SERVER['HTTP_X_CHUNK_INDEX']) ? (int) $_SERVER['HTTP_X_CHUNK_INDEX'] : null;
+$totalChunks = isset($_SERVER['HTTP_X_TOTAL_CHUNKS']) ? (int) $_SERVER['HTTP_X_TOTAL_CHUNKS'] : null;
+$fileName = $_SERVER['HTTP_X_FILE_NAME'] ?? 'unknown';
 
 if (!$fileId || $chunkIndex === null || !$totalChunks) {
-    die(json_encode(['error' => 'Missing parameters']));
+    error_log("Cargo Error: Missing headers. FileId: $fileId, ChunkIndex: $chunkIndex, TotalChunks: $totalChunks");
+    die(json_encode(['error' => 'Missing required headers']));
 }
 
-// Clean filename for safety (fixed regex 0-9)
+// Clean filename
 $safeFileName = preg_replace('/[^A-Za-z0-9._-]/', '_', $fileName);
 $tempFile = $uploadDir . $fileId . '.part';
 
-// Handle upload
-if (!isset($_FILES['chunk'])) {
-    // If request method is POST but $_FILES is empty, it might be post_max_size issue
-    $postSize = $_SERVER['CONTENT_LENGTH'] ?? 'unknown';
-    error_log("Cargo Error: No chunk in FILES. Content-Length: $postSize");
-    die(json_encode(['error' => 'Błąd serwera: brak pliku w żądaniu (możliwe przekroczenie limitów post_max_size)']));
+// Read RAW POST data directly (bypasses $_FILES and tmp folder)
+$input = fopen('php://input', 'rb');
+if (!$input) {
+    error_log("Cargo Error: Cannot open php://input");
+    die(json_encode(['error' => 'Cannot read upload stream']));
 }
 
-$chunkError = $_FILES['chunk']['error'];
-if ($chunkError !== UPLOAD_ERR_OK) {
-    error_log("Cargo Error: Chunk upload error code: $chunkError");
-    die(json_encode(['error' => "Błąd wysyłania kawałka (kod: $chunkError). Sprawdź limity serwera."]));
+// Open target file for writing
+$mode = $chunkIndex === 0 ? 'wb' : 'ab';
+$out = @fopen($tempFile, $mode);
+if (!$out) {
+    fclose($input);
+    error_log("Cargo Error: Cannot open $tempFile for writing (mode: $mode)");
+    die(json_encode(['error' => 'Cannot write to uploads directory. Check permissions.']));
 }
 
-$chunk = $_FILES['chunk']['tmp_name'];
-
-if (empty($chunk)) {
-    error_log("Cargo Error: tmp_name is empty for fileId: $fileId");
-    die(json_encode(['error' => 'Błąd serwera: ścieżka tymczasowa jest pusta.']));
-}
-
-// Append chunk to the main file
-$out = fopen($tempFile, $chunkIndex === 0 ? "wb" : "ab");
-if ($out) {
-    $in = @fopen($chunk, "rb");
-    if ($in) {
-        while ($buff = fread($in, 4096)) {
-            fwrite($out, $buff);
-        }
-        fclose($in);
-    } else {
-        error_log("Cargo Error: Cannot open chunk $chunk for reading");
+// Stream data directly from input to file
+$bytesWritten = 0;
+while (!feof($input)) {
+    $buffer = fread($input, 8192);
+    if ($buffer === false)
+        break;
+    $written = fwrite($out, $buffer);
+    if ($written === false) {
+        fclose($input);
         fclose($out);
-        die(json_encode(['error' => 'Nie można odczytać kawałka pliku z serwera.']));
+        error_log("Cargo Error: Write failed for chunk $chunkIndex");
+        die(json_encode(['error' => 'Write error during chunk transfer']));
     }
-    fclose($out);
-} else {
-    error_log("Cargo Error: Cannot open tempFile $tempFile for writing");
-    die(json_encode(['error' => 'Błąd zapisu na serwerze. Sprawdź uprawnienia folderu uploads.']));
+    $bytesWritten += $written;
 }
+
+fclose($input);
+fclose($out);
+
+error_log("Cargo Success: Chunk $chunkIndex received, $bytesWritten bytes written");
 
 // If last chunk, finalize
 if ($chunkIndex === $totalChunks - 1) {
     $finalPath = $uploadDir . $fileId . '-' . $safeFileName;
-    rename($tempFile, $finalPath);
 
-    // Save metadata for the downloader and cron
+    if (!@rename($tempFile, $finalPath)) {
+        error_log("Cargo Error: Cannot rename $tempFile to $finalPath");
+        die(json_encode(['error' => 'Cannot finalize file']));
+    }
+
+    // Save metadata
     $metaData = [
         'originalName' => $fileName,
         'uploadDate' => time(),
