@@ -1,6 +1,6 @@
 /**
- * CargoController v2.0 - RAW Upload Client
- * Sends binary data directly without FormData
+ * CargoController - Client-side file transfer logic
+ * Handles chunking large files (up to 1GB) for stable upload.
  */
 export class CargoController {
     constructor(options) {
@@ -63,17 +63,16 @@ export class CargoController {
     }
 
     async uploadChunk(chunk, index, total, id, name) {
-        // Send RAW binary data with metadata in headers
+        const formData = new FormData();
+        formData.append('chunk', chunk);
+        formData.append('chunkIndex', index);
+        formData.append('totalChunks', total);
+        formData.append('fileId', id);
+        formData.append('fileName', name);
+
         const response = await fetch('../api/upload.php', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/octet-stream',
-                'X-File-Id': id,
-                'X-Chunk-Index': index.toString(),
-                'X-Total-Chunks': total.toString(),
-                'X-File-Name': name
-            },
-            body: chunk // Send Blob directly, not FormData
+            body: formData
         });
 
         if (!response.ok) {
