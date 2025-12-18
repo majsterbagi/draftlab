@@ -108,7 +108,7 @@ export const SITE_DATA = {
             color: "blue",
 
             details: {
-                about: "Prywatna alternatywa dla WeTransfer. Pozwala przesyłać pliki do 1GB bez rejestracji. Pliki są automatycznie usuwane po 72 godzinach. Zoptymalizowana pod restrykcyjne hostingi współdzielone (home.pl).",
+                about: "Prywatna alternatywa dla WeTransfer. Pozwala przesyłać pliki do 1GB bez rejestracji. Pliki są automatycznie usuwane po 72 godzinach. Zoptymalizowana pod restrykcyjne hostingi współdzielone.",
                 features: [
                     { title: "Chunked Upload", desc: "Pliki dzielone na 3MB kawałki. Stabilne przesyłanie nawet przy słabym połączeniu." },
                     { title: "Base64 Bypass", desc: "Unikalna metoda omijająca ograniczenia serwerów bez folderu tmp." },
@@ -119,7 +119,7 @@ export const SITE_DATA = {
                 roadmap: [
                     { done: true, task: "Podstawowy upload plików" },
                     { done: true, task: "Chunking dla dużych plików" },
-                    { done: true, task: "Bypass dla hostingu home.pl" },
+                    { done: true, task: "Bypass dla restrykcyjnych hostingów" },
                     { done: false, task: "Podgląd postępu pobierania" },
                     { done: false, task: "Opcjonalne hasło do pliku" },
                     { done: false, task: "QR kod do linku" }
@@ -137,7 +137,7 @@ export const SITE_DATA = {
                     version: "v.0.3.0",
                     date: "2025-12-18",
                     type: "FIX",
-                    desc: "RAW Upload Attempt: Próba użycia php://input - nieudana na home.pl (zwraca 0 bajtów)."
+                    desc: "RAW Upload Attempt: Próba użycia php://input - nieudana na niektórych hostingach (zwraca 0 bajtów)."
                 },
                 {
                     version: "v.0.2.0",
