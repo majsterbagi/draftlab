@@ -95,14 +95,14 @@ export const SITE_DATA = {
             ]
         },
         {
-            id: "slot_02",
-            title: "Slot_02: Empty",
-            desc: "Czekam na kolejny pomysł...",
-            tags: [],
-            version: "TBD",
-            url: "#",
-            active: false,
-            color: "gray"
+            id: "draftcargo",
+            title: "DraftCargo",
+            desc: "Prywatny transfer plików do 1GB. Automatyczne czyszczenie po 72h.",
+            tags: ["PHP", "Chunking", "Storage"],
+            version: "v.0.1.0",
+            url: "apps/DraftCargo.html",
+            active: true,
+            color: "blue"
         },
         {
             id: "slot_03",
