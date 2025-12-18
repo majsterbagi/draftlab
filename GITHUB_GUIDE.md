@@ -18,11 +18,54 @@ Zanim przejdziemy do komend, musisz mieć "miejsce w chmurze":
 2. Zweryfikuj e-mail.
 3. **Daj mi znać, jak będziesz gotowy.**
 
-## 4. Co zrobimy dalej?
-Jak już będziesz miał konto, wykonamy razem te 3 kroki:
-1. **Inicjalizacja:** Powiemy Twojemu komputerowi: "Od teraz ten folder jest pilnowany przez Git".
-2. **Pierwszy Commit:** Zrobimy zdjęcie obecnego, działającego stanu projektu (wersja v3.0).
-3. **Push:** Wyślemy to zdjęcie do Twojego sejfu na GitHubie.
+---
+## 4. Codzienna Praca (Twoja nowa rutyna)
+
+Wyobraź sobie, że Twój projekt to kolekcja dokumentów w biurze. Oto jak działają te trzy magiczne komendy:
+
+1. **`git add .`** (Pakowanie do pudełka)
+   - *Co to robi:* Mówisz Gitowi: "Te zmiany, które właśnie zrobiłem, są ważne. Chcę je przygotować do zapisu".
+   - *Analogia:* WKŁADASZ dokumenty do pudełka.
+
+2. **`git commit -m "opis zmian"`** (Opisanie i schowanie do szafy)
+   - *Co to robi:* Tworzysz trwały punkt w historii na swoim komputerze. Musisz dodać krótki opis, np. `git commit -m "Poprawa koloru nagłówka"`.
+   - *Analogia:* LAKIERUJESZ pudełko, podpisujesz je i chumasz do swojej lokalnej SZAFY.
+
+3. **`git push`** (Wysyłka do sejfu w chmurze)
+   - *Co to robi:* Kopiuje Twoje lokalne "szafy" na serwery GitHub. Od tego momentu Twój kod jest bezpieczny w chmurze.
+   - *Analogia:* Wysyłasz pudełka KONWOJEM do bankowego sejfu (GitHub).
+
+### Kompletna komenda "na koniec dnia":
+```bash
+git add .
+git commit -m "Opis tego co zrobiłeś"
+git push
+```
+---
+## 5. Przycisk Paniki (Co robić, gdy coś się zepsuje?)
+
+To jest największa zaleta Gita. Jeśli zepsujesz kod tak bardzo, że nie wiesz jak wrócić:
+
+### Scenariusz A: Chcę cofnąć niezapisane zmiany (Reset)
+Jeśli edytowałeś pliki, strona przestała działać, ale **nie zrobiłeś jeszcze commit**, wpisz:
+```bash
+git checkout .
+```
+To "wyczyści" wszystkie Twoje zmiany od ostatniego zapisu i przywróci pliki do idealnego stanu.
+
+### Scenariusz B: Chcę wrócić do konkretnej wersji z przeszłości
+Każdy commit ma swój identyfikator. Możesz podejrzeć historię:
+```bash
+git log --oneline
+```
+A potem wrócić do dowolnego punktu.
+
+### Scenariusz C: "Skasowałem coś przez przypadek"
+Dopóki Twój kod jest na GitHubie, jesteś bezpieczny. Nawet jeśli spalisz komputer, po prostu pobierasz kopię z chmury:
+```bash
+git clone https://github.com/majsterbagi/draftlab.git
+```
 
 ---
-*Gotowy na skok w profesjonalizm? Daj znać!*
+*Pamiętaj: Git jest po to, żebyś mógł eksperymentować bez strachu!*
+
