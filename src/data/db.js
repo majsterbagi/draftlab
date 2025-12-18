@@ -100,7 +100,7 @@ export const SITE_DATA = {
             title: "DraftCargo",
             desc: "Prywatny transfer plików do 1GB. Automatyczne czyszczenie po 72h.",
             tags: ["PHP", "Base64", "Chunking"],
-            version: "v.0.4.0",
+            version: "v.0.5.0",
             url: "apps/DraftCargo.html",
             changelogUrl: "apps/changelog.html?id=draftcargo",
             icon: "package",
@@ -110,28 +110,34 @@ export const SITE_DATA = {
             details: {
                 about: "Prywatna alternatywa dla WeTransfer. Pozwala przesyłać pliki do 1GB bez rejestracji. Pliki są automatycznie usuwane po 72 godzinach. Zoptymalizowana pod restrykcyjne hostingi współdzielone.",
                 features: [
-                    { title: "Chunked Upload", desc: "Pliki dzielone na 3MB kawałki. Stabilne przesyłanie nawet przy słabym połączeniu." },
+                    { title: "Chunked Upload", desc: "Pliki dzielone na 512KB kawałki. Stabilne przesyłanie nawet przy słabym połączeniu." },
                     { title: "Base64 Bypass", desc: "Unikalna metoda omijająca ograniczenia serwerów bez folderu tmp." },
                     { title: "Auto-Cleanup (72h)", desc: "Skrypt CRON automatycznie usuwa wygasłe pliki." },
-                    { title: "Industrial UI", desc: "Interfejs w stylu Digital Blueprint z animowanym postępem." }
+                    { title: "Mobile Ready", desc: "Zoptymalizowane pod przeglądarki mobilne (iOS Safari, Chrome)." }
                 ],
                 techStack: ["PHP 8.x", "Vanilla JS (ES6+)", "Base64 Encoding", "CRON Jobs", "Lucide Icons"],
                 roadmap: [
                     { done: true, task: "Podstawowy upload plików" },
                     { done: true, task: "Chunking dla dużych plików" },
                     { done: true, task: "Bypass dla restrykcyjnych hostingów" },
+                    { done: true, task: "Optymalizacja mobile" },
                     { done: false, task: "Podgląd postępu pobierania" },
-                    { done: false, task: "Opcjonalne hasło do pliku" },
-                    { done: false, task: "QR kod do linku" }
+                    { done: false, task: "Opcjonalne hasło do pliku" }
                 ]
             },
 
             changes: [
                 {
+                    version: "v.0.5.0",
+                    date: "2025-12-18",
+                    type: "FEAT",
+                    desc: "Mobile Optimization: Zmniejszone chunki do 512KB, FormData zamiast URLSearchParams, lepsze logowanie błędów, walidacja Base64."
+                },
+                {
                     version: "v.0.4.0",
                     date: "2025-12-18",
                     type: "CORE",
-                    desc: "Base64 Bypass: Fundamentalna zmiana architektury. Pliki wysyłane jako tekst Base64, całkowicie omijając mechanizm $_FILES i folder tymczasowy. Działa na restrykcyjnych hostingach."
+                    desc: "Base64 Bypass: Fundamentalna zmiana architektury. Pliki wysyłane jako tekst Base64, całkowicie omijając mechanizm $_FILES i folder tymczasowy."
                 },
                 {
                     version: "v.0.3.0",
