@@ -3,22 +3,26 @@ import { SITE_DATA } from '../data/db.js';
 class AppHeader extends HTMLElement {
     connectedCallback() {
         const currentPath = window.location.pathname;
-        
+        const isSubdir = window.location.pathname.includes('/apps/');
+        const basePrefix = isSubdir ? '../' : '';
+
         // Linki Desktop
         const desktopLinks = SITE_DATA.menu.map(link => {
-            const isActive = currentPath.includes(link.url) || (link.url === 'index.html' && currentPath.endsWith('/'));
+            const isActive = currentPath.includes(link.url) || (link.url === 'index.html' && (currentPath === '/' || currentPath === '/index.html'));
+            const finalUrl = basePrefix + link.url;
             return `
-                <a href="${link.url}" class="text-sm tracking-widest hover:text-tech-green transition-colors ${isActive ? 'text-tech-green font-bold' : 'text-tech-dim'}">
+                <a href="${finalUrl}" class="text-sm tracking-widest hover:text-tech-green transition-colors ${isActive ? 'text-tech-green font-bold' : 'text-tech-dim'}">
                     ${isActive ? '<span class="animate-pulse">></span> ' : ''}${link.name}
                 </a>
             `;
         }).join('');
 
-        // Linki Mobile (Poprawione stylowanie)
+        // Linki Mobile
         const mobileLinks = SITE_DATA.menu.map(link => {
-            const isActive = currentPath.includes(link.url) || (link.url === 'index.html' && currentPath.endsWith('/'));
+            const isActive = currentPath.includes(link.url) || (link.url === 'index.html' && (currentPath === '/' || currentPath === '/index.html'));
+            const finalUrl = basePrefix + link.url;
             return `
-                <a href="${link.url}" class="block text-2xl font-bold tracking-widest py-6 border-b border-tech-gray/20 hover:text-tech-green transition-colors w-full text-center ${isActive ? 'text-tech-green' : 'text-white'}">
+                <a href="${finalUrl}" class="block text-2xl font-bold tracking-widest py-6 border-b border-tech-gray/20 hover:text-tech-green transition-colors w-full text-center ${isActive ? 'text-tech-green' : 'text-white'}">
                     ${isActive ? '> ' : ''}${link.name}
                 </a>
             `;
@@ -28,7 +32,7 @@ class AppHeader extends HTMLElement {
             <header class="border-b border-tech-gray bg-tech-bg/95 backdrop-blur-sm sticky top-0 z-50">
                 <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center relative z-50 bg-tech-bg/95">
                     
-                    <a href="index.html" class="flex items-center gap-2 group">
+                    <a href="${basePrefix}index.html" class="flex items-center gap-2 group">
                         <div class="w-3 h-3 bg-tech-green rounded-full shadow-[0_0_10px_#00ff9d] group-hover:animate-pulse transition-colors"></div>
                         <span class="text-lg font-bold tracking-tighter text-white">DraftLab<span class="text-tech-dim">.pl</span></span>
                     </a>
@@ -62,25 +66,16 @@ class AppHeader extends HTMLElement {
         btn.addEventListener('click', () => {
             isOpen = !isOpen;
             if (isOpen) {
-                // Otwieranie
                 menu.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-[-10px]');
                 menu.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
-                
-                // Zmiana przycisku
                 btn.innerText = "CLOSE";
                 btn.classList.add('bg-tech-green', 'text-black');
-                
-                // Blokada scrollowania tła
                 document.body.style.overflow = 'hidden';
             } else {
-                // Zamykanie
                 menu.classList.add('opacity-0', 'pointer-events-none', 'translate-y-[-10px]');
                 menu.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
-                
                 btn.innerText = "MENU";
                 btn.classList.remove('bg-tech-green', 'text-black');
-                
-                // Odblokowanie scrollowania
                 document.body.style.overflow = '';
             }
         });

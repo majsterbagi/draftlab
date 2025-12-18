@@ -7,7 +7,10 @@ class OverlayHeader extends HTMLElement {
 
     connectedCallback() {
         const title = SITE_DATA.config.title;
-        const homeUrl = '../index.html'; // Nucleus contexts are usually apps/
+
+        // Inteligentne wykrywanie ścieżki głównej
+        const isSubdir = window.location.pathname.includes('/apps/');
+        const homeUrl = isSubdir ? '../index.html' : 'index.html';
 
         this.innerHTML = `
             <a href="${homeUrl}" class="draftlab-logo">

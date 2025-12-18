@@ -11,7 +11,7 @@ function getAppEntries() {
         const files = fs.readdirSync(appsDir);
         files.forEach(file => {
             if (file.endsWith('.html')) {
-                const name = file.replace('.html', '');
+                const name = `apps/${file.replace('.html', '')}`;
                 entries[name] = resolve(appsDir, file);
             }
         });
@@ -24,6 +24,7 @@ export default defineConfig({
         rollupOptions: {
             input: {
                 main: resolve(__dirname, 'index.html'),
+                about: resolve(__dirname, 'about.html'),
                 ...getAppEntries()
             }
         }
