@@ -8,7 +8,7 @@ if (!$id)
     die("Missing file ID");
 
 $uploadDir = __DIR__ . '/../uploads/';
-$filePath = $uploadDir . preg_replace('/[^A-Za-z0-0._-]/', '_', $id);
+$filePath = $uploadDir . preg_replace('/[^A-Za-z0-9._-]/', '_', $id);
 $metaPath = $filePath . '.json';
 
 if (!file_exists($filePath) || !file_exists($metaPath)) {

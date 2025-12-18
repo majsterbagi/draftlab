@@ -4,11 +4,15 @@
  * Optimized for home.pl (Apache/PHP)
  */
 
-header('Content-Type: application/json');
+// Enable error logging for debugging (will save to api/error.log)
+ini_set('log_errors', 1);
+ini_set('error_log', __DIR__ . '/php_error.log');
 
 $uploadDir = __DIR__ . '/../uploads/';
 if (!file_exists($uploadDir)) {
-    mkdir($uploadDir, 0777, true);
+    if (!@mkdir($uploadDir, 0777, true)) {
+        die(json_encode(['error' => 'Cannot create uploads directory. Check permissions.']));
+    }
 }
 
 // Basic security: only Allow POST
@@ -25,8 +29,8 @@ if (!$fileId || $chunkIndex === null || !$totalChunks) {
     die(json_encode(['error' => 'Missing parameters']));
 }
 
-// Clean filename for safety
-$safeFileName = preg_replace('/[^A-Za-z0-0._-]/', '_', $fileName);
+// Clean filename for safety (fixed regex 0-9)
+$safeFileName = preg_replace('/[^A-Za-z0-9._-]/', '_', $fileName);
 $tempFile = $uploadDir . $fileId . '.part';
 
 // Handle upload
