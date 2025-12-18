@@ -35,22 +35,43 @@ $tempFile = $uploadDir . $fileId . '.part';
 
 // Handle upload
 if (!isset($_FILES['chunk'])) {
-    die(json_encode(['error' => 'No chunk uploaded']));
+    // If request method is POST but $_FILES is empty, it might be post_max_size issue
+    $postSize = $_SERVER['CONTENT_LENGTH'] ?? 'unknown';
+    error_log("Cargo Error: No chunk in FILES. Content-Length: $postSize");
+    die(json_encode(['error' => 'Błąd serwera: brak pliku w żądaniu (możliwe przekroczenie limitów post_max_size)']));
+}
+
+$chunkError = $_FILES['chunk']['error'];
+if ($chunkError !== UPLOAD_ERR_OK) {
+    error_log("Cargo Error: Chunk upload error code: $chunkError");
+    die(json_encode(['error' => "Błąd wysyłania kawałka (kod: $chunkError). Sprawdź limity serwera."]));
 }
 
 $chunk = $_FILES['chunk']['tmp_name'];
 
+if (empty($chunk)) {
+    error_log("Cargo Error: tmp_name is empty for fileId: $fileId");
+    die(json_encode(['error' => 'Błąd serwera: ścieżka tymczasowa jest pusta.']));
+}
+
 // Append chunk to the main file
 $out = fopen($tempFile, $chunkIndex === 0 ? "wb" : "ab");
 if ($out) {
-    $in = fopen($chunk, "rb");
+    $in = @fopen($chunk, "rb");
     if ($in) {
         while ($buff = fread($in, 4096)) {
             fwrite($out, $buff);
         }
+        fclose($in);
+    } else {
+        error_log("Cargo Error: Cannot open chunk $chunk for reading");
+        fclose($out);
+        die(json_encode(['error' => 'Nie można odczytać kawałka pliku z serwera.']));
     }
-    fclose($in);
     fclose($out);
+} else {
+    error_log("Cargo Error: Cannot open tempFile $tempFile for writing");
+    die(json_encode(['error' => 'Błąd zapisu na serwerze. Sprawdź uprawnienia folderu uploads.']));
 }
 
 // If last chunk, finalize
