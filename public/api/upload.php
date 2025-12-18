@@ -1,7 +1,8 @@
 <?php
 /**
- * DraftCargo - Chunked Upload Handler v3.0
- * Uses move_uploaded_file for immediate processing
+ * DraftCargo - Base64 Upload Handler v4.0
+ * BYPASS: Sends file as Base64 text, not as file upload
+ * This completely bypasses the tmp folder requirement
  */
 
 header('Content-Type: application/json');
@@ -10,10 +11,13 @@ header('Content-Type: application/json');
 ini_set('log_errors', 1);
 ini_set('error_log', __DIR__ . '/php_error.log');
 
+// Increase memory limit for base64 decoding
+ini_set('memory_limit', '256M');
+
 $uploadDir = __DIR__ . '/../uploads/';
 if (!file_exists($uploadDir)) {
     if (!@mkdir($uploadDir, 0777, true)) {
-        die(json_encode(['error' => 'Cannot create uploads directory. Check permissions.']));
+        die(json_encode(['error' => 'Cannot create uploads directory']));
     }
 }
 
@@ -22,70 +26,56 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     die(json_encode(['error' => 'Method not allowed']));
 }
 
+// Get parameters from POST (not from $_FILES!)
 $fileId = $_POST['fileId'] ?? null;
 $chunkIndex = isset($_POST['chunkIndex']) ? (int) $_POST['chunkIndex'] : null;
 $totalChunks = isset($_POST['totalChunks']) ? (int) $_POST['totalChunks'] : null;
 $fileName = $_POST['fileName'] ?? 'unknown';
+$chunkData = $_POST['chunkData'] ?? null; // Base64 encoded chunk
 
-if (!$fileId || $chunkIndex === null || !$totalChunks) {
-    error_log("Cargo Error: Missing parameters");
+if (!$fileId || $chunkIndex === null || !$totalChunks || !$chunkData) {
+    error_log("Cargo Error: Missing parameters. fileId=$fileId, chunkIndex=$chunkIndex, totalChunks=$totalChunks, chunkData=" . (empty($chunkData) ? 'empty' : 'present'));
     die(json_encode(['error' => 'Missing parameters']));
 }
+
+// Decode base64 data
+$binaryData = base64_decode($chunkData);
+if ($binaryData === false) {
+    error_log("Cargo Error: Base64 decode failed");
+    die(json_encode(['error' => 'Invalid base64 data']));
+}
+
+$dataSize = strlen($binaryData);
+error_log("Cargo Debug: Chunk $chunkIndex received, $dataSize bytes after base64 decode");
 
 // Clean filename
 $safeFileName = preg_replace('/[^A-Za-z0-9._-]/', '_', $fileName);
 $tempFile = $uploadDir . $fileId . '.part';
 
-// Check if chunk was uploaded
-if (!isset($_FILES['chunk']) || $_FILES['chunk']['error'] !== UPLOAD_ERR_OK) {
-    $errorCode = $_FILES['chunk']['error'] ?? 'no_file';
-    error_log("Cargo Error: Upload failed. Error code: $errorCode");
-    die(json_encode(['error' => "Upload failed (code: $errorCode)"]));
+// Write data to file
+$mode = $chunkIndex === 0 ? 'wb' : 'ab';
+$out = @fopen($tempFile, $mode);
+if (!$out) {
+    error_log("Cargo Error: Cannot open $tempFile for writing (mode: $mode)");
+    die(json_encode(['error' => 'Cannot write to file']));
 }
 
-$chunkTmpPath = $_FILES['chunk']['tmp_name'];
-$chunkSize = $_FILES['chunk']['size'];
+$written = fwrite($out, $binaryData);
+fclose($out);
 
-error_log("Cargo Debug: Chunk $chunkIndex, tmp_name: $chunkTmpPath, size: $chunkSize");
-
-// For first chunk, create new file. For others, append.
-if ($chunkIndex === 0) {
-    // First chunk - move directly
-    if (!@move_uploaded_file($chunkTmpPath, $tempFile)) {
-        error_log("Cargo Error: Cannot move first chunk to $tempFile");
-        die(json_encode(['error' => 'Cannot write first chunk']));
-    }
-    error_log("Cargo Success: First chunk moved to $tempFile");
-} else {
-    // Subsequent chunks - append to existing file
-    $out = @fopen($tempFile, 'ab');
-    if (!$out) {
-        error_log("Cargo Error: Cannot open $tempFile for appending");
-        die(json_encode(['error' => 'Cannot open file for appending']));
-    }
-
-    $in = @fopen($chunkTmpPath, 'rb');
-    if (!$in) {
-        fclose($out);
-        error_log("Cargo Error: Cannot read chunk from $chunkTmpPath");
-        die(json_encode(['error' => 'Cannot read uploaded chunk']));
-    }
-
-    while ($buffer = fread($in, 8192)) {
-        fwrite($out, $buffer);
-    }
-
-    fclose($in);
-    fclose($out);
-    error_log("Cargo Success: Chunk $chunkIndex appended to $tempFile");
+if ($written === false) {
+    error_log("Cargo Error: Write failed for chunk $chunkIndex");
+    die(json_encode(['error' => 'Write error']));
 }
+
+error_log("Cargo Success: Chunk $chunkIndex written, $written bytes");
 
 // If last chunk, finalize
 if ($chunkIndex === $totalChunks - 1) {
     $finalPath = $uploadDir . $fileId . '-' . $safeFileName;
 
     if (!@rename($tempFile, $finalPath)) {
-        error_log("Cargo Error: Cannot rename $tempFile to $finalPath");
+        error_log("Cargo Error: Cannot rename to $finalPath");
         die(json_encode(['error' => 'Cannot finalize file']));
     }
 
@@ -99,7 +89,7 @@ if ($chunkIndex === $totalChunks - 1) {
     ];
     file_put_contents($finalPath . '.json', json_encode($metaData));
 
-    error_log("Cargo Success: Upload complete. Final file: $finalPath");
+    error_log("Cargo Success: Upload complete. File: $finalPath, Size: " . filesize($finalPath));
 
     echo json_encode([
         'success' => true,

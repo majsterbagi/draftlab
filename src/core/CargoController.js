@@ -1,11 +1,12 @@
 /**
- * CargoController - Client-side file transfer logic
- * Handles chunking large files (up to 1GB) for stable upload.
+ * CargoController v4.0 - Base64 Upload
+ * Encodes file chunks as Base64 text to bypass tmp folder issues
  */
 export class CargoController {
     constructor(options) {
         this.options = options;
-        this.CHUNK_SIZE = 5 * 1024 * 1024; // 5MB chunks
+        // Smaller chunks because Base64 increases size by ~33%
+        this.CHUNK_SIZE = 3 * 1024 * 1024; // 3MB chunks (becomes ~4MB as Base64)
         this.init();
     }
 
@@ -62,17 +63,38 @@ export class CargoController {
         }
     }
 
+    // Convert Blob to Base64 string
+    async blobToBase64(blob) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                // Remove the data:*/*;base64, prefix
+                const base64 = reader.result.split(',')[1];
+                resolve(base64);
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+        });
+    }
+
     async uploadChunk(chunk, index, total, id, name) {
-        const formData = new FormData();
-        formData.append('chunk', chunk);
-        formData.append('chunkIndex', index);
-        formData.append('totalChunks', total);
-        formData.append('fileId', id);
-        formData.append('fileName', name);
+        // Convert chunk to Base64
+        const base64Data = await this.blobToBase64(chunk);
+
+        // Send as regular POST data (not as file upload!)
+        const params = new URLSearchParams();
+        params.append('chunkData', base64Data);
+        params.append('chunkIndex', index);
+        params.append('totalChunks', total);
+        params.append('fileId', id);
+        params.append('fileName', name);
 
         const response = await fetch('../api/upload.php', {
             method: 'POST',
-            body: formData
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: params.toString()
         });
 
         if (!response.ok) {
