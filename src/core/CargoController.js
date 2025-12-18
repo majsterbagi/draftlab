@@ -5,8 +5,9 @@
 export class CargoController {
     constructor(options) {
         this.options = options;
-        // Smaller chunks because Base64 increases size by ~33%
-        this.CHUNK_SIZE = 3 * 1024 * 1024; // 3MB chunks (becomes ~4MB as Base64)
+        // Smaller chunks to prevent 503 errors on shared hosting
+        // 1MB binary = ~1.3MB as Base64
+        this.CHUNK_SIZE = 1 * 1024 * 1024; // 1MB chunks
         this.init();
     }
 
