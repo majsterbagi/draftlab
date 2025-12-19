@@ -36,10 +36,9 @@
             color: var(--text-color);
             font-family: 'Inter', sans-serif;
             margin: 0;
-            height: 100dvh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+            min-height: 100dvh;
+            /* Allow body copy to scroll */
+            overflow-y: auto;
             background-image:
                 linear-gradient(var(--grid-line) 1px, transparent 1px),
                 linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
@@ -52,8 +51,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: linear-gradient(180deg, rgba(11, 12, 14, 0.95) 0%, rgba(11, 12, 14, 0) 100%);
-            z-index: 10;
+            background: linear-gradient(180deg, rgba(11, 12, 14, 0.95) 0%, rgba(11, 12, 14, 0.8) 100%);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(5px);
         }
 
         .app-title {
@@ -90,17 +92,14 @@
 
         /* --- MAIN CONTENT --- */
         .dashboard {
-            flex-grow: 1;
-            padding: 0 20px;
+            padding: 0 20px 40px 20px;
             display: flex;
             flex-direction: column;
             gap: 20px;
-            overflow-y: auto;
             max-width: 800px;
             margin: 0 auto;
             width: 100%;
             box-sizing: border-box;
-            /* Scrollbar enabled */
         }
 
 
