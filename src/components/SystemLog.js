@@ -24,8 +24,8 @@ class SystemLog extends HTMLElement {
             // 2. Sort by date (descending)
             allChanges.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-            // 3. Take top 5
-            const recentLogs = allChanges.slice(0, 5);
+            // 3. Take top 4
+            const recentLogs = allChanges.slice(0, 4);
 
             if (recentLogs.length === 0) {
                 this.innerHTML = `<div class="p-4 text-tech-dim text-xs border border-tech-gray border-dashed">BRAK LOGÓW SYSTEMOWYCH</div>`;
@@ -41,10 +41,10 @@ class SystemLog extends HTMLElement {
                 if (log.type === 'INIT' || log.type === 'CORE') typeColor = 'text-yellow-500';
 
                 return `
-                <div class="group relative pl-6 pb-8 border-l border-tech-gray last:pb-0 last:border-0">
+                <div class="group relative pl-6 pb-6 border-l border-tech-gray last:pb-0 last:border-0 cursor-pointer" onclick="this.querySelector('p').classList.toggle('line-clamp-2'); this.querySelector('p').classList.toggle('text-white');">
                     <div class="absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-full bg-tech-gray border border-tech-bg group-hover:bg-tech-green transition-colors"></div>
                     
-                    <div class="text-[10px] md:text-xs text-tech-dim font-mono mb-1 flex items-center gap-2">
+                    <div class="text-[10px] text-tech-dim font-mono mb-1 flex items-center gap-2">
                         <span>${log.date}</span>
                         <span class="text-tech-green/30">::</span>
                         <span class="text-white font-bold">${log.projectTitle.toUpperCase()}</span>
@@ -52,7 +52,7 @@ class SystemLog extends HTMLElement {
                         <span class="${typeColor} font-bold">${log.type}</span>
                     </div>
                     
-                    <p class="text-tech-dim text-xs md:text-sm leading-relaxed max-w-prose">
+                    <p class="text-tech-dim text-xs leading-relaxed max-w-prose line-clamp-2 transition-colors group-hover:text-tech-dim/80">
                         ${log.desc}
                     </p>
                 </div>
