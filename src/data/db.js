@@ -96,17 +96,6 @@ export const SITE_DATA = {
             ]
         },
         {
-            id: 'atmosphere',
-            title: 'Atmosphere',
-            desc: 'Dziennik klimatyczny HomePod mini. Wizualizacja temperatury i wilgotności w czasie rzeczywistym.',
-            version: 'v1.0',
-            active: true,
-            url: './apps/Atmosphere.html',
-            tags: ['IoT', 'Chart.js', 'PHP'],
-            color: 'green',
-            icon: 'cloud'
-        },
-        {
             id: "draftcargo",
             title: "DraftCargo",
             desc: "Prywatny transfer plików do 1GB. Automatyczne czyszczenie po 72h.",
@@ -167,6 +156,44 @@ export const SITE_DATA = {
                     date: "2025-12-18",
                     type: "INIT",
                     desc: "Pierwsza wersja: Chunked upload, Industrial UI, integracja z CRON dla auto-cleanup."
+                }
+            ]
+        },
+        {
+            id: 'atmosphere',
+            title: 'Atmosphere',
+            desc: 'Dziennik klimatyczny HomePod mini. Wizualizacja temperatury i wilgotności w czasie rzeczywistym.',
+            version: 'v1.0.0',
+            active: true,
+            url: './apps/Atmosphere.html',
+            changelogUrl: "apps/changelog.html?id=atmosphere",
+            tags: ['IoT', 'Chart.js', 'PHP'],
+            color: 'green',
+            icon: 'cloud',
+
+            details: {
+                about: "System monitoringu parametrów powietrza wykorzystujący czujniki HomePod mini. Dane zbierane są automatycznie przez Skróty iOS i wizualizowane na interaktywnym wykresie.",
+                features: [
+                    { title: "Real-time Chart", desc: "Interaktywny wykres liniowy (Chart.js) pokazujący temperaturę i wilgotność." },
+                    { title: "iOS Integration", desc: "Bezobsługowe zbieranie danych w tle wykorzystując HomeHub i Skróty." },
+                    { title: "24h History", desc: "Analiza dobowych wahań klimatu w pomieszczeniu." },
+                    { title: "Lightweight API", desc: "Minimalistyczny backend PHP niewymagający bazy danych SQL." }
+                ],
+                techStack: ["Chart.js", "PHP 8.x (JSON Storage)", "iOS Shortcuts", "Vanilla JS", "Tailwind CSS"],
+                roadmap: [
+                    { done: true, task: "Odbiór danych z HomePod" },
+                    { done: true, task: "Wizualizacja na wykresie" },
+                    { done: false, task: "Eksport danych do CSV" },
+                    { done: false, task: "Alerty o wilgotności" }
+                ]
+            },
+
+            changes: [
+                {
+                    version: "v.1.0.0",
+                    date: "2025-12-19",
+                    type: "INIT",
+                    desc: "Public Release: Stabilna wersja API, wykres 24h, integracja z iOS Shortcuts, wygląd spójny z DraftLab."
                 }
             ]
         },
