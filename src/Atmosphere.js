@@ -67,6 +67,7 @@ function updateView() {
     // 3. Update Components
     updateCurrentStats(dailyData);
     updateDailyAnalytics(dailyData);
+    updateTimeOfDayStats(dailyData);
     renderChart(dailyData);
 }
 
@@ -105,10 +106,10 @@ function updateDailyAnalytics(data) {
     const minEl = document.getElementById('day-min');
     const maxEl = document.getElementById('day-max');
     const avgEl = document.getElementById('day-avg');
-    const dewEl = document.getElementById('day-dew');
+    const humAvgEl = document.getElementById('day-hum-avg');
 
     if (data.length === 0) {
-        [minEl, maxEl, avgEl, dewEl].forEach(el => el.textContent = '--');
+        [minEl, maxEl, avgEl, humAvgEl].forEach(el => el.textContent = '--');
         return;
     }
 
@@ -120,18 +121,44 @@ function updateDailyAnalytics(data) {
     // Avg Temp
     const avgTemp = temps.reduce((a, b) => a + b, 0) / temps.length;
 
-    // Avg Humidity for Dew Point calc
+    // Avg Humidity
     const hums = data.map(d => d.humidity);
     const avgHum = hums.reduce((a, b) => a + b, 0) / hums.length;
-
-    // Dew Point Approximation: Td = T - ((100 - RH)/5)
-    // Using simple formula for speed
-    const dewPoint = avgTemp - ((100 - avgHum) / 5);
 
     minEl.textContent = minTemp.toFixed(1);
     maxEl.textContent = maxTemp.toFixed(1);
     avgEl.textContent = avgTemp.toFixed(1);
-    dewEl.textContent = dewPoint.toFixed(1);
+    humAvgEl.textContent = avgHum.toFixed(0);
+}
+
+function updateTimeOfDayStats(data) {
+    const morningEl = document.getElementById('time-morning');
+    const noonEl = document.getElementById('time-noon');
+    const eveningEl = document.getElementById('time-evening');
+    const nightEl = document.getElementById('time-night');
+
+    // Reset all
+    [morningEl, noonEl, eveningEl, nightEl].forEach(el => el.innerHTML = '--<span class="stat-unit">°C</span>');
+
+    if (data.length === 0) return;
+
+    // Map hour to element: 6=morning, 12=noon, 18=evening, 0=night
+    data.forEach(entry => {
+        const date = new Date(entry.timestamp * 1000);
+        const hour = date.getHours();
+        const temp = entry.temp.toFixed(1);
+        const html = `${temp}<span class="stat-unit">°C</span>`;
+
+        if (hour >= 5 && hour < 9) {
+            morningEl.innerHTML = html; // ~06:00
+        } else if (hour >= 11 && hour < 14) {
+            noonEl.innerHTML = html; // ~12:00
+        } else if (hour >= 17 && hour < 20) {
+            eveningEl.innerHTML = html; // ~18:00
+        } else if (hour >= 23 || hour < 2) {
+            nightEl.innerHTML = html; // ~00:00
+        }
+    });
 }
 
 let chartInstance = null;
