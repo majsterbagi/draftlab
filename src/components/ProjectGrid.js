@@ -61,7 +61,45 @@ class ProjectGrid extends HTMLElement {
                 </div>
             </article>
             `;
-        }).join('');
+        });
+
+        // Calculate missing slots to fill the row (assuming 3 columns)
+        const totalItems = SITE_DATA.projects.length;
+        const remainder = totalItems % 3;
+        const missing = remainder === 0 ? 0 : 3 - remainder;
+
+        if (missing > 0) {
+            for (let i = 0; i < missing; i++) {
+                // Determine next slot number
+                // Check if last item is a Slot to continue numbering or start new
+                // Simplified: Just use "Slot_XX" based on total count
+                const nextNum = String(totalItems + i + 1).padStart(2, '0');
+
+                const phantomSlot = `
+                <article class="group border transition-all duration-300 relative overflow-hidden flex flex-col h-full border-tech-gray/30 bg-[#0f0f0f]/50 opacity-30 border-dashed min-h-[300px]">
+                    <div class="p-6 flex flex-col h-full">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-12 h-12 bg-tech-gray/30 rounded flex items-center justify-center text-tech-dim border border-tech-gray transition-colors">
+                                <i data-lucide="box" width="24"></i>
+                            </div>
+                            <span class="px-2 py-1 text-[10px] uppercase border border-tech-dim text-tech-dim rounded">TBD</span>
+                        </div>
+                        
+                        <h3 class="text-xl font-bold mb-2 text-tech-dim transition-colors">Slot_${nextNum}: Empty</h3>
+                        <p class="text-tech-dim text-sm mb-2 flex-grow leading-relaxed">Miejsce na kolejny projekt...</p>
+    
+                        <div class="flex flex-wrap gap-2 mb-6">
+                        </div>
+    
+                        <div class="text-xs text-tech-dim text-center py-2 border border-tech-gray/30 mt-4 border-dashed mt-auto">OFFLINE</div>
+                    </div>
+                </article>
+                `;
+                mappedProjects.push(phantomSlot);
+            }
+        }
+
+        grid.innerHTML = mappedProjects.join('');
 
         this.appendChild(grid);
         if (window.lucide) window.lucide.createIcons();
