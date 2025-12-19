@@ -163,7 +163,7 @@ export const SITE_DATA = {
             id: 'atmosphere',
             title: 'Atmosphere',
             desc: 'Dziennik klimatyczny HomePod mini. Wizualizacja temperatury i wilgotności w cyklu dobowym (4 pomiary na dzień).',
-            version: 'v0.1.0',
+            version: 'v0.2.0',
             active: true,
             url: './apps/Atmosphere.html',
             changelogUrl: "apps/changelog.html?id=atmosphere",
@@ -176,19 +176,25 @@ export const SITE_DATA = {
                 features: [
                     { title: "Daily Timeline", desc: "Interaktywny wykres liniowy pokazujący zmiany klimatu w cyklach 6-godzinnych." },
                     { title: "iOS Integration", desc: "Automatyczne zbieranie danych 4x dziennie (06:00, 12:00, 18:00, 00:00)." },
-                    { title: "24h History", desc: "Analiza dobowych wahań klimatu w pomieszczeniu." },
+                    { title: "Analytics Dashboard", desc: "Analiza danych w zakresie tygodnia, miesiąca lub roku z agregacją." },
                     { title: "Lightweight API", desc: "Minimalistyczny backend PHP niewymagający bazy danych SQL." }
                 ],
                 techStack: ["Chart.js", "PHP 8.x (JSON Storage)", "iOS Shortcuts", "Vanilla JS", "Tailwind CSS"],
                 roadmap: [
                     { done: true, task: "Odbiór danych z HomePod" },
                     { done: true, task: "Wizualizacja na wykresie" },
-                    { done: false, task: "Eksport danych do CSV" },
-                    { done: false, task: "Alerty o wilgotności" }
+                    { done: true, task: "Strona Analytics z zakresami" },
+                    { done: false, task: "Eksport danych do CSV" }
                 ]
             },
 
             changes: [
+                {
+                    version: "v.0.2.0",
+                    date: "2025-12-19",
+                    type: "FEATURE",
+                    desc: "Analytics Dashboard: Nowa strona z interaktywnym wykresem (tydzień/miesiąc/rok), statystyki wg pory dnia i pory roku, ujednolicona nawigacja z resztą strony."
+                },
                 {
                     version: "v.0.1.0",
                     date: "2025-12-19",
