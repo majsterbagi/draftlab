@@ -44,13 +44,15 @@ class ProjectGrid extends HTMLElement {
                 
                 <div class="p-6 flex flex-col h-full">
                     <div class="flex justify-between items-start mb-4">
-                        <div class="w-12 h-12 bg-tech-gray/30 rounded flex items-center justify-center ${colors.icon} border border-tech-gray ${colors.border} transition-colors">
-                            <i data-lucide="${iconName}" width="24"></i>
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 min-w-[3rem] bg-tech-gray/30 rounded flex items-center justify-center ${colors.icon} border border-tech-gray ${colors.border} transition-colors">
+                                <i data-lucide="${iconName}" width="24"></i>
+                            </div>
+                            <h3 class="text-xl font-bold ${p.active ? 'group-hover:text-white' : 'text-tech-dim'} transition-colors">${p.title}</h3>
                         </div>
                         <span class="px-2 py-1 text-[10px] uppercase border border-tech-dim text-tech-dim rounded">${p.version}</span>
                     </div>
                     
-                    <h3 class="text-xl font-bold mb-2 ${p.active ? 'group-hover:text-white' : 'text-tech-dim'} transition-colors">${p.title}</h3>
                     <p class="text-tech-dim text-sm mb-2 flex-grow leading-relaxed">${p.desc}</p>
 
                     <div class="flex flex-wrap gap-2 mb-6">
@@ -79,13 +81,15 @@ class ProjectGrid extends HTMLElement {
                 <article class="hidden md:flex group border transition-all duration-300 relative overflow-hidden flex-col h-full border-tech-gray/30 bg-[#0f0f0f]/50 opacity-30 border-dashed min-h-[300px]">
                     <div class="p-6 flex flex-col h-full">
                         <div class="flex justify-between items-start mb-4">
-                            <div class="w-12 h-12 bg-tech-gray/30 rounded flex items-center justify-center text-tech-dim border border-tech-gray transition-colors">
-                                <i data-lucide="box" width="24"></i>
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 min-w-[3rem] bg-tech-gray/30 rounded flex items-center justify-center text-tech-dim border border-tech-gray transition-colors">
+                                    <i data-lucide="box" width="24"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-tech-dim transition-colors">Slot_${nextNum}: Empty</h3>
                             </div>
                             <span class="px-2 py-1 text-[10px] uppercase border border-tech-dim text-tech-dim rounded">TBD</span>
                         </div>
                         
-                        <h3 class="text-xl font-bold mb-2 text-tech-dim transition-colors">Slot_${nextNum}: Empty</h3>
                         <p class="text-tech-dim text-sm mb-2 flex-grow leading-relaxed">Miejsce na kolejny projekt...</p>
     
                         <div class="flex flex-wrap gap-2 mb-6">
