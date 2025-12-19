@@ -103,7 +103,7 @@ export const SITE_DATA = {
             active: true,
             url: './apps/Atmosphere.html',
             tags: ['IoT', 'Chart.js', 'PHP'],
-            color: 'blue',
+            color: 'green',
             icon: 'cloud'
         },
         {

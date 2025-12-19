@@ -17,6 +17,7 @@ class ProjectGrid extends HTMLElement {
             const colorMap = {
                 yellow: { gradient: 'from-orange-500 to-yellow-500', icon: 'text-yellow-500 group-hover:text-yellow-400', border: 'group-hover:border-yellow-500/50' },
                 blue: { gradient: 'from-blue-500 to-cyan-500', icon: 'text-blue-500 group-hover:text-blue-400', border: 'group-hover:border-blue-500/50' },
+                green: { gradient: 'from-green-500 to-emerald-500', icon: 'text-green-500 group-hover:text-green-400', border: 'group-hover:border-green-500/50' },
                 gray: { gradient: 'from-gray-500 to-white', icon: 'text-tech-dim', border: '' }
             };
             const colors = colorMap[p.color] || colorMap.gray;
