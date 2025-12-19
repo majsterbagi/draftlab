@@ -26,7 +26,7 @@ class ProjectGrid extends HTMLElement {
             // LOGIKA PRZYCISKÓW (ZMIANA)
             const actionButtons = p.active
                 ? `
-                <div class="mt-auto flex gap-2 pt-6">
+                <div class="mt-auto flex gap-2 pt-2">
                     <a href="${p.url}" class="flex-grow py-2 bg-tech-gray text-center text-sm font-bold uppercase tracking-wider hover:bg-white hover:text-black transition-colors border border-transparent group-hover:border-white/20">
                         Uruchom
                     </a>
@@ -55,7 +55,7 @@ class ProjectGrid extends HTMLElement {
                     
                     <p class="text-tech-dim text-sm mb-2 flex-grow leading-relaxed">${p.desc}</p>
 
-                    <div class="flex flex-wrap gap-2 mb-6">
+                    <div class="flex flex-wrap gap-2 mb-2">
                         ${p.tags.map(t => `<span class="text-[10px] text-tech-green bg-tech-green/10 px-2 py-1 rounded border border-tech-green/20">${t}</span>`).join('')}
                     </div>
 
