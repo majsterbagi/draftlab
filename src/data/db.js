@@ -4,7 +4,7 @@ export const SITE_DATA = {
         status: "ONLINE",
         mode: "EXPLORATION",
         techStack: [
-            { label: "AI", value: "Antigravity Codebase Agent / Gemini 2.0" },
+            { label: "AI", value: "AI Assistant" },
             { label: "Build", value: "Vite / PostCSS / Tailwind (Native)" },
             { label: "Core", value: "Web Components / ES Modules" },
             { label: "VCS", value: "Git / GitHub" }
