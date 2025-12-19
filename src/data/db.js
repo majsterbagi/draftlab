@@ -162,7 +162,7 @@ export const SITE_DATA = {
         {
             id: 'atmosphere',
             title: 'Atmosphere',
-            desc: 'Dziennik klimatyczny HomePod mini. Wizualizacja temperatury i wilgotności w czasie rzeczywistym.',
+            desc: 'Dziennik klimatyczny HomePod mini. Wizualizacja temperatury i wilgotności w cyklu dobowym (4 pomiary na dzień).',
             version: 'v1.0.0',
             active: true,
             url: './apps/Atmosphere.html',
@@ -174,8 +174,8 @@ export const SITE_DATA = {
             details: {
                 about: "System monitoringu parametrów powietrza wykorzystujący czujniki HomePod mini. Dane zbierane są automatycznie przez Skróty iOS i wizualizowane na interaktywnym wykresie.",
                 features: [
-                    { title: "Real-time Chart", desc: "Interaktywny wykres liniowy (Chart.js) pokazujący temperaturę i wilgotność." },
-                    { title: "iOS Integration", desc: "Bezobsługowe zbieranie danych w tle wykorzystując HomeHub i Skróty." },
+                    { title: "Daily Timeline", desc: "Interaktywny wykres liniowy pokazujący zmiany klimatu w cyklach 6-godzinnych." },
+                    { title: "iOS Integration", desc: "Automatyczne zbieranie danych 4x dziennie (06:00, 12:00, 18:00, 00:00)." },
                     { title: "24h History", desc: "Analiza dobowych wahań klimatu w pomieszczeniu." },
                     { title: "Lightweight API", desc: "Minimalistyczny backend PHP niewymagający bazy danych SQL." }
                 ],

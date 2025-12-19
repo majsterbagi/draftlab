@@ -1,6 +1,6 @@
 /**
  * Atmosphere App Logic
- * Fetches temperature/humidity data and renders chart.
+ * Fetches temperature/humidity data, filters by date, and calculates analytics.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -8,22 +8,31 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 const API_URL = '../api/atmosphere.php';
+let globalData = [];
+let currentDate = new Date(); // Start with "Today"
 
 async function initAtmosphere() {
     const loader = document.getElementById('chart-loader');
 
+    // Button Handlers
+    document.getElementById('prev-date').addEventListener('click', () => changeDate(-1));
+    document.getElementById('next-date').addEventListener('click', () => changeDate(1));
+
     try {
-        // Fetch data
         const response = await fetch(API_URL);
         const data = await response.json();
 
-        // Process Data
         if (Array.isArray(data) && data.length > 0) {
-            updateCurrentStats(data);
-            renderChart(data);
+            globalData = data.sort((a, b) => a.timestamp - b.timestamp);
+
+            // Set current date to the date of the last reading (in case data is old)
+            const lastEntry = globalData[globalData.length - 1];
+            currentDate = new Date(lastEntry.timestamp * 1000); // Use last available data date
+
+            updateView();
         } else {
-            console.warn('No data received or empty array');
-            updateCurrentStats([], true); // Show placeholders
+            console.warn('No data received');
+            updateCurrentStats([], true);
         }
 
     } catch (error) {
@@ -31,6 +40,40 @@ async function initAtmosphere() {
     } finally {
         if (loader) loader.classList.remove('active');
     }
+}
+
+function changeDate(days) {
+    currentDate.setDate(currentDate.getDate() + days);
+    updateView();
+}
+
+function updateView() {
+    // 1. Update Date Display
+    const dateDisplay = document.getElementById('selected-date');
+    const today = new Date();
+    const isToday = isSameDay(currentDate, today);
+
+    dateDisplay.textContent = isToday ? 'DZISIAJ' : currentDate.toLocaleDateString('pl-PL', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+    // Disable "Next" if today (cannot predict future)
+    document.getElementById('next-date').disabled = isToday;
+
+    // 2. Filter Data for selected day
+    const dailyData = globalData.filter(entry => {
+        const entryDate = new Date(entry.timestamp * 1000);
+        return isSameDay(entryDate, currentDate);
+    });
+
+    // 3. Update Components
+    updateCurrentStats(dailyData);
+    updateDailyAnalytics(dailyData);
+    renderChart(dailyData);
+}
+
+function isSameDay(d1, d2) {
+    return d1.getFullYear() === d2.getFullYear() &&
+        d1.getMonth() === d2.getMonth() &&
+        d1.getDate() === d2.getDate();
 }
 
 function updateCurrentStats(data, empty = false) {
@@ -41,14 +84,15 @@ function updateCurrentStats(data, empty = false) {
     if (empty || data.length === 0) {
         tempEl.innerHTML = '--<span class="stat-unit">°C</span>';
         humEl.innerHTML = '--<span class="stat-unit">%</span>';
-        updateEl.textContent = 'NO DATA';
+        // Only show "NO DATA" if we are looking at a day with no data, 
+        // but if we navigated to a legit day, show last known time? 
+        // Actually showing -- is fine.
+        updateEl.textContent = 'BRAK DANYCH';
         return;
     }
 
-    // Get latest entry (assuming data is appended chronologically)
+    // Since 'data' is sorted, the last element is the latest for that day
     const latest = data[data.length - 1];
-
-    // Format timestamp
     const date = new Date(latest.timestamp * 1000);
     const timeStr = date.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
 
@@ -57,31 +101,62 @@ function updateCurrentStats(data, empty = false) {
     updateEl.textContent = `${timeStr}`;
 }
 
-function renderChart(rawData) {
+function updateDailyAnalytics(data) {
+    const minEl = document.getElementById('day-min');
+    const maxEl = document.getElementById('day-max');
+    const avgEl = document.getElementById('day-avg');
+    const dewEl = document.getElementById('day-dew');
+
+    if (data.length === 0) {
+        [minEl, maxEl, avgEl, dewEl].forEach(el => el.textContent = '--');
+        return;
+    }
+
+    // Min/Max Temp
+    const temps = data.map(d => d.temp);
+    const minTemp = Math.min(...temps);
+    const maxTemp = Math.max(...temps);
+
+    // Avg Temp
+    const avgTemp = temps.reduce((a, b) => a + b, 0) / temps.length;
+
+    // Avg Humidity for Dew Point calc
+    const hums = data.map(d => d.humidity);
+    const avgHum = hums.reduce((a, b) => a + b, 0) / hums.length;
+
+    // Dew Point Approximation: Td = T - ((100 - RH)/5)
+    // Using simple formula for speed
+    const dewPoint = avgTemp - ((100 - avgHum) / 5);
+
+    minEl.textContent = minTemp.toFixed(1);
+    maxEl.textContent = maxTemp.toFixed(1);
+    avgEl.textContent = avgTemp.toFixed(1);
+    dewEl.textContent = dewPoint.toFixed(1);
+}
+
+let chartInstance = null;
+
+function renderChart(dailyData) {
     const ctx = document.getElementById('atmosphereChart').getContext('2d');
 
-    // Filter last 24h? For now take all, or slice last 24
-    // Let's ensure we sort by timestamp just in case
-    const sortedData = rawData.sort((a, b) => a.timestamp - b.timestamp);
+    if (chartInstance) {
+        chartInstance.destroy();
+    }
 
-    // Take last 24 points (assuming hourly) or just last N
-    // Let's show last 12-24 entires for clarity
-    const chartData = sortedData.slice(-24);
-
-    const labels = chartData.map(entry => {
+    const labels = dailyData.map(entry => {
         const date = new Date(entry.timestamp * 1000);
         return date.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
     });
 
-    const temps = chartData.map(entry => entry.temp);
-    const humidity = chartData.map(entry => entry.humidity);
+    const temps = dailyData.map(entry => entry.temp);
+    const humidity = dailyData.map(entry => entry.humidity);
 
     // Gradient for humidity
     const humGradient = ctx.createLinearGradient(0, 0, 0, 400);
     humGradient.addColorStop(0, 'rgba(0, 168, 255, 0.2)');
     humGradient.addColorStop(1, 'rgba(0, 168, 255, 0)');
 
-    new Chart(ctx, {
+    chartInstance = new Chart(ctx, {
         type: 'line',
         data: {
             labels: labels,
@@ -92,10 +167,10 @@ function renderChart(rawData) {
                     borderColor: '#00ff9d',
                     backgroundColor: '#00ff9d',
                     borderWidth: 2,
-                    tension: 0.4, // Smooth curves
+                    tension: 0.4,
                     yAxisID: 'y',
-                    pointRadius: 0, // Clean look, dots on hover
-                    pointHoverRadius: 4
+                    pointRadius: 2, // Visible dots for few data points
+                    pointHoverRadius: 6
                 },
                 {
                     label: 'Wilgotność (%)',
@@ -106,28 +181,24 @@ function renderChart(rawData) {
                     tension: 0.4,
                     fill: true,
                     yAxisID: 'y1',
-                    pointRadius: 0,
-                    pointHoverRadius: 4
+                    pointRadius: 2,
+                    pointHoverRadius: 6
                 }
             ]
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false, // Fill container
+            maintainAspectRatio: false,
             interaction: {
                 mode: 'index',
                 intersect: false,
             },
             plugins: {
-                legend: {
-                    display: false // Minimalist look
-                },
+                legend: { display: false },
                 tooltip: {
                     backgroundColor: 'rgba(15, 16, 18, 0.9)',
                     titleColor: '#888',
-                    bodyFont: {
-                        family: 'JetBrains Mono'
-                    },
+                    bodyFont: { family: 'JetBrains Mono' },
                     padding: 10,
                     cornerRadius: 8,
                     displayColors: true
@@ -135,16 +206,10 @@ function renderChart(rawData) {
             },
             scales: {
                 x: {
-                    grid: {
-                        display: false,
-                        drawBorder: false
-                    },
+                    grid: { display: false, drawBorder: false },
                     ticks: {
                         color: 'rgba(255,255,255,0.3)',
-                        font: {
-                            size: 10,
-                            family: 'JetBrains Mono'
-                        },
+                        font: { size: 10, family: 'JetBrains Mono' },
                         maxTicksLimit: 6
                     }
                 },
@@ -152,24 +217,18 @@ function renderChart(rawData) {
                     type: 'linear',
                     display: true,
                     position: 'left',
-                    grid: {
-                        color: 'rgba(255,255,255,0.05)',
-                        drawBorder: false
-                    },
+                    grid: { color: 'rgba(255,255,255,0.05)', drawBorder: false },
                     ticks: {
                         color: 'rgba(255,255,255,0.3)',
                         font: { size: 10 }
                     },
-                    suggestedMin: 15, // Keep temp scale reasonable
-                    suggestedMax: 30
+                    suggestedMin: 18,
+                    suggestedMax: 28
                 },
                 y1: {
                     type: 'linear',
-                    display: false, // Hide humidity axis to reduce clutter
+                    display: false,
                     position: 'right',
-                    grid: {
-                        drawOnChartArea: false,
-                    },
                     min: 0,
                     max: 100
                 }
