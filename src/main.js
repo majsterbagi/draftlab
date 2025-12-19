@@ -1,7 +1,7 @@
 import './components/AppHeader.js';
 import './components/AppFooter.js';
 import './components/ProjectGrid.js';
-import './components/NewsFeed.js';
+import './components/SystemLog.js';
 import './components/TechStack.js';
 
 // Log diagnostyczny - zobaczysz go w konsoli (F12)
