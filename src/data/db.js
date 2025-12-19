@@ -193,7 +193,7 @@ export const SITE_DATA = {
                     version: "v.0.1.0",
                     date: "2025-12-19",
                     type: "INIT",
-                    desc: "Public Release: Stabilna wersja API, wykres 24h, integracja z iOS Shortcuts, wygląd spójny z DraftLab."
+                    desc: "Public Release: Stabilna wersja API, wykres 24h, integracja z iOS Shortcuts, wyświetla statystyki i agreguje dane."
                 }
             ]
         },
