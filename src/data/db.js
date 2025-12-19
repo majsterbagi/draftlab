@@ -163,7 +163,7 @@ export const SITE_DATA = {
             id: 'atmosphere',
             title: 'Atmosphere',
             desc: 'Dziennik klimatyczny HomePod mini. Wizualizacja temperatury i wilgotności w cyklu dobowym (4 pomiary na dzień).',
-            version: 'v1.0.0',
+            version: 'v0.1.0',
             active: true,
             url: './apps/Atmosphere.html',
             changelogUrl: "apps/changelog.html?id=atmosphere",
@@ -190,7 +190,7 @@ export const SITE_DATA = {
 
             changes: [
                 {
-                    version: "v.1.0.0",
+                    version: "v.0.1.0",
                     date: "2025-12-19",
                     type: "INIT",
                     desc: "Public Release: Stabilna wersja API, wykres 24h, integracja z iOS Shortcuts, wygląd spójny z DraftLab."
