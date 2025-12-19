@@ -5,7 +5,7 @@ import { SITE_DATA } from '../data/db.js';
 class ProjectGrid extends HTMLElement {
     connectedCallback() {
         const grid = document.createElement('div');
-        grid.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8";
+        grid.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4";
 
         const mappedProjects = SITE_DATA.projects.map(p => {
             const baseClass = "group border transition-all duration-300 relative overflow-hidden flex flex-col h-full";
@@ -39,24 +39,24 @@ class ProjectGrid extends HTMLElement {
                 : `<div class="text-xs text-tech-dim text-center py-2 border border-tech-gray/30 mt-4 border-dashed mt-auto">OFFLINE</div>`;
 
             return `
-            <article class="${baseClass} ${activeClass} min-h-[300px]">
+            <article class="${baseClass} ${activeClass} min-h-[200px]">
                 ${p.active ? `<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${colors.gradient} opacity-70"></div>` : ''}
                 
-                <div class="p-6 flex flex-col h-full">
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 min-w-[3rem] bg-tech-gray/30 rounded flex items-center justify-center ${colors.icon} border border-tech-gray ${colors.border} transition-colors">
-                                <i data-lucide="${iconName}" width="24"></i>
+                <div class="p-4 flex flex-col h-full">
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 min-w-[2.5rem] bg-tech-gray/30 rounded flex items-center justify-center ${colors.icon} border border-tech-gray ${colors.border} transition-colors">
+                                <i data-lucide="${iconName}" width="20"></i>
                             </div>
-                            <h3 class="text-xl font-bold ${p.active ? 'group-hover:text-white' : 'text-tech-dim'} transition-colors">${p.title}</h3>
+                            <h3 class="text-lg font-bold ${p.active ? 'group-hover:text-white' : 'text-tech-dim'} transition-colors">${p.title}</h3>
                         </div>
-                        <span class="px-2 py-1 text-[10px] uppercase border border-tech-dim text-tech-dim rounded">${p.version}</span>
+                        <span class="px-2 py-0.5 text-[9px] uppercase border border-tech-dim text-tech-dim rounded">${p.version}</span>
                     </div>
                     
-                    <p class="text-tech-dim text-sm mb-2 flex-grow leading-relaxed">${p.desc}</p>
+                    <p class="text-tech-dim text-xs mb-2 flex-grow leading-relaxed">${p.desc}</p>
 
-                    <div class="flex flex-wrap gap-2 mb-6">
-                        ${p.tags.map(t => `<span class="text-[10px] text-tech-green bg-tech-green/10 px-2 py-1 rounded border border-tech-green/20">${t}</span>`).join('')}
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        ${p.tags.map(t => `<span class="text-[9px] text-tech-green bg-tech-green/10 px-1.5 py-0.5 rounded border border-tech-green/20">${t}</span>`).join('')}
                     </div>
 
                     ${actionButtons}
@@ -78,24 +78,24 @@ class ProjectGrid extends HTMLElement {
                 const nextNum = String(totalItems + i + 1).padStart(2, '0');
 
                 const phantomSlot = `
-                <article class="hidden md:flex group border transition-all duration-300 relative overflow-hidden flex-col h-full border-tech-gray/30 bg-[#0f0f0f]/50 opacity-30 border-dashed min-h-[300px]">
-                    <div class="p-6 flex flex-col h-full">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 min-w-[3rem] bg-tech-gray/30 rounded flex items-center justify-center text-tech-dim border border-tech-gray transition-colors">
-                                    <i data-lucide="box" width="24"></i>
+                <article class="hidden md:flex group border transition-all duration-300 relative overflow-hidden flex-col h-full border-tech-gray/30 bg-[#0f0f0f]/50 opacity-30 border-dashed min-h-[200px]">
+                    <div class="p-4 flex flex-col h-full">
+                        <div class="flex justify-between items-start mb-2">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 min-w-[2.5rem] bg-tech-gray/30 rounded flex items-center justify-center text-tech-dim border border-tech-gray transition-colors">
+                                    <i data-lucide="box" width="20"></i>
                                 </div>
-                                <h3 class="text-xl font-bold text-tech-dim transition-colors">Slot_${nextNum}: Empty</h3>
+                                <h3 class="text-lg font-bold text-tech-dim transition-colors">Slot_${nextNum}: Empty</h3>
                             </div>
-                            <span class="px-2 py-1 text-[10px] uppercase border border-tech-dim text-tech-dim rounded">TBD</span>
+                            <span class="px-2 py-0.5 text-[9px] uppercase border border-tech-dim text-tech-dim rounded">TBD</span>
                         </div>
                         
-                        <p class="text-tech-dim text-sm mb-2 flex-grow leading-relaxed">Miejsce na kolejny projekt...</p>
+                        <p class="text-tech-dim text-xs mb-2 flex-grow leading-relaxed">Miejsce na kolejny projekt...</p>
     
-                        <div class="flex flex-wrap gap-2 mb-6">
+                        <div class="flex flex-wrap gap-2 mb-4">
                         </div>
     
-                        <div class="text-xs text-tech-dim text-center py-2 border border-tech-gray/30 mt-4 border-dashed mt-auto">OFFLINE</div>
+                        <div class="text-[10px] text-tech-dim text-center py-1.5 border border-tech-gray/30 mt-4 border-dashed mt-auto">OFFLINE</div>
                     </div>
                 </article>
                 `;
