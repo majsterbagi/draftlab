@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+    <title>Atmosphere | DraftLab.pl</title>
+
+    <meta name="theme-color" content="#0f1012">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Fonts & Icons -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../src/style.css">
+
+    <style>
+        :root {
+            --bg-color: #0b0c0e;
+            --panel-bg: rgba(20, 20, 24, 0.6);
+            --accent-color: #00ff9d;
+            --text-color: #e0e0e0;
+            --grid-line: rgba(255, 255, 255, 0.05);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background-image:
+                linear-gradient(var(--grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        /* --- HEADER --- */
+        .app-header {
+            padding: calc(20px + env(safe-area-inset-top)) 24px 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(180deg, rgba(11, 12, 14, 0.95) 0%, rgba(11, 12, 14, 0) 100%);
+            z-index: 10;
+        }
+
+        .app-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.8);
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: #fff;
+        }
+
+        /* --- MAIN CONTENT --- */
+        .dashboard {
+            flex-grow: 1;
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+            scrollbar-width: none;
+            /* Hide scrollbar */
+        }
+
+        .dashboard::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* STATS CARDS */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .stat-card {
+            background: var(--panel-bg);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 16px;
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.4);
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .stat-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -1px;
+        }
+
+        .stat-unit {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 400;
+        }
+
+        /* CHART CONTAINER */
+        .chart-container {
+            background: var(--panel-bg);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 16px;
+            backdrop-filter: blur(10px);
+            flex-grow: 1;
+            min-height: 250px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .chart-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .chart-wrapper {
+            flex-grow: 1;
+            position: relative;
+            width: 100%;
+        }
+
+        /* FOOTER INFO */
+        .footer-info {
+            text-align: center;
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.2);
+            padding: 20px 0 calc(20px + env(safe-area-inset-bottom)) 0;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Loading State */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(11, 12, 14, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            border-radius: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .loading-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .loader {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(0, 255, 157, 0.3);
+            border-top-color: #00ff9d;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="app-header">
+        <a href="../index.html" class="back-btn">
+            <i data-lucide="arrow-left" width="18"></i>
+        </a>
+        <div class="app-title">
+            <i data-lucide="cloud" width="16" color="#00ff9d"></i>
+            ATMOSPHERE
+        </div>
+        <div style="width: 36px;"></div> <!-- Spacer -->
+    </header>
+
+    <div class="dashboard">
+        <!-- Stats Row -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">
+                    TEMP
+                    <i data-lucide="thermometer" width="12"></i>
+                </div>
+                <div class="stat-value" id="current-temp">--<span class="stat-unit">°C</span></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">
+                    WILGOTNOŚĆ
+                    <i data-lucide="droplets" width="12"></i>
+                </div>
+                <div class="stat-value" id="current-humidity">--<span class="stat-unit">%</span></div>
+            </div>
+        </div>
+
+        <!-- Chart Area -->
+        <div class="chart-container">
+            <div class="chart-header">
+                <div class="chart-title">Wykres 24H</div>
+                <div class="chart-title" style="color: #00ff9d" id="last-update">--:--</div>
+            </div>
+            <div class="chart-wrapper">
+                <div class="loading-overlay active" id="chart-loader">
+                    <div class="loader"></div>
+                </div>
+                <canvas id="atmosphereChart"></canvas>
+            </div>
+        </div>
+
+        <div class="footer-info">
+            DATA SOURCE: HOMEPOD MINI • SHORTCUTS API
+        </div>
+    </div>
+
+    <!-- Application Logic -->
+    <script type="module" src="../src/Atmosphere.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>
