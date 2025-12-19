@@ -83,6 +83,7 @@ function updateView() {
     updateChartTitle();
     updateSummaryStats(rangeData);
     updateTimeOfDayAverages(rangeData);
+    updateSeasonalAverages(rangeData);
     renderChart(rangeData);
 }
 
@@ -157,6 +158,46 @@ function updateTimeOfDayAverages(data) {
     noonEl.innerHTML = `${avg(noon)}<span class="stat-unit">°C</span>`;
     eveningEl.innerHTML = `${avg(evening)}<span class="stat-unit">°C</span>`;
     nightEl.innerHTML = `${avg(night)}<span class="stat-unit">°C</span>`;
+}
+
+function updateSeasonalAverages(data) {
+    const springEl = document.getElementById('avg-spring');
+    const summerEl = document.getElementById('avg-summer');
+    const autumnEl = document.getElementById('avg-autumn');
+    const winterEl = document.getElementById('avg-winter');
+
+    // Reset all
+    [springEl, summerEl, autumnEl, winterEl].forEach(el => el.innerHTML = '--<span class="stat-unit">°C</span>');
+
+    if (data.length === 0) return;
+
+    // Group by meteorological season
+    // Wiosna: Mar (2), Apr (3), May (4)
+    // Lato: Jun (5), Jul (6), Aug (7)
+    // Jesień: Sep (8), Oct (9), Nov (10)
+    // Zima: Dec (11), Jan (0), Feb (1)
+    const spring = [], summer = [], autumn = [], winter = [];
+
+    data.forEach(entry => {
+        const month = new Date(entry.timestamp * 1000).getMonth();
+
+        if (month >= 2 && month <= 4) {
+            spring.push(entry.temp);
+        } else if (month >= 5 && month <= 7) {
+            summer.push(entry.temp);
+        } else if (month >= 8 && month <= 10) {
+            autumn.push(entry.temp);
+        } else {
+            winter.push(entry.temp); // Dec, Jan, Feb
+        }
+    });
+
+    const avg = arr => arr.length > 0 ? (arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(1) : '--';
+
+    springEl.innerHTML = `${avg(spring)}<span class="stat-unit">°C</span>`;
+    summerEl.innerHTML = `${avg(summer)}<span class="stat-unit">°C</span>`;
+    autumnEl.innerHTML = `${avg(autumn)}<span class="stat-unit">°C</span>`;
+    winterEl.innerHTML = `${avg(winter)}<span class="stat-unit">°C</span>`;
 }
 
 function renderChart(data) {
