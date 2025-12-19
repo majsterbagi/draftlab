@@ -19,17 +19,34 @@ class AppFooter extends HTMLElement {
             </footer>
         `;
 
-        // Fetch visitor count
-        fetch(apiPath)
-            .then(response => response.json())
-            .then(data => {
-                const counterEl = this.querySelector('#visit-counter');
-                if (counterEl && data.count) {
-                    counterEl.querySelector('span').textContent = data.count;
-                    counterEl.classList.remove('hidden');
-                }
-            })
-            .catch(err => console.warn('Counter API unavailable locally or blocked'));
+        // Fetch visitor count with timeout and checks
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000);
+
+        if (navigator.onLine) {
+            fetch(apiPath, { signal: controller.signal })
+                .then(response => {
+                    clearTimeout(timeoutId);
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    const contentType = response.headers.get("content-type");
+                    if (!contentType || !contentType.includes("application/json")) {
+                        throw new Error("Not JSON response");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const counterEl = this.querySelector('#visit-counter');
+                    if (counterEl && data.count) {
+                        counterEl.querySelector('span').textContent = data.count;
+                        counterEl.classList.remove('hidden');
+                    }
+                })
+                .catch(err => {
+                    clearTimeout(timeoutId);
+                    // Silently fail - console.debug only
+                    // console.debug('Counter API skipped:', err.message);
+                });
+        }
     }
 }
 customElements.define('dl-footer', AppFooter);
