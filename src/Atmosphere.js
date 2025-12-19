@@ -99,7 +99,7 @@ function updateCurrentStats(data, empty = false) {
 
     tempEl.innerHTML = `${latest.temp.toFixed(1)}<span class="stat-unit">°C</span>`;
     humEl.innerHTML = `${latest.humidity.toFixed(0)}<span class="stat-unit">%</span>`;
-    updateEl.textContent = `${timeStr}`;
+    updateEl.textContent = `Ostatni pomiar: ${timeStr}`;
 }
 
 function updateDailyAnalytics(data) {
