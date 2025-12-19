@@ -96,6 +96,17 @@ export const SITE_DATA = {
             ]
         },
         {
+            id: 'atmosphere',
+            title: 'Atmosphere',
+            desc: 'Dziennik klimatyczny HomePod mini. Wizualizacja temperatury i wilgotności w czasie rzeczywistym.',
+            version: 'v1.0',
+            active: true,
+            url: './apps/Atmosphere.html',
+            tags: ['IoT', 'Chart.js', 'PHP'],
+            color: 'blue',
+            icon: 'cloud'
+        },
+        {
             id: "draftcargo",
             title: "DraftCargo",
             desc: "Prywatny transfer plików do 1GB. Automatyczne czyszczenie po 72h.",

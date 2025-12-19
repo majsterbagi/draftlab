@@ -8,7 +8,7 @@ $cookie_time = 86400; // 24 hours
 
 // Init counter if not exists
 if (!file_exists($file)) {
-    file_put_contents($file, '100'); // Start from 100 to look nice
+    file_put_contents($file, '100');
 }
 
 // Read current count

@@ -1,5 +1,5 @@
 <?php
-// Prevent PHP warnings from corrupting the JSON output
+// Suppress errors to prevent corrupted JSON
 error_reporting(0);
 ini_set('display_errors', 0);
 
@@ -19,20 +19,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-// Ensure data directory exists and is writable
-if (!file_exists($DATA_DIR)) {
-    if (!mkdir($DATA_DIR, 0777, true)) {
-        http_response_code(500);
-        echo json_encode(['error' => 'Failed to monitor filesystem']);
-        exit;
-    }
+// Ensure data directory exists
+if (!is_dir($DATA_DIR)) {
+    @mkdir($DATA_DIR, 0755, true);
 }
 
 // Handle POST (Save Data)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input = file_get_contents('php://input');
 
-    // Check if input is empty
     if (empty($input)) {
         http_response_code(400);
         echo json_encode(['error' => 'Empty request body']);
@@ -41,9 +36,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $data = json_decode($input, true);
 
-    if (json_last_error() !== JSON_ERROR_NONE) {
+    if ($data === null) {
         http_response_code(400);
-        echo json_encode(['error' => 'Invalid JSON: ' . json_last_error_msg()]);
+        echo json_encode(['error' => 'Invalid JSON']);
         exit;
     }
 
@@ -64,17 +59,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $entry = [
         'timestamp' => time(),
         'date' => date('Y-m-d H:i:s'),
-        'temp' => (float) $data['temp'],
-        'humidity' => (float) $data['humidity'],
-        'device' => isset($data['device']) ? htmlspecialchars($data['device']) : 'HomePod'
+        'temp' => floatval($data['temp']),
+        'humidity' => floatval($data['humidity']),
+        'device' => isset($data['device']) ? strip_tags($data['device']) : 'HomePod'
     ];
 
     // Load existing data
     $currentData = [];
     if (file_exists($DATA_FILE)) {
-        $fileContent = file_get_contents($DATA_FILE);
-        if ($fileContent) {
-            $decoded = json_decode($fileContent, true);
+        $content = @file_get_contents($DATA_FILE);
+        if ($content) {
+            $decoded = json_decode($content, true);
             if (is_array($decoded)) {
                 $currentData = $decoded;
             }
@@ -84,17 +79,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Append new entry
     $currentData[] = $entry;
 
-    // Limit size
+    // Limit size (keep last 5000)
     if (count($currentData) > 5000) {
         $currentData = array_slice($currentData, -5000);
     }
 
     // Save
-    if (file_put_contents($DATA_FILE, json_encode($currentData, JSON_PRETTY_PRINT))) {
+    $result = @file_put_contents($DATA_FILE, json_encode($currentData, JSON_PRETTY_PRINT));
+
+    if ($result !== false) {
         echo json_encode(['status' => 'success', 'logged' => $entry]);
     } else {
         http_response_code(500);
-        echo json_encode(['error' => 'Failed to write data storage']);
+        echo json_encode(['error' => 'Write failed - check folder permissions']);
     }
     exit;
 }
@@ -102,9 +99,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Handle GET (Retrieve Data)
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (file_exists($DATA_FILE)) {
-        echo file_get_contents($DATA_FILE);
+        $content = @file_get_contents($DATA_FILE);
+        echo $content ? $content : '[]';
     } else {
-        echo json_encode([]);
+        echo '[]';
     }
     exit;
 }
