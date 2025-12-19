@@ -7,7 +7,7 @@ class ProjectGrid extends HTMLElement {
         const grid = document.createElement('div');
         grid.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8";
 
-        grid.innerHTML = SITE_DATA.projects.map(p => {
+        const mappedProjects = SITE_DATA.projects.map(p => {
             const baseClass = "group border transition-all duration-300 relative overflow-hidden flex flex-col h-full";
             const activeClass = p.active
                 ? "border-tech-gray bg-[#0f0f0f] hover:border-tech-green"
@@ -76,7 +76,7 @@ class ProjectGrid extends HTMLElement {
                 const nextNum = String(totalItems + i + 1).padStart(2, '0');
 
                 const phantomSlot = `
-                <article class="group border transition-all duration-300 relative overflow-hidden flex flex-col h-full border-tech-gray/30 bg-[#0f0f0f]/50 opacity-30 border-dashed min-h-[300px]">
+                <article class="hidden md:flex group border transition-all duration-300 relative overflow-hidden flex-col h-full border-tech-gray/30 bg-[#0f0f0f]/50 opacity-30 border-dashed min-h-[300px]">
                     <div class="p-6 flex flex-col h-full">
                         <div class="flex justify-between items-start mb-4">
                             <div class="w-12 h-12 bg-tech-gray/30 rounded flex items-center justify-center text-tech-dim border border-tech-gray transition-colors">
