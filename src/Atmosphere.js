@@ -40,6 +40,16 @@ async function initAtmosphere() {
     } finally {
         if (loader) loader.classList.remove('active');
     }
+    // Close chart tooltip when clicking outside
+    const closeTooltip = (e) => {
+        if (chartInstance && e.target.id !== 'atmosphereChart') {
+            chartInstance.setActiveElements([]);
+            chartInstance.tooltip.setActiveElements([], { x: 0, y: 0 });
+            chartInstance.update();
+        }
+    };
+    document.addEventListener('click', closeTooltip);
+    document.addEventListener('touchstart', closeTooltip, { passive: true });
 }
 
 function changeDate(days) {
