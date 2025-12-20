@@ -21,9 +21,21 @@
         <div class="max-w-xl w-full">
 
             <!-- System Header -->
-            <div class="mb-8 border-l-4 border-tech-green pl-4">
-                <h1 class="text-2xl font-bold tracking-tighter uppercase">/ DraftCargo_v0.1</h1>
-                <p class="text-tech-dim text-xs mt-1">Status: SECURE_CHANNEL_ACTIVE | Limit: 1024MB | TTL: 72H</p>
+            <div class="mb-8 flex justify-between items-end border-l-4 border-tech-green pl-4">
+                <div>
+                    <h1 class="text-2xl font-bold tracking-tighter uppercase">/ DraftCargo_v0.1</h1>
+                    <p class="text-tech-dim text-xs mt-1">Status: SECURE_CHANNEL_ACTIVE | Limit: 1024MB | TTL: 72H</p>
+                </div>
+                <!-- Stats Counter -->
+                <div class="text-right">
+                    <div id="stats-container" class="text-[10px] text-tech-dim font-mono">
+                        <span class="block text-[8px] opacity-50">SYSTEM_STATS:</span>
+                        <span class="block">FILES: <b class="text-white" id="stat-count">LOADING</b></span>
+                        <span class="block">VOLUME: <b class="text-white" id="stat-size">LOADING</b></span>
+                        <span id="debug-status"
+                            class="block text-[8px] text-tech-green mt-1 uppercase">INITIALIZING...</span>
+                    </div>
+                </div>
             </div>
 
             <!-- Drop Zone -->
@@ -105,6 +117,62 @@
         initNucleus();
         lucide.createIcons();
 
+        // Stats Logic - tries PHP first, then JSON fallback for local dev
+        const updateStats = async () => {
+            const debug = document.getElementById('debug-status');
+            const displayStats = (data) => {
+                if (data && data.error) {
+                    debug.innerText = `OS_ERROR: ${data.error}`;
+                    debug.classList.replace('text-tech-green', 'text-red-500');
+                    return;
+                }
+                if (data && data.count !== undefined) {
+                    document.getElementById('stat-count').innerText = data.count;
+
+                    let sizeText = '0.0 MB';
+                    if (data.size > 1024 * 1024 * 1024) {
+                        sizeText = (data.size / 1024 / 1024 / 1024).toFixed(2) + ' GB';
+                    } else if (data.size > 0) {
+                        sizeText = (data.size / 1024 / 1024).toFixed(1) + ' MB';
+                    }
+
+                    document.getElementById('stat-size').innerText = sizeText;
+                    debug.innerText = 'CARGO_SYSTEM_READY';
+                    debug.classList.replace('text-red-500', 'text-tech-green');
+                }
+            };
+
+            const t = Date.now();
+            try {
+                let res = await fetch(`../api/stats.php?t=${t}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    displayStats(data);
+                    return;
+                } else {
+                    debug.innerText = `PHP_ERROR: ${res.status}`;
+                }
+            } catch (e) {
+                console.error('[Cargo] PHP stats error:', e);
+                debug.innerText = 'PHP_NOT_REACHABLE';
+            }
+
+            try {
+                let res = await fetch(`../api/stats.json?t=${t}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    displayStats(data);
+                    if (debug.innerText === 'PHP_NOT_REACHABLE') debug.innerText = 'USING_STATIC_JSON';
+                } else {
+                    debug.innerText += ` | JSON_ERROR: ${res.status}`;
+                }
+            } catch (e) {
+                console.error('[Cargo] JSON stats error:', e);
+                debug.innerText += ' | JSON_NOT_REACHABLE';
+            }
+        };
+        updateStats();
+
         const controller = new CargoController({
             dropZone: 'drop-zone',
             fileInput: 'file-input',
@@ -120,6 +188,7 @@
                 document.getElementById('upload-state').classList.add('hidden');
                 document.getElementById('result-area').classList.remove('hidden');
                 document.getElementById('share-link').value = fullUrl;
+                updateStats(); // Refresh stats after upload
             },
             onError: (err) => {
                 alert('Transfer error: ' + err);

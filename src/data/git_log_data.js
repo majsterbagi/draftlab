@@ -1,5 +1,13 @@
 export const GIT_LOG_DATA = [
     {
+        "hash": "136a966",
+        "date": "2025-12-21 00:17",
+        "type": "FEAT",
+        "component": "LOG",
+        "desc": "Integracja automatycznych logów i paginacja",
+        "details": "Wdrożono automatyczne łączenie logów Git z aplikacjami.\\nZaimplementowano paginację w widoku changeloga (5 wpisów na stronę).\\nNaprawiono skrypty builda w package.json."
+    },
+    {
         "hash": "34561d5",
         "date": "2025-12-20 21:10",
         "type": "STYLE",
@@ -389,14 +397,6 @@ export const GIT_LOG_DATA = [
         "type": "DEBUG",
         "component": "SYS",
         "desc": "Add test endpoint for API diagnosis",
-        "details": null
-    },
-    {
-        "hash": "d63fe2f",
-        "date": "2025-12-19 20:53",
-        "type": "FIX",
-        "component": "API",
-        "desc": "Robust atmosphere.php (suppress warnings, fix permissions, handle empty input)",
         "details": null
     }
 ];
