@@ -48,8 +48,7 @@ export const SITE_DATA = {
                     version: "v2.0",
                     date: "2025-12-20",
                     type: "MAJOR",
-                    desc: "Kompletna przebudowa aplikacji: nowy minimalistyczny design, trajektorie sezonowe z przełącznikami, płynne gradienty nieba, lens flare, automatyczna geolokalizacja z reverse geocoding, wyszukiwarka ograniczona do Polski, wycentrowane trajektorie względem solar noon, responsywny dashboard.",
-                    details: "• Nowy minimalistyczny design\\n• 4 trajektorie sezonowe (WIO/LAT/JES/ZIM)\\n• Panel przełączników z ikonami Lucide\\n• Wyszukiwarka miast w lewym górnym rogu\\n• Księżyc widoczny tylko w nocy\\n• Safe-area-inset dla iPhone\\n• Nagłówek Nucleus z nawigacją"
+                    desc: "Kompletna przebudowa aplikacji: nowy minimalistyczny design, trajektorie sezonowe z przełącznikami, płynne gradienty nieba, lens flare, automatyczna geolokalizacja z reverse geocoding, wyszukiwarka ograniczona do Polski, wycentrowane trajektorie względem solar noon, responsywny dashboard."
                 },
                 {
                     version: "v.0.2.1",
