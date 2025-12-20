@@ -73,6 +73,7 @@ class UnifiedLog extends HTMLElement {
         const logsHtml = slicedLogs.map(log => {
             let typeColor = 'text-tech-dim';
             if (log.type === 'FEAT' || log.type === 'FEATURE' || log.type === 'INIT') typeColor = 'text-tech-green';
+            if (log.type === 'MAJOR' || log.type === 'CORE') typeColor = 'text-yellow-400';
             if (log.type === 'FIX' || log.type === 'HOTFIX') typeColor = 'text-blue-400';
             if (log.type === 'STYLE' || log.type === 'VISUAL') typeColor = 'text-purple-400';
             if (log.type === 'REVERT') typeColor = 'text-red-400';

@@ -46,7 +46,7 @@ export const SITE_DATA = {
             changes: [
                 {
                     version: "v2.0",
-                    date: "2025-12-20",
+                    date: "2025-12-20 21:00",
                     type: "MAJOR",
                     desc: "Kompletna przebudowa aplikacji: nowy minimalistyczny design, trajektorie sezonowe z przełącznikami, płynne gradienty nieba, lens flare, automatyczna geolokalizacja z reverse geocoding, wyszukiwarka ograniczona do Polski, wycentrowane trajektorie względem solar noon, responsywny dashboard."
                 },
