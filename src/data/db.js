@@ -162,7 +162,7 @@ export const SITE_DATA = {
             id: 'atmosphere',
             title: 'Atmosphere',
             desc: 'Dziennik klimatyczny HomePod mini. Wizualizacja temperatury i wilgotności w cyklu dobowym (4 pomiary na dzień).',
-            version: 'v0.2.0',
+            version: 'v0.2.1',
             active: true,
             url: './apps/Atmosphere.html',
             changelogUrl: "apps/changelog.html?id=atmosphere",
@@ -188,6 +188,12 @@ export const SITE_DATA = {
             },
 
             changes: [
+                {
+                    version: "v.0.2.1",
+                    date: "2025-12-20",
+                    type: "FIX",
+                    desc: "Mobile Chart UX: Naprawa problemu z zamykaniem tooltipa na urządzeniach dotykowych (kliknięcie w tło zamyka dymek)."
+                },
                 {
                     version: "v.0.2.0",
                     date: "2025-12-19",

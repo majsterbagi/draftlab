@@ -63,38 +63,34 @@
         </section>
 
         <section class="py-16 border-t border-tech-gray border-dashed mb-12">
+            <!-- Unified Logs -->
+            <div class="mb-16">
+                <dl-unified-log></dl-unified-log>
+            </div>
+
+            <!-- Row 2: Manifest & Tech Stack -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div>
+                    <h3 class="text-tech-green font-bold mb-4 uppercase tracking-widest text-sm">/ Manifest</h3>
+                    <p class="text-tech-dim leading-relaxed text-sm">
+                        DraftLab.pl to mój cyfrowy brudnopis. Tutaj testuję granice współpracy człowiek-maszyna,
+                        zamieniając prompty w kod.
+                    </p>
+                </div>
 
                 <div>
-                    <h3
-                        class="text-tech-green font-bold mb-6 uppercase tracking-widest text-sm flex items-center gap-2">
-                        <i data-lucide="terminal" width="16"></i> Dziennik Systemowy
-                    </h3>
-                    <dl-system-log></dl-system-log>
+                    <h3 class="text-tech-green font-bold mb-4 uppercase tracking-widest text-sm">/ Tech Stack</h3>
+                    <dl-tech-stack></dl-tech-stack>
                 </div>
-
-                <div class="space-y-8">
-                    <div>
-                        <h3 class="text-tech-green font-bold mb-4 uppercase tracking-widest text-sm">/ Manifest</h3>
-                        <p class="text-tech-dim leading-relaxed text-sm">
-                            DraftLab.pl to mój cyfrowy brudnopis. Tutaj testuję granice współpracy człowiek-maszyna,
-                            zamieniając prompty w kod.
-                        </p>
-                    </div>
-
-                    <div>
-                        <h3 class="text-tech-green font-bold mb-4 uppercase tracking-widest text-sm">/ Tech Stack</h3>
-                        <dl-tech-stack></dl-tech-stack>
-                    </div>
-                </div>
-
             </div>
+
         </section>
 
     </main>
 
     <dl-footer></dl-footer>
 
+    <script type="module" src="./src/components/UnifiedLog.js"></script>
     <script>
         lucide.createIcons();
     </script>

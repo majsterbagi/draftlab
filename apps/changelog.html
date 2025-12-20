@@ -86,7 +86,8 @@
 
         if (project) {
             // 1. Header
-            document.getElementById('p-title').innerText = project.title;
+            const iconHtml = project.icon ? `<i data-lucide="${project.icon}" class="text-tech-green mr-3 md:mr-5 inline-block align-middle mb-1" style="width: 0.9em; height: 0.9em;"></i>` : '';
+            document.getElementById('p-title').innerHTML = `${iconHtml}${project.title}`;
             document.getElementById('p-ver').innerText = project.version;
             document.getElementById('p-about').innerText = project.details?.about || project.desc;
 

@@ -43,6 +43,16 @@ async function initAnalytics() {
     } finally {
         if (loader) loader.classList.remove('active');
     }
+
+    // Fix for sticky tooltips on mobile
+    // Close tooltip when clicking anywhere outside the chart
+    document.addEventListener('touchstart', (e) => {
+        if (chartInstance && e.target !== chartInstance.canvas) {
+            chartInstance.setActiveElements([]);
+            chartInstance.tooltip.setActiveElements([], { x: 0, y: 0 });
+            chartInstance.update();
+        }
+    }, { passive: true });
 }
 
 function showEmptyState() {
