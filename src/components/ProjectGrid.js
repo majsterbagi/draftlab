@@ -123,7 +123,7 @@ class ProjectGrid extends HTMLElement {
 
         // Toggle button
         const toggleBtn = document.createElement('button');
-        toggleBtn.className = "mt-8 mx-auto block text-xs text-tech-dim hover:text-tech-green transition-colors cursor-pointer";
+        toggleBtn.className = "mt-4 mx-auto block text-xs text-tech-dim hover:text-tech-green transition-colors cursor-pointer";
         toggleBtn.id = "toggle-empty-slots";
         toggleBtn.innerHTML = showEmpty
             ? '<i data-lucide="eye-off" width="14" class="inline mr-1"></i> Ukryj puste sloty'
