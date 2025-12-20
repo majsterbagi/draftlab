@@ -1,5 +1,69 @@
 export const GIT_LOG_DATA = [
     {
+        "hash": "34561d5",
+        "date": "2025-12-20 21:10",
+        "type": "STYLE",
+        "component": "SYS",
+        "desc": "Zmniejszona przerwa między projektami a dziennikiem",
+        "details": null
+    },
+    {
+        "hash": "e8677ed",
+        "date": "2025-12-20 21:09",
+        "type": "STYLE",
+        "component": "SYS",
+        "desc": "Mniejsza przerwa między toggle a dziennikiem",
+        "details": null
+    },
+    {
+        "hash": "01ba1ca",
+        "date": "2025-12-20 21:07",
+        "type": "FIX",
+        "component": "SYS",
+        "desc": "Kolorowanie typu MAJOR w dzienniku zmian + czas dla SunTrack v2.0",
+        "details": null
+    },
+    {
+        "hash": "f527815",
+        "date": "2025-12-20 21:06",
+        "type": "FEAT",
+        "component": "SYS",
+        "desc": "Ukrywanie pustych slotów domyślnie z opcją odsłonięcia",
+        "details": null
+    },
+    {
+        "hash": "a1b893b",
+        "date": "2025-12-20 21:04",
+        "type": "DOCS",
+        "component": "SUNTRACK",
+        "desc": "Usunięcie szczegółów technicznych z changelog v2.0",
+        "details": null
+    },
+    {
+        "hash": "b0e2079",
+        "date": "2025-12-20 21:03",
+        "type": "DOCS",
+        "component": "SYS",
+        "desc": "Usunięcie wzmianki o inspiracji Lumy",
+        "details": null
+    },
+    {
+        "hash": "0a246a6",
+        "date": "2025-12-20 21:01",
+        "type": "DOCS",
+        "component": "SUNTRACK",
+        "desc": "Aktualizacja changelog w db.js do v2.0",
+        "details": null
+    },
+    {
+        "hash": "786d110",
+        "date": "2025-12-20 20:58",
+        "type": "FEAT",
+        "component": "SUNTRACK",
+        "desc": "V2.0 - Kompletna przebudowa aplikacji",
+        "details": "MAJOR UPDATE:\n- Nowy minimalistyczny design inspirowany Lumy\n- Wizualizacja nieba z płynnymi gradientami kolorów\n- Trajektorie sezonowe (wiosna, lato, jesień, zima) z przełącznikami\n- Suwak czasu na dole ekranu z przyciskiem TERAZ\n- Efekt lens flare przy słońcu\n- Księżyc widoczny tylko w nocy\n- Wyszukiwarka miast ograniczona do Polski\n- Automatyczna geolokalizacja przy każdym uruchomieniu\n- Reverse geocoding do pobierania nazwy miasta\n- Wycentrowane trajektorie względem solar noon\n- Dashboard z kartami: Wschód, Zachód, Długość Dnia, Golden AM/PM, Zmiana\n- Panel przełączników pór roku z ikonami Lucide\n- Responsywny design z safe-area-inset dla iPhone\n- Nagłówek Nucleus z nawigacją"
+    },
+    {
         "hash": "81ee910",
         "date": "2025-12-20 18:24",
         "type": "FIX",
@@ -333,70 +397,6 @@ export const GIT_LOG_DATA = [
         "type": "FIX",
         "component": "API",
         "desc": "Robust atmosphere.php (suppress warnings, fix permissions, handle empty input)",
-        "details": null
-    },
-    {
-        "hash": "800a019",
-        "date": "2025-12-19 20:49",
-        "type": "FIX",
-        "component": "FOOTER",
-        "desc": "Safe visitor counter fetch (timeout + checks) to prevent mobile connection errors",
-        "details": null
-    },
-    {
-        "hash": "bdd9b9a",
-        "date": "2025-12-19 20:24",
-        "type": "FEAT",
-        "component": "SYS",
-        "desc": "Add visitor counter, invert profile hover, unify scrollbar",
-        "details": null
-    },
-    {
-        "hash": "ca67001",
-        "date": "2025-12-19 16:33",
-        "type": "FEAT",
-        "component": "ABOUT",
-        "desc": "Update about page content and styles, add profile image",
-        "details": null
-    },
-    {
-        "hash": "cd36769",
-        "date": "2025-12-18 23:28",
-        "type": "UPDATE",
-        "component": "SYS",
-        "desc": "Update DraftCargo changelog to v.0.5.0 (mobile optimization)",
-        "details": null
-    },
-    {
-        "hash": "cfe5728",
-        "date": "2025-12-18 23:26",
-        "type": "FIX",
-        "component": "SYS",
-        "desc": "Fix mobile upload: use FormData + 512KB chunks + better error handling",
-        "details": null
-    },
-    {
-        "hash": "a6f6d04",
-        "date": "2025-12-18 23:24",
-        "type": "FIX",
-        "component": "SYS",
-        "desc": "Fix 503: reduce chunk size to 1MB and lower PHP limits",
-        "details": null
-    },
-    {
-        "hash": "29e7922",
-        "date": "2025-12-18 23:19",
-        "type": "UPDATE",
-        "component": "SYS",
-        "desc": "Remove home.pl references from DraftCargo changelog",
-        "details": null
-    },
-    {
-        "hash": "f89b710",
-        "date": "2025-12-18 23:18",
-        "type": "UPDATE",
-        "component": "SYS",
-        "desc": "Add project-specific icons (sun for SunTrack, package for DraftCargo)",
         "details": null
     }
 ];

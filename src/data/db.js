@@ -1,4 +1,6 @@
-export const SITE_DATA = {
+import { PROJECT_CHANGES } from './auto_changelogs.js';
+
+const RAW_DATA = {
     config: {
         title: "DraftLab.pl",
         status: "ONLINE",
@@ -7,7 +9,10 @@ export const SITE_DATA = {
             { label: "Build", value: "Vite / PostCSS / Tailwind (Native)" },
             { label: "Core", value: "Web Components / ES Modules" },
             { label: "VCS", value: "Git / GitHub" }
-        ]
+        ],
+        apiEndpoints: {
+            atmosphere: '../api/atmosphere.php'
+        }
     },
     menu: [
         { name: "WARSZTAT", url: "index.html" },
@@ -49,48 +54,6 @@ export const SITE_DATA = {
                     date: "2025-12-20 21:00",
                     type: "MAJOR",
                     desc: "Kompletna przebudowa aplikacji: nowy minimalistyczny design, trajektorie sezonowe z przełącznikami, płynne gradienty nieba, lens flare, automatyczna geolokalizacja z reverse geocoding, wyszukiwarka ograniczona do Polski, wycentrowane trajektorie względem solar noon, responsywny dashboard."
-                },
-                {
-                    version: "v.0.2.1",
-                    date: "2025-12-18",
-                    type: "HOTFIX",
-                    desc: "Safari Core & Geo Hybrid: Wymuszenie ciemnego paska adresu, naprawa pętli renderującej oraz wdrożenie Hybrydowej Geolokalizacji (Automatyczny fallback do IP API przy blokadzie GPS)."
-                },
-                {
-                    version: "v.0.2.0",
-                    date: "2025-12-17",
-                    type: "FEAT",
-                    desc: "System Manifest & Core Fixes: Wdrożenie dynamicznego panelu dokumentacji. Naprawa pętli czasu rzeczywistego (Live Clock), korekta horyzontu na mobile oraz ulepszony UX geolokalizacji."
-                },
-                {
-                    version: "v.0.1",
-                    date: "2025-12-18",
-                    type: "CORE",
-                    desc: "Geo & Scale: Automatyczna geolokalizacja, Golden Hour, skalowanie interfejsu (mobile-first), optymalizacja suwaka."
-                },
-                {
-                    version: "v.0.0.4",
-                    date: "2025-12-17",
-                    type: "FEAT",
-                    desc: "Living Sky: Warstwy animowane (chmury, ptaki), logika gwiazd, clean look (usunięcie trajektorii)."
-                },
-                {
-                    version: "v.0.0.3",
-                    date: "2025-12-16",
-                    type: "FIX",
-                    desc: "Horizon Fix: Dostosowanie horyzontu UI, fizyczna skala wysokości 1:1."
-                },
-                {
-                    version: "v.0.0.2",
-                    date: "2025-12-15",
-                    type: "UX",
-                    desc: "Smooth & PWA: Interpolacja kolorów nieba, metatagi iOS (fullscreen)."
-                },
-                {
-                    version: "v.0.0.1",
-                    date: "2025-12-14",
-                    type: "INIT",
-                    desc: "Prototype: Baza HTML/JS, SunCalc, Glassmorphism base."
                 }
             ]
         },
@@ -131,30 +94,6 @@ export const SITE_DATA = {
                     date: "2025-12-18",
                     type: "FEAT",
                     desc: "Mobile Optimization: Zmniejszone chunki do 512KB, FormData zamiast URLSearchParams, lepsze logowanie błędów, walidacja Base64."
-                },
-                {
-                    version: "v.0.4.0",
-                    date: "2025-12-18",
-                    type: "CORE",
-                    desc: "Base64 Bypass: Fundamentalna zmiana architektury. Pliki wysyłane jako tekst Base64, całkowicie omijając mechanizm $_FILES i folder tymczasowy."
-                },
-                {
-                    version: "v.0.3.0",
-                    date: "2025-12-18",
-                    type: "FIX",
-                    desc: "RAW Upload Attempt: Próba użycia php://input - nieudana na niektórych hostingach (zwraca 0 bajtów)."
-                },
-                {
-                    version: "v.0.2.0",
-                    date: "2025-12-18",
-                    type: "FIX",
-                    desc: "Error Handling: Dodanie diagnostyki błędów, logowania do pliku, obsługa kodów błędów PHP."
-                },
-                {
-                    version: "v.0.1.0",
-                    date: "2025-12-18",
-                    type: "INIT",
-                    desc: "Pierwsza wersja: Chunked upload, Industrial UI, integracja z CRON dla auto-cleanup."
                 }
             ]
         },
@@ -187,26 +126,7 @@ export const SITE_DATA = {
                 ]
             },
 
-            changes: [
-                {
-                    version: "v.0.2.1",
-                    date: "2025-12-20",
-                    type: "FIX",
-                    desc: "Mobile Chart UX: Naprawa problemu z zamykaniem tooltipa na urządzeniach dotykowych (kliknięcie w tło zamyka dymek)."
-                },
-                {
-                    version: "v.0.2.0",
-                    date: "2025-12-19",
-                    type: "FEATURE",
-                    desc: "Analytics Dashboard: Nowa strona z interaktywnym wykresem (tydzień/miesiąc/rok), statystyki wg pory dnia i pory roku, ujednolicona nawigacja z resztą strony."
-                },
-                {
-                    version: "v.0.1.0",
-                    date: "2025-12-19",
-                    type: "INIT",
-                    desc: "Public Release: Stabilna wersja API, wykres 24h, integracja z iOS Shortcuts, wyświetla statystyki i agreguje dane."
-                }
-            ]
+            changes: []
         },
         {
             id: "slot_03",
@@ -237,3 +157,32 @@ export const SITE_DATA = {
         }
     ]
 };
+
+// --- DATA MERGE LOGIC ---
+// Merge auto-generated git logs with manual entries
+
+RAW_DATA.projects.forEach(project => {
+    const gitChanges = PROJECT_CHANGES[project.id] || [];
+
+    // Combine arrays
+    const combined = [...(project.changes || []), ...gitChanges];
+
+    // Deduplicate by date + desc (naive approach)
+    const unique = [];
+    const seen = new Set();
+
+    combined.forEach(item => {
+        const key = `${item.date}-${item.desc}`;
+        if (!seen.has(key)) {
+            seen.add(key);
+            unique.push(item);
+        }
+    });
+
+    // Sort by date desc
+    unique.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    project.changes = unique;
+});
+
+export const SITE_DATA = RAW_DATA;

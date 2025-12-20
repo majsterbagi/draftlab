@@ -12,6 +12,12 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
+    <!-- Meta Tags SEO -->
+    <meta name="description"
+        content="Monitoring parametrów powietrza HomePod mini i wizualizacja danych klimatycznych.">
+    <meta property="og:title" content="Atmosphere | DraftLab.pl">
+    <meta property="og:description" content="Dashboard klimatyczny HomePod mini.">
+
     <!-- Fonts & Icons -->
     <link
         href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600&display=swap"
@@ -21,200 +27,13 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="../src/style.css">
-
-    <style>
-        :root {
-            --bg-color: #0b0c0e;
-            --panel-bg: rgba(20, 20, 24, 0.6);
-            --accent-color: #00ff9d;
-            --text-color: #e0e0e0;
-            --grid-line: rgba(255, 255, 255, 0.05);
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            min-height: 100dvh;
-            padding-top: calc(60px + env(safe-area-inset-top));
-            overflow-y: auto;
-            background-image:
-                linear-gradient(var(--grid-line) 1px, transparent 1px),
-                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-            background-size: 40px 40px;
-            box-sizing: border-box;
-        }
-
-        /* --- MAIN CONTENT --- */
-        .dashboard {
-            padding: 0 20px 40px 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-
-        /* STATS CARDS */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .stat-card {
-            background: var(--panel-bg);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 16px;
-            backdrop-filter: blur(10px);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .stat-label {
-            font-size: 10px;
-            text-transform: uppercase;
-            font-weight: 600;
-            letter-spacing: 1px;
-            color: rgba(255, 255, 255, 0.4);
-            margin-bottom: 6px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .stat-value {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 24px;
-            font-weight: 700;
-            color: #fff;
-            letter-spacing: -1px;
-        }
-
-        .stat-unit {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.5);
-            font-weight: 400;
-            margin-left: 2px;
-        }
-
-        /* CHART CONTAINER */
-        .chart-container {
-            background: var(--panel-bg);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            padding: 16px;
-            backdrop-filter: blur(10px);
-            flex-grow: 1;
-            min-height: 250px;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .chart-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .chart-title {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 700;
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        .chart-wrapper {
-            flex-grow: 1;
-            position: relative;
-            width: 100%;
-        }
-
-        /* FOOTER INFO */
-        .footer-info {
-            text-align: center;
-            font-size: 10px;
-            color: rgba(255, 255, 255, 0.2);
-            padding: 20px 0 calc(20px + env(safe-area-inset-bottom)) 0;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        /* Loading State */
-        .loading-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(11, 12, 14, 0.8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 50;
-            border-radius: 20px;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
-        }
-
-        .loading-overlay.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .loader {
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(0, 255, 157, 0.3);
-            border-top-color: #00ff9d;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        .control-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #fff;
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .control-btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-
-        .control-btn:not(:disabled):hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-    </style>
 </head>
 
-<body>
+<body class="bg-tech-bg text-white font-sans bg-grid-pattern selection:bg-tech-green selection:text-black">
 
     <!-- Nucleus Header will be injected here -->
 
-    <div class="dashboard">
+    <div class="dl-dashboard pt-[calc(60px+env(safe-area-inset-top))]">
         <!-- Quick Nav -->
         <div style="display: flex; justify-content: flex-end; margin-bottom: 12px;">
             <a href="AtmosphereAnalytics.html"
@@ -225,122 +44,114 @@
         </div>
 
         <!-- Date Control -->
-        <div class="date-control"
-            style="display: flex; justify-content: space-between; align-items: center; background: var(--panel-bg); padding: 12px 16px; border-radius: 16px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(10px);">
-            <button id="prev-date" class="control-btn"><i data-lucide="chevron-left" width="20"></i></button>
-            <div id="selected-date"
-                style="font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; color: #fff;">
+        <div class="dl-stat-card flex-row justify-between items-center !p-3 !mb-5">
+            <button id="prev-date" class="dl-control-btn"><i data-lucide="chevron-left" width="20"></i></button>
+            <div id="selected-date" class="font-mono text-sm font-bold text-white">
                 DZISIAJ</div>
-            <button id="next-date" class="control-btn" disabled><i data-lucide="chevron-right" width="20"></i></button>
+            <button id="next-date" class="dl-control-btn" disabled><i data-lucide="chevron-right"
+                    width="20"></i></button>
         </div>
 
 
-        <div class="section-label"
-            style="font-size: 10px; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 8px; letter-spacing: 1px; padding-left: 4px;">
-            LIVE STATUS</div>
+        <div class="dl-section-label">LIVE STATUS</div>
 
         <!-- Live Stats Row -->
-        <div class="stats-grid" style="margin-bottom: 20px;">
-            <div class="stat-card">
-                <div class="stat-label">
+        <div class="dl-stats-grid mb-5">
+            <div class="dl-stat-card">
+                <div class="dl-stat-label">
                     TEMP
                     <i data-lucide="thermometer" width="12"></i>
                 </div>
-                <div class="stat-value" id="current-temp">--<span class="stat-unit">°C</span></div>
+                <div class="dl-stat-value" id="current-temp">--<span class="dl-stat-unit">°C</span></div>
             </div>
-            <div class="stat-card">
-                <div class="stat-label">
+            <div class="dl-stat-card">
+                <div class="dl-stat-label">
                     WILGOTNOŚĆ
                     <i data-lucide="droplets" width="12"></i>
                 </div>
-                <div class="stat-value" id="current-humidity">--<span class="stat-unit">%</span></div>
+                <div class="dl-stat-value" id="current-humidity">--<span class="dl-stat-unit">%</span></div>
             </div>
         </div>
 
         <!-- Chart Area -->
-        <div class="chart-container">
-            <div class="chart-header">
-                <div class="chart-title">Wykres 24H</div>
-                <div class="chart-title" style="color: rgba(0, 255, 157, 0.6); font-size: 10px;" id="last-update">--:--
-                </div>
+        <div class="dl-chart-container">
+            <div class="dl-chart-header">
+                <div class="dl-chart-title">Wykres 24H</div>
+                <div class="dl-chart-title !text-tech-green/60 font-mono" id="last-update">--:--</div>
             </div>
-            <div class="chart-wrapper">
-                <div class="loading-overlay active" id="chart-loader">
-                    <div class="loader"></div>
+            <div class="dl-chart-wrapper">
+                <div class="dl-loading-overlay active" id="chart-loader">
+                    <div class="dl-loader"></div>
                 </div>
                 <canvas id="atmosphereChart"></canvas>
             </div>
         </div>
 
-        <div class="section-label"
-            style="font-size: 10px; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-top: 20px; margin-bottom: 8px; letter-spacing: 1px; padding-left: 4px;">
-            ANALYTICS (DOBA)</div>
+        <div class="dl-section-label mt-5">ANALYTICS (DOBA)</div>
 
         <!-- Analytics Row -->
-        <div class="stats-grid" style="margin-bottom: 20px;">
-            <div class="stat-card">
-                <div class="stat-label">
+        <div class="dl-stats-grid mb-5">
+            <div class="dl-stat-card">
+                <div class="dl-stat-label">
                     MIN / MAX
                     <i data-lucide="bar-chart-2" width="12"></i>
                 </div>
-                <div class="stat-value" style="font-size: 16px;">
-                    <span id="day-min">--</span> / <span id="day-max">--</span><span class="stat-unit">°C</span>
+                <div class="dl-stat-value !text-lg">
+                    <span id="day-min">--</span> / <span id="day-max">--</span><span class="dl-stat-unit">°C</span>
                 </div>
             </div>
-            <div class="stat-card">
-                <div class="stat-label">
-                    ŚREDNIA / ŚR. WILG.
+            <div class="dl-stat-card">
+                <div class="dl-stat-label">
+                    ŚREDNIA / WILG.
                     <i data-lucide="activity" width="12"></i>
                 </div>
-                <div class="stat-value" style="font-size: 16px;">
-                    <span id="day-avg">--</span><span class="stat-unit">°C</span> <span
-                        style="font-size: 12px; color:rgba(255,255,255,0.3)">|</span> <span
-                        id="day-hum-avg">--</span><span class="stat-unit">%</span>
+                <div class="dl-stat-value !text-lg">
+                    <span id="day-avg">--</span><span class="dl-stat-unit">°C</span> <span
+                        class="text-xs text-white/30">|</span> <span id="day-hum-avg">--</span><span
+                        class="dl-stat-unit">%</span>
                 </div>
             </div>
         </div>
 
-        <div class="section-label"
-            style="font-size: 10px; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-top: 20px; margin-bottom: 8px; letter-spacing: 1px; padding-left: 4px;">
-            PORY DNIA</div>
+        <div class="dl-section-label mt-5">PORY DNIA</div>
 
         <!-- Time of Day Stats -->
-        <div class="stats-grid" style="margin-bottom: 20px; grid-template-columns: repeat(4, 1fr);">
-            <div class="stat-card">
-                <div class="stat-label" style="font-size: 9px;">
+        <div class="dl-stats-grid mb-5 !grid-cols-4">
+            <div class="dl-stat-card !p-2">
+                <div class="dl-stat-label !text-[9px]">
                     RANO
                     <i data-lucide="sunrise" width="10"></i>
                 </div>
-                <div class="stat-value" style="font-size: 14px;" id="time-morning">--<span class="stat-unit">°C</span>
+                <div class="dl-stat-value !text-sm" id="time-morning">--<span class="dl-stat-unit">°C</span>
                 </div>
             </div>
-            <div class="stat-card">
-                <div class="stat-label" style="font-size: 9px;">
+            <div class="dl-stat-card !p-2">
+                <div class="dl-stat-label !text-[9px]">
                     POŁUDNIE
                     <i data-lucide="sun" width="10"></i>
                 </div>
-                <div class="stat-value" style="font-size: 14px;" id="time-noon">--<span class="stat-unit">°C</span>
+                <div class="dl-stat-value !text-sm" id="time-noon">--<span class="dl-stat-unit">°C</span>
                 </div>
             </div>
-            <div class="stat-card">
-                <div class="stat-label" style="font-size: 9px;">
+            <div class="dl-stat-card !p-2">
+                <div class="dl-stat-label !text-[9px]">
                     WIECZÓR
                     <i data-lucide="sunset" width="10"></i>
                 </div>
-                <div class="stat-value" style="font-size: 14px;" id="time-evening">--<span class="stat-unit">°C</span>
+                <div class="dl-stat-value !text-sm" id="time-evening">--<span class="dl-stat-unit">°C</span>
                 </div>
             </div>
-            <div class="stat-card">
-                <div class="stat-label" style="font-size: 9px;">
+            <div class="dl-stat-card !p-2">
+                <div class="dl-stat-label !text-[9px]">
                     NOC
                     <i data-lucide="moon" width="10"></i>
                 </div>
-                <div class="stat-value" style="font-size: 14px;" id="time-night">--<span class="stat-unit">°C</span>
+                <div class="dl-stat-value !text-sm" id="time-night">--<span class="dl-stat-unit">°C</span>
                 </div>
             </div>
         </div>
 
-        <div class="footer-info">
+        <div class="text-center text-[10px] text-white/20 font-mono py-5 pb-[calc(20px+env(safe-area-inset-bottom))]">
             DATA SOURCE: HOMEPOD MINI • SHORTCUTS API
         </div>
     </div>
@@ -348,10 +159,13 @@
     <!-- Application Logic -->
     <script type="module">
         import { init as initNucleus } from '../src/core/Nucleus.js';
+        import { init as initAtmosphere } from '../src/apps/Atmosphere.js';
+
         initNucleus();
+        initAtmosphere();
+
         lucide.createIcons();
     </script>
-    <script type="module" src="../src/Atmosphere.js"></script>
 </body>
 
 </html>

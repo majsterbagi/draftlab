@@ -1,11 +1,25 @@
 export const PROJECT_CHANGES = {
     "suntrack": [
         {
-            "date": "2025-12-20 20:57",
-            "version": "v2.0",
-            "type": "MAJOR",
-            "desc": "Kompletna przebudowa aplikacji SunTrack",
-            "details": "• Nowy minimalistyczny design\n• Wizualizacja nieba z płynnymi gradientami kolorów\n• Trajektorie sezonowe (wiosna, lato, jesień, zima) z przełącznikami\n• Suwak czasu na dole ekranu z przyciskiem TERAZ\n• Efekt lens flare przy słońcu\n• Księżyc widoczny tylko w nocy\n• Wyszukiwarka miast ograniczona do Polski\n• Automatyczna geolokalizacja przy każdym uruchomieniu\n• Reverse geocoding do pobierania nazwy miasta\n• Wycentrowane trajektorie względem solar noon\n• Nowy dashboard z kartami: Wschód, Zachód, Długość Dnia, Golden AM, Golden PM, Zmiana\n• Panel przełączników pór roku z ikonami (kwiat, słońce, liść, płatek śniegu)\n• Responsywny design z safe-area-inset dla iPhone\n• Nagłówek Nucleus z nawigacją"
+            "date": "2025-12-20 21:04",
+            "version": "GIT",
+            "type": "DOCS",
+            "desc": "Usunięcie szczegółów technicznych z changelog v2.0",
+            "details": null
+        },
+        {
+            "date": "2025-12-20 21:01",
+            "version": "GIT",
+            "type": "DOCS",
+            "desc": "Aktualizacja changelog w db.js do v2.0",
+            "details": null
+        },
+        {
+            "date": "2025-12-20 20:58",
+            "version": "GIT",
+            "type": "FEAT",
+            "desc": "V2.0 - Kompletna przebudowa aplikacji",
+            "details": "MAJOR UPDATE:\n- Nowy minimalistyczny design inspirowany Lumy\n- Wizualizacja nieba z płynnymi gradientami kolorów\n- Trajektorie sezonowe (wiosna, lato, jesień, zima) z przełącznikami\n- Suwak czasu na dole ekranu z przyciskiem TERAZ\n- Efekt lens flare przy słońcu\n- Księżyc widoczny tylko w nocy\n- Wyszukiwarka miast ograniczona do Polski\n- Automatyczna geolokalizacja przy każdym uruchomieniu\n- Reverse geocoding do pobierania nazwy miasta\n- Wycentrowane trajektorie względem solar noon\n- Dashboard z kartami: Wschód, Zachód, Długość Dnia, Golden AM/PM, Zmiana\n- Panel przełączników pór roku z ikonami Lucide\n- Responsywny design z safe-area-inset dla iPhone\n- Nagłówek Nucleus z nawigacją"
         }
     ],
     "atmosphere": [

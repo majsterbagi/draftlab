@@ -3,20 +3,25 @@
  * Fetches temperature/humidity data, filters by date, and calculates analytics.
  */
 
-document.addEventListener('DOMContentLoaded', () => {
-    initAtmosphere();
-});
+import { SITE_DATA } from '../data/db.js';
 
-const API_URL = '../api/atmosphere.php';
 let globalData = [];
 let currentDate = new Date(); // Start with "Today"
+let chartInstance = null;
 
-async function initAtmosphere() {
+// Access API Endpoint from Central Config
+const API_URL = SITE_DATA.config.apiEndpoints.atmosphere;
+
+export async function init() {
+    console.log('[Atmosphere] Inicjalizacja...');
     const loader = document.getElementById('chart-loader');
 
     // Button Handlers
-    document.getElementById('prev-date').addEventListener('click', () => changeDate(-1));
-    document.getElementById('next-date').addEventListener('click', () => changeDate(1));
+    const prevBtn = document.getElementById('prev-date');
+    const nextBtn = document.getElementById('next-date');
+
+    if (prevBtn) prevBtn.addEventListener('click', () => changeDate(-1));
+    if (nextBtn) nextBtn.addEventListener('click', () => changeDate(1));
 
     try {
         const response = await fetch(API_URL);
@@ -31,15 +36,16 @@ async function initAtmosphere() {
 
             updateView();
         } else {
-            console.warn('No data received');
+            console.warn('[Atmosphere] No data received');
             updateCurrentStats([], true);
         }
 
     } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('[Atmosphere] Error fetching data:', error);
     } finally {
         if (loader) loader.classList.remove('active');
     }
+
     // Close chart tooltip when clicking outside
     const closeTooltip = (e) => {
         if (chartInstance && e.target.id !== 'atmosphereChart') {
@@ -60,13 +66,16 @@ function changeDate(days) {
 function updateView() {
     // 1. Update Date Display
     const dateDisplay = document.getElementById('selected-date');
+    if (!dateDisplay) return;
+
     const today = new Date();
     const isToday = isSameDay(currentDate, today);
 
     dateDisplay.textContent = isToday ? 'DZISIAJ' : currentDate.toLocaleDateString('pl-PL', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
     // Disable "Next" if today (cannot predict future)
-    document.getElementById('next-date').disabled = isToday;
+    const nextBtn = document.getElementById('next-date');
+    if (nextBtn) nextBtn.disabled = isToday;
 
     // 2. Filter Data for selected day
     const dailyData = globalData.filter(entry => {
@@ -92,12 +101,11 @@ function updateCurrentStats(data, empty = false) {
     const humEl = document.getElementById('current-humidity');
     const updateEl = document.getElementById('last-update');
 
+    if (!tempEl || !humEl || !updateEl) return;
+
     if (empty || data.length === 0) {
         tempEl.innerHTML = '--<span class="stat-unit">°C</span>';
         humEl.innerHTML = '--<span class="stat-unit">%</span>';
-        // Only show "NO DATA" if we are looking at a day with no data, 
-        // but if we navigated to a legit day, show last known time? 
-        // Actually showing -- is fine.
         updateEl.textContent = 'BRAK DANYCH';
         return;
     }
@@ -118,8 +126,12 @@ function updateDailyAnalytics(data) {
     const avgEl = document.getElementById('day-avg');
     const humAvgEl = document.getElementById('day-hum-avg');
 
+    if (!minEl) return;
+
     if (data.length === 0) {
-        [minEl, maxEl, avgEl, humAvgEl].forEach(el => el.textContent = '--');
+        [minEl, maxEl, avgEl, humAvgEl].forEach(el => {
+            if (el) el.textContent = '--';
+        });
         return;
     }
 
@@ -147,8 +159,12 @@ function updateTimeOfDayStats(data) {
     const eveningEl = document.getElementById('time-evening');
     const nightEl = document.getElementById('time-night');
 
+    if (!morningEl) return;
+
     // Reset all
-    [morningEl, noonEl, eveningEl, nightEl].forEach(el => el.innerHTML = '--<span class="stat-unit">°C</span>');
+    [morningEl, noonEl, eveningEl, nightEl].forEach(el => {
+        if (el) el.innerHTML = '--<span class="stat-unit">°C</span>';
+    });
 
     if (data.length === 0) return;
 
@@ -171,10 +187,11 @@ function updateTimeOfDayStats(data) {
     });
 }
 
-let chartInstance = null;
-
 function renderChart(dailyData) {
-    const ctx = document.getElementById('atmosphereChart').getContext('2d');
+    const canvas = document.getElementById('atmosphereChart');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
 
     if (chartInstance) {
         chartInstance.destroy();

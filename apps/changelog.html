@@ -154,10 +154,23 @@
                 `).join('');
             }
 
-            // 5. Changelog (zachowana logika)
+            // 5. Changelog with Pagination
             const logEl = document.getElementById('p-changelog');
-            if (project.changes) {
-                logEl.innerHTML = project.changes.map((change, index) => {
+            const ITEMS_PER_PAGE = 5;
+            let currentPage = 1;
+
+            const renderChangelog = () => {
+                if (!project.changes || project.changes.length === 0) {
+                    logEl.innerHTML = '<div class="text-tech-dim text-xs">Brak zmian.</div>';
+                    return;
+                }
+
+                const totalPages = Math.ceil(project.changes.length / ITEMS_PER_PAGE);
+                const start = (currentPage - 1) * ITEMS_PER_PAGE;
+                const end = start + ITEMS_PER_PAGE;
+                const pageItems = project.changes.slice(start, end);
+
+                const listHtml = pageItems.map((change) => {
                     let colorClass = change.type === 'CORE' || change.type === 'INIT' ? 'text-blue-400' : (change.type === 'FEAT' ? 'text-tech-green' : 'text-tech-dim');
 
                     return `
@@ -182,7 +195,36 @@
                     </div>
                     `;
                 }).join('');
-            }
+
+                // Pagination Controls (Only if needed)
+                const paginationHtml = totalPages > 1 ? `
+                    <div class="flex justify-between items-center mt-4 pt-6 border-t border-tech-gray border-dashed">
+                        <button id="prev-page" class="flex items-center gap-2 px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-tech-green border border-transparent hover:border-tech-green transition-all disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:border-transparent" ${currentPage === 1 ? 'disabled' : ''}>
+                            <i data-lucide="arrow-left" width="14"></i> Nowsze
+                        </button>
+                        <span class="text-[10px] text-tech-dim font-mono">STRONA ${currentPage} / ${totalPages}</span>
+                        <button id="next-page" class="flex items-center gap-2 px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-tech-green border border-transparent hover:border-tech-green transition-all disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:border-transparent" ${currentPage === totalPages ? 'disabled' : ''}>
+                            Starsze <i data-lucide="arrow-right" width="14"></i>
+                        </button>
+                    </div>
+                ` : '';
+
+                logEl.innerHTML = listHtml + paginationHtml;
+
+                // Re-bind events
+                if (totalPages > 1) {
+                    document.getElementById('prev-page')?.addEventListener('click', () => {
+                        if (currentPage > 1) { currentPage--; renderChangelog(); window.scrollTo({ top: document.getElementById('p-changelog').offsetTop - 100, behavior: 'smooth' }); }
+                    });
+                    document.getElementById('next-page')?.addEventListener('click', () => {
+                        if (currentPage < totalPages) { currentPage++; renderChangelog(); window.scrollTo({ top: document.getElementById('p-changelog').offsetTop - 100, behavior: 'smooth' }); }
+                    });
+                }
+
+                lucide.createIcons();
+            };
+
+            renderChangelog();
         } else {
             document.body.innerHTML = "<div class='text-white p-10'>PROJECT NOT FOUND</div>";
         }
