@@ -1,5 +1,21 @@
 export const GIT_LOG_DATA = [
     {
+        "hash": "f9b9ac1",
+        "date": "2025-12-20 14:11",
+        "type": "STYLE",
+        "component": "LOG",
+        "desc": "Zmiana koloru dopisku o specyfikacji na szary",
+        "details": "Zmieniono kolor tekstu 'ZAWIERA SZCZEGÓŁOWĄ SPECYFIKACJĘ' z zielonego na szary (text-tech-dim) dla lepszej czytelności i uspokojenia UI."
+    },
+    {
+        "hash": "c81d716",
+        "date": "2025-12-20 14:10",
+        "type": "FEAT",
+        "component": "LOG",
+        "desc": "Wdrożenie System Log 2.0 z paginacją, filtrami i polską specyfikacją techniczną",
+        "details": null
+    },
+    {
         "hash": "09589ad",
         "date": "2025-12-20 14:08",
         "type": "STYLE",
@@ -381,22 +397,6 @@ export const GIT_LOG_DATA = [
         "type": "BYPASS",
         "component": "SYS",
         "desc": "Base64 encoding to avoid tmp folder (Error 6)",
-        "details": null
-    },
-    {
-        "hash": "b76020c",
-        "date": "2025-12-18 23:09",
-        "type": "FIX",
-        "component": "SYS",
-        "desc": "Fix DraftCargo: use move_uploaded_file instead of RAW upload",
-        "details": null
-    },
-    {
-        "hash": "ab7c43c",
-        "date": "2025-12-18 23:05",
-        "type": "UPDATE",
-        "component": "SYS",
-        "desc": "Refactor DraftCargo to RAW upload (bypass tmp folder issue)",
         "details": null
     }
 ];
