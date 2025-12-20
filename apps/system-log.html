@@ -11,76 +11,84 @@
 </head>
 
 <body
-    class="bg-tech-bg bg-grid-pattern min-h-screen flex flex-col pt-20 pb-12 px-4 selection:bg-tech-green selection:text-black">
+    class="bg-tech-bg bg-grid-pattern min-h-screen flex flex-col pt-20 pb-12 px-4 selection:bg-tech-green selection:text-black font-mono">
 
     <div
         class="fixed top-0 left-0 w-full h-1 bg-gradient-to-r from-tech-green via-transparent to-transparent opacity-50">
     </div>
 
-    <div class="w-full max-w-4xl mx-auto">
+    <!-- Navigation (Top Right) -->
+    <a href="../index.html"
+        class="fixed top-8 right-8 z-50 flex items-center gap-2 px-4 py-2 bg-[#0f0f0f]/90 backdrop-blur border border-tech-gray hover:border-tech-green text-tech-dim hover:text-white transition-all text-xs font-bold uppercase tracking-widest group rounded-sm">
+        <span class="group-hover:-translate-x-1 transition-transform">
+            <i data-lucide="arrow-left" width="14"></i>
+        </span>
+        Baza
+    </a>
+
+    <div class="w-full max-w-4xl mx-auto relative">
         <!-- Header -->
-        <header
-            class="border-b border-tech-gray pb-8 mb-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <header class="border-b border-tech-gray pb-8 mb-8 flex flex-col justify-between items-start gap-6">
             <div>
-                <a href="../index.html"
-                    class="inline-flex items-center gap-2 text-tech-dim text-xs mb-4 hover:text-white transition-colors uppercase tracking-widest">
-                    <i data-lucide="arrow-left" width="14"></i>
-                    Powrót do bazy
-                </a>
                 <h1 class="text-3xl md:text-5xl font-bold text-white tracking-tight mb-2 flex items-center gap-4">
                     <i data-lucide="terminal" class="text-tech-green"></i>
                     SYSTEM LOG
                 </h1>
-                <p class="text-tech-dim text-sm font-mono">
-                    // PEŁNY REJESTR ZMIAN I KOMITÓW
+                <p class="text-tech-dim text-sm font-mono flex items-center gap-2">
+                    <span class="w-2 h-2 bg-tech-green rounded-full animate-pulse"></span>
+                    // PEŁNY REJESTR ZMIAN
                 </p>
-            </div>
-
-            <div class="flex flex-col items-end">
-                <div class="text-right">
-                    <div class="text-xs text-tech-dim uppercase tracking-widest mb-1">Status Systemu</div>
-                    <div class="flex items-center gap-2 text-tech-green font-bold text-sm">
-                        <span class="relative flex h-2 w-2">
-                            <span
-                                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-tech-green opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-2 w-2 bg-tech-green"></span>
-                        </span>
-                        OPERATIONAL
-                    </div>
-                </div>
             </div>
         </header>
 
-        <!-- Stats / Filter Placeholder -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-            <div class="bg-[#0f0f0f] border border-tech-gray p-4 flex flex-col justify-between h-24">
-                <span class="text-[10px] text-tech-dim uppercase tracking-widest">Total Commits</span>
-                <span class="text-2xl text-white font-mono" id="stat-total">--</span>
-            </div>
-            <div class="bg-[#0f0f0f] border border-tech-gray p-4 flex flex-col justify-between h-24">
-                <span class="text-[10px] text-tech-dim uppercase tracking-widest">Last Update</span>
-                <span class="text-sm text-white font-mono" id="stat-last">--</span>
-            </div>
-            <div
-                class="bg-[#0f0f0f] border border-tech-gray p-4 flex flex-col justify-between h-24 col-span-2 md:col-span-2 relative overflow-hidden group">
-                <span class="text-[10px] text-tech-dim uppercase tracking-widest z-10 relative">Repository</span>
-                <div class="text-lg text-white font-mono z-10 relative mt-auto flex items-center gap-2">
-                    <i data-lucide="git-branch" width="16" class="text-tech-green"></i>
-                    main / origin
+        <!-- Controls: Stats & Filters -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 items-end">
+            <!-- Stats -->
+            <div class="flex gap-8 text-xs text-tech-dim">
+                <div>
+                    <span class="block uppercase tracking-widest opacity-50 mb-1">Commits</span>
+                    <span class="text-xl text-white font-bold" id="stat-total">--</span>
                 </div>
-                <i data-lucide="github"
-                    class="absolute -right-2 -bottom-2 text-tech-gray/10 group-hover:text-tech-gray/20 transition-colors"
-                    width="80" height="80"></i>
+                <div>
+                    <span class="block uppercase tracking-widest opacity-50 mb-1">Updates</span>
+                    <span class="text-xl text-white font-bold" id="stat-updates">--</span>
+                </div>
+                <div>
+                    <span class="block uppercase tracking-widest opacity-50 mb-1">Repo</span>
+                    <span class="text-tech-green font-bold">Main</span>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="flex justify-start md:justify-end gap-2">
+                <button onclick="setFilter('ALL')" id="filter-all" class="filter-btn active">WSZYSTKIE</button>
+                <button onclick="setFilter('APPS')" id="filter-apps" class="filter-btn">APLIKACJE</button>
+                <button onclick="setFilter('SYS')" id="filter-sys" class="filter-btn">SYSTEM</button>
             </div>
         </div>
 
-        <!-- Timeline -->
-        <main class="relative border-l border-tech-gray ml-4 md:ml-8 space-y-0" id="log-container">
-            <!-- Items will be injected here -->
+        <!-- Timeline Container -->
+        <main class="relative border-l border-tech-gray ml-4 md:ml-8 space-y-0 min-h-[400px]" id="log-container">
+            <!-- Items injected here -->
         </main>
 
-        <footer class="mt-20 pt-8 border-t border-tech-gray border-dashed text-center">
-            <p class="text-tech-dim text-xs uppercase tracking-widest">
+        <!-- Pagination -->
+        <div class="mt-12 flex justify-between items-center border-t border-tech-gray/30 pt-6">
+            <button id="btn-prev" onclick="changePage(-1)" class="nav-btn" disabled>
+                <i data-lucide="chevron-left" width="16"></i> POPRZEDNIA
+            </button>
+
+            <span class="text-xs text-tech-dim font-mono">
+                STRONA <span id="page-current" class="text-white font-bold">1</span> / <span id="page-total">1</span>
+            </span>
+
+            <button id="btn-next" onclick="changePage(1)" class="nav-btn">
+                NASTĘPNA <i data-lucide="chevron-right" width="16"></i>
+            </button>
+        </div>
+
+        <footer class="mt-8 text-center">
+            <p class="text-tech-dim/30 text-[10px] uppercase tracking-widest">
                 End of Log Stream
             </p>
         </footer>
@@ -90,7 +98,6 @@
     <dialog id="detail-modal"
         class="bg-transparent p-0 w-full max-w-2xl backdrop:bg-black/80 backdrop:backdrop-blur-sm open:animate-in open:fade-in open:zoom-in-95 closed:animate-out closed:fade-out closed:zoom-out-95">
         <div class="bg-[#0f0f0f] border border-tech-gray shadow-2xl relative overflow-hidden">
-            <!-- Header -->
             <div class="border-b border-tech-gray/50 p-6 flex justify-between items-start bg-white/5">
                 <div>
                     <div class="flex items-center gap-3 mb-2">
@@ -108,12 +115,10 @@
                 </button>
             </div>
 
-            <!-- Body -->
             <div class="p-8">
                 <h3 class="text-lg text-white font-bold mb-4">Opis zmiany</h3>
                 <p id="modal-desc" class="text-tech-dim text-sm leading-relaxed mb-8 border-l-2 border-tech-green pl-4">
-                    Short description...
-                </p>
+                    ...</p>
 
                 <h3 class="text-tech-green font-bold text-xs uppercase tracking-widest mb-3 flex items-center gap-2">
                     <i data-lucide="code-2" width="14"></i>
@@ -121,13 +126,10 @@
                 </h3>
                 <div
                     class="bg-black/30 border border-tech-gray/30 p-4 rounded font-mono text-xs text-tech-dim/80 leading-relaxed overflow-x-auto">
-                    <p id="modal-details">
-                        No technical details available.
-                    </p>
+                    <p id="modal-details">...</p>
                 </div>
             </div>
 
-            <!-- Footer -->
             <div class="bg-white/5 p-4 flex justify-end">
                 <button onclick="document.getElementById('detail-modal').close()"
                     class="text-xs font-bold text-white uppercase tracking-widest hover:text-tech-green transition-colors px-4 py-2 border border-tech-gray hover:border-tech-green">
@@ -137,15 +139,39 @@
         </div>
     </dialog>
 
+    <style>
+        .filter-btn {
+            @apply px-4 py-2 text-[10px] font-bold uppercase tracking-widest border transition-all cursor-pointer bg-transparent text-tech-dim border-tech-gray hover:text-white hover:border-white;
+        }
+
+        .filter-btn.active {
+            @apply bg-tech-green text-black border-tech-green;
+        }
+
+        .nav-btn {
+            @apply flex items-center gap-2 px-4 py-2 bg-transparent border border-tech-gray text-xs font-bold text-tech-dim uppercase tracking-widest hover:text-white hover:border-white transition-all disabled:opacity-30 disabled:pointer-events-none;
+        }
+    </style>
+
     <script type="module">
         import { GIT_LOG_DATA } from '../src/data/git_log_data.js';
 
+        // State
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        let currentFilter = 'ALL';
+        let filteredData = [];
+
+        // App Components List (for filtering)
+        const APP_COMPONENTS = ['ATMOSPHERE', 'SUNTRACK', 'DRAFTCARGO', 'NUCLEUS'];
+
+        // DOM
         const container = document.getElementById('log-container');
         const statTotal = document.getElementById('stat-total');
-        const statLast = document.getElementById('stat-last');
-        const modal = document.getElementById('detail-modal');
+        const statUpdates = document.getElementById('stat-updates');
 
-        // Modal Elements
+        // Modal logic
+        const modal = document.getElementById('detail-modal');
         const mType = document.getElementById('modal-type');
         const mComponent = document.getElementById('modal-component');
         const mDate = document.getElementById('modal-date');
@@ -153,107 +179,141 @@
         const mDesc = document.getElementById('modal-desc');
         const mDetails = document.getElementById('modal-details');
 
-        window.openLogDetail = (index) => {
-            const log = GIT_LOG_DATA[index];
+        window.openLogDetail = (hash) => {
+            const log = GIT_LOG_DATA.find(l => l.hash === hash);
             if (!log) return;
 
             mComponent.innerText = (log.component || 'SYS').toUpperCase();
             mDate.innerText = log.date;
             mHash.innerText = '#' + log.hash;
             mDesc.innerText = log.desc;
-            mDetails.innerText = log.details || "Brak dodatkowych szczegółów technicznych dla tej zmiany.";
+            mDetails.innerText = log.details || "Brak dodatkowych szczegółów technicznych dla tej zmiany (automatyczny wpis z git).";
 
-            // Reset classes
+            // Colors
             mType.className = 'text-xs font-bold px-2 py-1 rounded border';
-
             let typeColor = 'text-tech-dim bg-tech-dim/10 border-tech-dim/20';
-            let typeName = log.type;
-
-            if (log.type === 'FEAT' || log.type === 'FEATURE') {
-                typeColor = 'text-tech-green bg-tech-green/10 border-tech-green/20';
-            }
-            if (log.type === 'FIX' || log.type === 'HOTFIX') {
-                typeColor = 'text-blue-400 bg-blue-400/10 border-blue-400/20';
-            }
-            if (log.type === 'STYLE') {
-                typeColor = 'text-purple-400 bg-purple-400/10 border-purple-400/20';
-            }
-            if (log.type === 'REVERT') {
-                typeColor = 'text-red-400 bg-red-400/10 border-red-400/20';
-            }
+            if (['FEAT', 'FEATURE', 'INIT'].includes(log.type)) typeColor = 'text-tech-green bg-tech-green/10 border-tech-green/20';
+            if (['FIX', 'HOTFIX'].includes(log.type)) typeColor = 'text-blue-400 bg-blue-400/10 border-blue-400/20';
+            if (['STYLE', 'VISUAL'].includes(log.type)) typeColor = 'text-purple-400 bg-purple-400/10 border-purple-400/20';
 
             mType.classList.add(...typeColor.split(' '));
-            mType.innerText = typeName;
+            mType.innerText = log.type;
 
             modal.showModal();
-            // Re-render icons inside modal if needed, though they are static x and code-2
-            if (window.lucide) window.lucide.createIcons();
         };
 
-        // Stats
-        statTotal.innerText = GIT_LOG_DATA.length;
-        if (GIT_LOG_DATA.length > 0) {
-            statLast.innerText = GIT_LOG_DATA[0].date;
+        // Core Logic
+        function processData() {
+            // Filter
+            if (currentFilter === 'ALL') {
+                filteredData = GIT_LOG_DATA;
+            } else if (currentFilter === 'APPS') {
+                filteredData = GIT_LOG_DATA.filter(l => APP_COMPONENTS.includes(l.component?.toUpperCase()));
+            } else { // SYTEM
+                filteredData = GIT_LOG_DATA.filter(l => !APP_COMPONENTS.includes(l.component?.toUpperCase()));
+            }
+
+            // Reset Page on Filter Change
+            // currentPage = 1; // Handled in setFilter
         }
 
-        // Render
-        const html = GIT_LOG_DATA.map((log, index) => {
-            let typeColor = 'text-tech-dim bg-tech-dim/10 border-tech-dim/20';
-            let icon = 'circle';
+        function render() {
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageData = filteredData.slice(start, end);
 
-            if (log.type === 'FEAT' || log.type === 'FEATURE') {
-                typeColor = 'text-tech-green bg-tech-green/10 border-tech-green/20';
-                icon = 'plus';
-            }
-            if (log.type === 'FIX' || log.type === 'HOTFIX') {
-                typeColor = 'text-blue-400 bg-blue-400/10 border-blue-400/20';
-                icon = 'wrench';
-            }
-            if (log.type === 'STYLE') {
-                typeColor = 'text-purple-400 bg-purple-400/10 border-purple-400/20';
-                icon = 'palette';
-            }
-            if (log.type === 'REVERT') {
-                typeColor = 'text-red-400 bg-red-400/10 border-red-400/20';
-                icon = 'rotate-ccw';
-            }
+            // Stats
+            statTotal.innerText = GIT_LOG_DATA.length;
+            statUpdates.innerText = filteredData.length;
+            document.getElementById('page-current').innerText = currentPage;
+            document.getElementById('page-total').innerText = Math.max(1, Math.ceil(filteredData.length / itemsPerPage));
 
-            return `
-            <div onclick="window.openLogDetail(${index})" class="relative pl-8 md:pl-12 py-6 group hover:bg-white/[0.02] transition-colors pr-4 rounded-r-xl border-b border-tech-gray/30 last:border-0 cursor-pointer">
-                <!-- Dot on timeline -->
-                <div class="absolute -left-[5px] top-8 w-2.5 h-2.5 rounded-full bg-[#0f0f0f] border border-tech-gray group-hover:border-tech-green group-hover:scale-125 transition-all z-10"></div>
-                
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-3">
-                    <div class="flex items-center gap-3">
-                        <span class="text-xs font-bold px-2 py-1 rounded border ${typeColor}">${log.type}</span>
-                        <span class="text-white font-bold text-sm tracking-wide">${(log.component || 'SYS').toUpperCase()}</span>
+            // Buttons State
+            document.getElementById('btn-prev').disabled = currentPage === 1;
+            document.getElementById('btn-next').disabled = end >= filteredData.length;
+
+            const html = pageData.map((log) => {
+                let typeColor = 'text-tech-dim bg-tech-dim/10 border-tech-dim/20';
+
+                if (['FEAT', 'FEATURE', 'INIT'].includes(log.type)) typeColor = 'text-tech-green bg-tech-green/10 border-tech-green/20';
+                if (['FIX', 'HOTFIX'].includes(log.type)) typeColor = 'text-blue-400 bg-blue-400/10 border-blue-400/20';
+                if (['STYLE', 'VISUAL'].includes(log.type)) typeColor = 'text-purple-400 bg-purple-400/10 border-purple-400/20';
+                if (log.type === 'REVERT') typeColor = 'text-red-400 bg-red-400/10 border-red-400/20';
+
+                // Format Date
+                const [dDate, dTime] = log.date.split(' ');
+                const timeDisplay = dTime ? `<span class="text-tech-green/80 ml-1">${dTime}</span>` : '';
+
+                return `
+                <div onclick="window.openLogDetail('${log.hash}')" class="relative pl-8 md:pl-12 py-6 group hover:bg-white/[0.02] transition-colors pr-4 rounded-r-xl border-b border-tech-gray/30 last:border-0 cursor-pointer">
+                    <div class="absolute -left-[5px] top-8 w-2.5 h-2.5 rounded-full bg-[#0f0f0f] border border-tech-gray group-hover:border-tech-green group-hover:scale-125 transition-all z-10"></div>
+                    
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-3">
+                        <div class="flex items-center gap-3">
+                            <span class="text-xs font-bold px-2 py-1 rounded border ${typeColor}">${log.type}</span>
+                            <span class="text-white font-bold text-sm tracking-wide">${(log.component || 'SYS').toUpperCase()}</span>
+                        </div>
+                        
+                        <div class="flex items-center gap-4 text-xs font-mono text-tech-dim">
+                            <span class="flex items-center gap-1.5">
+                                <i data-lucide="calendar" width="12"></i>
+                                ${dDate} ${timeDisplay}
+                            </span>
+                            <span class="flex items-center gap-1.5 px-2 py-0.5 bg-white/5 rounded text-tech-dim/70">
+                                <i data-lucide="hash" width="10"></i>
+                                ${log.hash}
+                            </span>
+                        </div>
                     </div>
                     
-                    <div class="flex items-center gap-4 text-xs font-mono text-tech-dim">
-                        <span class="flex items-center gap-1.5">
-                            <i data-lucide="calendar" width="12"></i>
-                            ${log.date}
-                        </span>
-                        <span class="flex items-center gap-1.5 px-2 py-0.5 bg-white/5 rounded text-tech-dim/70">
-                            <i data-lucide="hash" width="10"></i>
-                            ${log.hash}
-                        </span>
+                    <p class="text-tech-dim/90 text-sm leading-relaxed max-w-3xl group-hover:text-white transition-colors">
+                        ${log.desc}
+                    </p>
+                    
+                    <div class="mt-3 opacity-0 group-hover:opacity-100 transition-opacity text-[10px] text-tech-green uppercase tracking-widest flex items-center gap-1">
+                        Zobacz szczegóły <i data-lucide="arrow-right" width="10"></i>
                     </div>
                 </div>
-                
-                <p class="text-tech-dim/90 text-sm leading-relaxed max-w-3xl group-hover:text-white transition-colors">
-                    ${log.desc}
-                </p>
-                
-                <div class="mt-3 opacity-0 group-hover:opacity-100 transition-opacity text-[10px] text-tech-green uppercase tracking-widest flex items-center gap-1">
-                    Zobacz szczegóły <i data-lucide="arrow-right" width="10"></i>
-                </div>
-            </div>
-            `;
-        }).join('');
+                `;
+            }).join('');
 
-        container.innerHTML = html;
-        lucide.createIcons();
+            container.innerHTML = html;
+            lucide.createIcons();
+        }
+
+        // Exposed Actions
+        window.setFilter = (filter) => {
+            currentFilter = filter;
+            currentPage = 1;
+
+            // Update UI Buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.classList.remove('bg-tech-green', 'text-black', 'border-tech-green');
+                btn.classList.add('bg-transparent', 'text-tech-dim', 'border-tech-gray');
+            });
+            const activeBtn = document.getElementById(`filter-${filter.toLowerCase()}`);
+            activeBtn.classList.add('active', 'bg-tech-green', 'text-black', 'border-tech-green');
+            activeBtn.classList.remove('bg-transparent', 'text-tech-dim', 'border-tech-gray');
+
+            processData();
+            render();
+        };
+
+        window.changePage = (delta) => {
+            const maxPage = Math.ceil(filteredData.length / itemsPerPage);
+            const newPage = currentPage + delta;
+            if (newPage >= 1 && newPage <= maxPage) {
+                currentPage = newPage;
+                render();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        };
+
+        // Init
+        processData();
+        render();
+
     </script>
 </body>
 

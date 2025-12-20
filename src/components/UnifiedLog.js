@@ -80,13 +80,21 @@ class UnifiedLog extends HTMLElement {
             const icon = log.source === 'APP' ? 'database' : 'git-branch';
             const metaInfo = log.hash ? `#${log.hash}` : (log.source === 'APP' ? 'v' + (log.raw.version || '?') : '');
 
+            // Format Date: "YYYY-MM-DD HH:MM" -> split
+            const dateTime = log.date.split(' ');
+            const dateStr = dateTime[0] || log.date;
+            const timeStr = dateTime[1] || '';
+
             return `
             <div class="group relative pl-6 pb-6 border-l border-tech-gray last:border-0 last:pb-0">
                 <div class="absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-full bg-[#0f0f0f] border border-tech-gray group-hover:border-tech-green group-hover:bg-tech-green transition-all"></div>
                 
                 <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-1">
                     <div class="flex items-center gap-3">
-                        <span class="text-[10px] font-mono text-tech-dim opacity-70">${log.date}</span>
+                        <div class="flex items-center gap-1.5 text-[10px] font-mono text-tech-dim opacity-70">
+                            <span>${dateStr}</span>
+                            <span class="text-tech-green/80">${timeStr}</span>
+                        </div>
                         <div class="flex items-center gap-2">
                              <i data-lucide="${icon}" width="10" class="text-tech-dim/50"></i>
                              <span class="text-xs text-white font-bold tracking-wide">${log.component}</span>

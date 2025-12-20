@@ -6,7 +6,7 @@ const OUTPUT_FILE = path.join(process.cwd(), 'src/data/git_log_data.js');
 
 // Config
 const MAX_LOGS = 50;
-const GIT_COMMAND = `git log -n ${MAX_LOGS} --pretty=format:"%h|%as|%s"`; // hash|date|subject
+const GIT_COMMAND = `git log -n ${MAX_LOGS} --date=format:"%Y-%m-%d %H:%M" --pretty=format:"%h|%ad|%s"`; // hash|date(w/ time)|subject
 
 console.log('🔄 Generowanie dziennika zmian z Git...');
 
