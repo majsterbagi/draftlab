@@ -17,9 +17,9 @@ export const SITE_DATA = {
         {
             id: "suntrack",
             title: "SunTrack",
-            desc: "Wizualizacja pozycji słońca i faz dnia w estetyce Liquid Glass.",
+            desc: "Wizualizacja pozycji słońca z trajektoriami sezonowymi i automatyczną geolokalizacją.",
             tags: ["PWA", "SunCalc", "Glassmorphism"],
-            version: "v.0.3.0",
+            version: "v2.0",
             url: "apps/SunTrack.html",
             changelogUrl: "apps/changelog.html?id=suntrack",
             icon: "sun",
@@ -29,26 +29,27 @@ export const SITE_DATA = {
             details: {
                 about: "Aplikacja webowa typu PWA do wizualizacji pozycji słońca i śledzenia faz dnia. Narzędzie dedykowane fotografom i miłośnikom nieba, łączące fizycznie poprawne dane astronomiczne z artystycznym interfejsem.",
                 features: [
-                    { title: "Symulacja Time Travel", desc: "Suwak czasu (00:00-23:59) z fizyczną zmianą pozycji słońca i dynamicznym tłem." },
-                    { title: "Living Sky", desc: "Proceduralne chmury, ptaki w dzień, migoczące gwiazdy w nocy." },
-                    { title: "Dane Astronomiczne", desc: "Golden Hour, wschody/zachody, elewacja słońca w stopniach." },
-                    { title: "Geolokalizacja", desc: "Auto-wykrywanie pozycji i Reverse Geocoding (OpenStreetMap)." }
+                    { title: "Trajektorie Sezonowe", desc: "Porównanie ścieżek słońca: wiosna, lato, jesień, zima z kolorowymi liniami." },
+                    { title: "Wizualizacja Nieba", desc: "Płynne gradienty kolorów zależne od wysokości słońca, efekt lens flare." },
+                    { title: "Auto-Geolokalizacja", desc: "Automatyczne wykrywanie pozycji przy każdym uruchomieniu z reverse geocoding." },
+                    { title: "Dashboard Danych", desc: "Wschód, zachód, długość dnia, Golden Hour AM/PM, zmiana względem najdłuższego dnia." }
                 ],
-                techStack: ["HTML5 / CSS3", "Vanilla JS (ES6+)", "SunCalc v1.8.0", "Lucide Icons", "PWA Support"],
+                techStack: ["HTML5 / CSS3", "Vanilla JS (ES6+)", "SunCalc v1.8.0", "Lucide Icons", "Nominatim API"],
                 roadmap: [
+                    { done: true, task: "Trajektorie sezonowe" },
+                    { done: true, task: "Automatyczna geolokalizacja" },
                     { done: false, task: "Wybór lokalizacji z mapy" },
-                    { done: false, task: "Wizualizacja faz księżyca" },
-                    { done: false, task: "Powiadomienia o Złotej Godzinie" },
-                    { done: false, task: "Tryb offline (Service Worker)" }
+                    { done: false, task: "Powiadomienia o Złotej Godzinie" }
                 ]
             },
 
             changes: [
                 {
-                    version: "v.0.3.0",
-                    date: "2025-12-18",
-                    type: "VISUAL",
-                    desc: "Aesthetics & Micro-UI: Nowe, naturalne chmury (Cumulus), realistyczna paleta barw nieba. Kompresja interfejsu (Fit-to-Screen) oraz pełne spolszczenie i optymalizacja ikon."
+                    version: "v2.0",
+                    date: "2025-12-20",
+                    type: "MAJOR",
+                    desc: "Kompletna przebudowa aplikacji: nowy minimalistyczny design, trajektorie sezonowe z przełącznikami, płynne gradienty nieba, lens flare, automatyczna geolokalizacja z reverse geocoding, wyszukiwarka ograniczona do Polski, wycentrowane trajektorie względem solar noon, responsywny dashboard.",
+                    details: "• Nowy design inspirowany Lumy\\n• 4 trajektorie sezonowe (WIO/LAT/JES/ZIM)\\n• Panel przełączników z ikonami Lucide\\n• Wyszukiwarka miast w lewym górnym rogu\\n• Księżyc widoczny tylko w nocy\\n• Safe-area-inset dla iPhone\\n• Nagłówek Nucleus z nawigacją"
                 },
                 {
                     version: "v.0.2.1",
