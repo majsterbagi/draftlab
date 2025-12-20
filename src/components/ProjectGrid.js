@@ -4,14 +4,25 @@ import { SITE_DATA } from '../data/db.js';
 
 class ProjectGrid extends HTMLElement {
     connectedCallback() {
+        // Check localStorage for show empty state
+        const showEmpty = localStorage.getItem('draftlab_show_empty') === 'true';
+
+        const wrapper = document.createElement('div');
+
         const grid = document.createElement('div');
         grid.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8";
+        grid.id = "projects-grid";
 
-        const mappedProjects = SITE_DATA.projects.map(p => {
+        // Filter active projects
+        const activeProjects = SITE_DATA.projects.filter(p => p.active);
+        const inactiveProjects = SITE_DATA.projects.filter(p => !p.active);
+
+        const renderProject = (p, isHidden = false) => {
             const baseClass = "group border transition-all duration-300 relative overflow-hidden flex flex-col h-full";
             const activeClass = p.active
                 ? "border-tech-gray bg-[#0f0f0f] hover:border-tech-green"
                 : "border-tech-gray/30 bg-[#0f0f0f]/50 opacity-60 border-dashed";
+            const hiddenClass = isHidden ? "empty-slot hidden" : "";
 
             // Dynamic colors based on project
             const colorMap = {
@@ -39,7 +50,7 @@ class ProjectGrid extends HTMLElement {
                 : `<div class="text-xs text-tech-dim text-center py-2 border border-tech-gray/30 mt-4 border-dashed mt-auto">OFFLINE</div>`;
 
             return `
-            <article class="${baseClass} ${activeClass} min-h-[300px]">
+            <article class="${baseClass} ${activeClass} ${hiddenClass} min-h-[300px]">
                 ${p.active ? `<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${colors.gradient} opacity-70"></div>` : ''}
                 
                 <div class="p-6 flex flex-col h-full">
@@ -63,22 +74,27 @@ class ProjectGrid extends HTMLElement {
                 </div>
             </article>
             `;
+        };
+
+        // Render active projects first
+        const mappedProjects = activeProjects.map(p => renderProject(p, false));
+
+        // Render inactive projects (hidden by default)
+        inactiveProjects.forEach(p => {
+            mappedProjects.push(renderProject(p, !showEmpty));
         });
 
-        // Calculate missing slots to fill the row (assuming 3 columns)
+        // Calculate missing phantom slots
         const totalItems = SITE_DATA.projects.length;
         const remainder = totalItems % 3;
         const missing = remainder === 0 ? 0 : 3 - remainder;
 
         if (missing > 0) {
             for (let i = 0; i < missing; i++) {
-                // Determine next slot number
-                // Check if last item is a Slot to continue numbering or start new
-                // Simplified: Just use "Slot_XX" based on total count
                 const nextNum = String(totalItems + i + 1).padStart(2, '0');
 
                 const phantomSlot = `
-                <article class="hidden md:flex group border transition-all duration-300 relative overflow-hidden flex-col h-full border-tech-gray/30 bg-[#0f0f0f]/50 opacity-30 border-dashed min-h-[300px]">
+                <article class="empty-slot ${showEmpty ? 'md:flex' : 'hidden'} group border transition-all duration-300 relative overflow-hidden flex-col h-full border-tech-gray/30 bg-[#0f0f0f]/50 opacity-30 border-dashed min-h-[300px]">
                     <div class="p-6 flex flex-col h-full">
                         <div class="flex justify-between items-start mb-4">
                             <div class="flex items-center gap-4">
@@ -105,7 +121,40 @@ class ProjectGrid extends HTMLElement {
 
         grid.innerHTML = mappedProjects.join('');
 
-        this.appendChild(grid);
+        // Toggle button
+        const toggleBtn = document.createElement('button');
+        toggleBtn.className = "mt-8 mx-auto block text-xs text-tech-dim hover:text-tech-green transition-colors cursor-pointer";
+        toggleBtn.id = "toggle-empty-slots";
+        toggleBtn.innerHTML = showEmpty
+            ? '<i data-lucide="eye-off" width="14" class="inline mr-1"></i> Ukryj puste sloty'
+            : '<i data-lucide="eye" width="14" class="inline mr-1"></i> Pokaż puste sloty';
+
+        toggleBtn.addEventListener('click', () => {
+            const emptySlots = document.querySelectorAll('.empty-slot');
+            const isHidden = emptySlots[0]?.classList.contains('hidden');
+
+            emptySlots.forEach(slot => {
+                if (isHidden) {
+                    slot.classList.remove('hidden');
+                    slot.classList.add('md:flex');
+                } else {
+                    slot.classList.add('hidden');
+                    slot.classList.remove('md:flex');
+                }
+            });
+
+            localStorage.setItem('draftlab_show_empty', isHidden);
+            toggleBtn.innerHTML = isHidden
+                ? '<i data-lucide="eye-off" width="14" class="inline mr-1"></i> Ukryj puste sloty'
+                : '<i data-lucide="eye" width="14" class="inline mr-1"></i> Pokaż puste sloty';
+
+            if (window.lucide) window.lucide.createIcons();
+        });
+
+        wrapper.appendChild(grid);
+        wrapper.appendChild(toggleBtn);
+        this.appendChild(wrapper);
+
         if (window.lucide) window.lucide.createIcons();
     }
 }
