@@ -144,6 +144,12 @@
                         <p class="text-tech-dim text-xs leading-relaxed max-w-prose">
                             ${change.desc}
                         </p>
+                        ${change.details ? `
+                        <div class="mt-3 pt-3 border-t border-dashed border-tech-gray/30">
+                            <span class="text-[9px] uppercase tracking-widest text-tech-dim/50 block mb-1">Szczegóły Techniczne:</span>
+                            <div class="font-mono text-[10px] text-tech-dim/80 whitespace-pre-wrap">${change.details}</div>
+                        </div>
+                        ` : ''}
                     </div>
                     `;
                 }).join('');

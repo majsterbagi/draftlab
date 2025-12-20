@@ -1,11 +1,43 @@
 export const GIT_LOG_DATA = [
     {
+        "hash": "09589ad",
+        "date": "2025-12-20 14:08",
+        "type": "STYLE",
+        "component": "LOG",
+        "desc": "Przywrócenie technicznych typów badge",
+        "details": "Zgodnie z życzeniem użytkownika, badge'e z typami zmian (FEAT, FIX, STYLE) zostały przywrócone do oryginalnych, technicznych nazw.\nWszystkie opisy zmian oraz szczegóły techniczne pozostały w języku polskim dla pełnej jasności."
+    },
+    {
+        "hash": "810fc8a",
+        "date": "2025-12-20 14:06",
+        "type": "FEAT",
+        "component": "LOG",
+        "desc": "Pełna polonizacja interfejsu i poprawka danych",
+        "details": "Wprowadzono polskie nazwy typów zmian (NOWOŚĆ, NAPRAWA, STYL).\nPrzetłumaczono etykiety interfejsu w panelu logów i modalach.\nZastosowano bezpieczniejsze separatory ASCII w skrypcie generującym.\nZaktualizowano nawigację (przycisk 'Powrót')."
+    },
+    {
+        "hash": "a329563",
+        "date": "2025-12-20 13:58",
+        "type": "FEAT",
+        "component": "LOG",
+        "desc": "Wdrożenie obsługi polskich opisów",
+        "details": "Zaktualizowano skrypt 'generate_git_log.js' o obsługę treści commita (%b).\nDodano sekcję 'Szczegóły Techniczne' w widokach HTML (System Log oraz App Changelog).\nWprowadzono separator <__EOL__> w parserze dla bezpieczeństwa danych."
+    },
+    {
+        "hash": "df80888",
+        "date": "2025-12-20 13:55",
+        "type": "FEAT",
+        "component": "SYSTEM-LOG",
+        "desc": "Add pagination, filters and unified navigation",
+        "details": "Implemented System Log 2.0 with pagination (10 per page), type filtering (ALL/APPS/SYSTEM) and consistent navigation bar. Fixed button label."
+    },
+    {
         "hash": "90e1cb7",
         "date": "2025-12-20 13:48",
         "type": "FEAT",
         "component": "SYSTEM-LOG",
         "desc": "Unify logs and automate generation",
-        "details": null
+        "details": "Implemented UnifiedLog component merging app and system logs. Added scripts/generate_git_log.js to automate changelog generation from git history. Updated db.js to use dynamic changelog data."
     },
     {
         "hash": "d65cc91",
@@ -21,7 +53,7 @@ export const GIT_LOG_DATA = [
         "type": "STYLE",
         "component": "SYS",
         "desc": "Revert \"style(ui): condense project grid layout\"",
-        "details": null
+        "details": "This reverts commit 9aad8739e28c3782bada460cb122985672bab144."
     },
     {
         "hash": "9aad873",
@@ -365,38 +397,6 @@ export const GIT_LOG_DATA = [
         "type": "UPDATE",
         "component": "SYS",
         "desc": "Refactor DraftCargo to RAW upload (bypass tmp folder issue)",
-        "details": null
-    },
-    {
-        "hash": "ddd9528",
-        "date": "2025-12-18 22:58",
-        "type": "UPDATE",
-        "component": "SYS",
-        "desc": "Add .user.ini and api/tmp for home.pl compatibility",
-        "details": null
-    },
-    {
-        "hash": "d68ef1e",
-        "date": "2025-12-18 22:54",
-        "type": "FIX",
-        "component": "SYS",
-        "desc": "Fix PHP Fatal error by adding robust upload validation",
-        "details": null
-    },
-    {
-        "hash": "eaea0ce",
-        "date": "2025-12-18 22:51",
-        "type": "FIX",
-        "component": "SYS",
-        "desc": "Fix PHP regex typo and add error logging for 500 error",
-        "details": null
-    },
-    {
-        "hash": "73ae0cb",
-        "date": "2025-12-18 22:50",
-        "type": "FIX",
-        "component": "SYS",
-        "desc": "Fix DraftCargo paths and error messages",
         "details": null
     }
 ];

@@ -23,7 +23,7 @@
         <span class="group-hover:-translate-x-1 transition-transform">
             <i data-lucide="arrow-left" width="14"></i>
         </span>
-        Baza
+        Powrót
     </a>
 
     <div class="w-full max-w-4xl mx-auto relative">
@@ -46,16 +46,16 @@
             <!-- Stats -->
             <div class="flex gap-8 text-xs text-tech-dim">
                 <div>
-                    <span class="block uppercase tracking-widest opacity-50 mb-1">Commits</span>
+                    <span class="block uppercase tracking-widest opacity-50 mb-1">Commity</span>
                     <span class="text-xl text-white font-bold" id="stat-total">--</span>
                 </div>
                 <div>
-                    <span class="block uppercase tracking-widest opacity-50 mb-1">Updates</span>
+                    <span class="block uppercase tracking-widest opacity-50 mb-1">Zmiany</span>
                     <span class="text-xl text-white font-bold" id="stat-updates">--</span>
                 </div>
                 <div>
-                    <span class="block uppercase tracking-widest opacity-50 mb-1">Repo</span>
-                    <span class="text-tech-green font-bold">Main</span>
+                    <span class="block uppercase tracking-widest opacity-50 mb-1">Repozytorium</span>
+                    <span class="text-tech-green font-bold text-sm">GŁÓWNE</span>
                 </div>
             </div>
 
@@ -101,11 +101,11 @@
             <div class="border-b border-tech-gray/50 p-6 flex justify-between items-start bg-white/5">
                 <div>
                     <div class="flex items-center gap-3 mb-2">
-                        <span id="modal-type" class="text-xs font-bold px-2 py-1 rounded border">TYPE</span>
-                        <span id="modal-component" class="text-white font-bold text-sm tracking-wide">COMPONENT</span>
+                        <span id="modal-type" class="text-[10px] font-bold px-2 py-1 rounded border">TYP</span>
+                        <span id="modal-component" class="text-white font-bold text-sm tracking-wide">KOMPONENT</span>
                     </div>
-                    <div class="font-mono text-xs text-tech-dim flex gap-4">
-                        <span id="modal-date">DATE</span>
+                    <div class="font-mono text-[10px] text-tech-dim flex gap-4">
+                        <span id="modal-date">DATA</span>
                         <span id="modal-hash">HASH</span>
                     </div>
                 </div>
@@ -183,18 +183,20 @@
             const log = GIT_LOG_DATA.find(l => l.hash === hash);
             if (!log) return;
 
-            mComponent.innerText = (log.component || 'SYS').toUpperCase();
+            mComponent.innerText = (log.component || 'SYSTEM').toUpperCase();
             mDate.innerText = log.date;
             mHash.innerText = '#' + log.hash;
             mDesc.innerText = log.desc;
             mDetails.innerText = log.details || "Brak dodatkowych szczegółów technicznych dla tej zmiany (automatyczny wpis z git).";
 
-            // Colors
-            mType.className = 'text-xs font-bold px-2 py-1 rounded border';
+            // Colors & Types
+            mType.className = 'text-[10px] font-bold px-2 py-1 rounded border';
             let typeColor = 'text-tech-dim bg-tech-dim/10 border-tech-dim/20';
+
             if (['FEAT', 'FEATURE', 'INIT'].includes(log.type)) typeColor = 'text-tech-green bg-tech-green/10 border-tech-green/20';
             if (['FIX', 'HOTFIX'].includes(log.type)) typeColor = 'text-blue-400 bg-blue-400/10 border-blue-400/20';
-            if (['STYLE', 'VISUAL'].includes(log.type)) typeColor = 'text-purple-400 bg-purple-400/10 border-purple-400/20';
+            if (['STYLE', 'VISUAL', 'STYL'].includes(log.type)) typeColor = 'text-purple-400 bg-purple-400/10 border-purple-400/20';
+            if (['DOCS', 'DOKU'].includes(log.type)) typeColor = 'text-yellow-400 bg-yellow-400/10 border-yellow-400/20';
 
             mType.classList.add(...typeColor.split(' '));
             mType.innerText = log.type;
@@ -237,7 +239,7 @@
 
                 if (['FEAT', 'FEATURE', 'INIT'].includes(log.type)) typeColor = 'text-tech-green bg-tech-green/10 border-tech-green/20';
                 if (['FIX', 'HOTFIX'].includes(log.type)) typeColor = 'text-blue-400 bg-blue-400/10 border-blue-400/20';
-                if (['STYLE', 'VISUAL'].includes(log.type)) typeColor = 'text-purple-400 bg-purple-400/10 border-purple-400/20';
+                if (['STYLE', 'VISUAL', 'STYL'].includes(log.type)) typeColor = 'text-purple-400 bg-purple-400/10 border-purple-400/20';
                 if (log.type === 'REVERT') typeColor = 'text-red-400 bg-red-400/10 border-red-400/20';
 
                 // Format Date
@@ -250,8 +252,8 @@
                     
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-3">
                         <div class="flex items-center gap-3">
-                            <span class="text-xs font-bold px-2 py-1 rounded border ${typeColor}">${log.type}</span>
-                            <span class="text-white font-bold text-sm tracking-wide">${(log.component || 'SYS').toUpperCase()}</span>
+                            <span class="text-[10px] font-bold px-2 py-1 rounded border ${typeColor}">${log.type}</span>
+                            <span class="text-white font-bold text-sm tracking-wide">${(log.component || 'SYSTEM').toUpperCase()}</span>
                         </div>
                         
                         <div class="flex items-center gap-4 text-xs font-mono text-tech-dim">
@@ -270,8 +272,14 @@
                         ${log.desc}
                     </p>
                     
+                    ${log.details ? `
+                        <div class="mt-2 text-[10px] text-tech-dim uppercase tracking-widest flex items-center gap-2">
+                             <i data-lucide="info" width="12"></i> Zawiera szczegółową specyfikację
+                        </div>
+                    ` : ''}
+
                     <div class="mt-3 opacity-0 group-hover:opacity-100 transition-opacity text-[10px] text-tech-green uppercase tracking-widest flex items-center gap-1">
-                        Zobacz szczegóły <i data-lucide="arrow-right" width="10"></i>
+                        Szczegóły techniczne <i data-lucide="arrow-right" width="10"></i>
                     </div>
                 </div>
                 `;
