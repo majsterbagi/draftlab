@@ -1,5 +1,21 @@
 export const GIT_LOG_DATA = [
     {
+        "hash": "75d9b76",
+        "date": "2025-12-21 00:56",
+        "type": "FIX",
+        "component": "DRAFTCARGO",
+        "desc": "Remove stats.json from distribution to prevent overwriting server data",
+        "details": null
+    },
+    {
+        "hash": "ad77c88",
+        "date": "2025-12-21 00:54",
+        "type": "FEAT",
+        "component": "DRAFTCARGO",
+        "desc": "Fix stats counter, add download.php, and fix Vite build structure",
+        "details": null
+    },
+    {
         "hash": "136a966",
         "date": "2025-12-21 00:17",
         "type": "FEAT",
@@ -381,22 +397,6 @@ export const GIT_LOG_DATA = [
         "type": "SYS",
         "component": "SYS",
         "desc": "Restore public folder structure and persist fixes",
-        "details": null
-    },
-    {
-        "hash": "cf2130e",
-        "date": "2025-12-19 21:15",
-        "type": "FIX",
-        "component": "ATMOSPHERE",
-        "desc": "Correct API path and enable module bundling",
-        "details": null
-    },
-    {
-        "hash": "27b5354",
-        "date": "2025-12-19 20:54",
-        "type": "DEBUG",
-        "component": "SYS",
-        "desc": "Add test endpoint for API diagnosis",
         "details": null
     }
 ];

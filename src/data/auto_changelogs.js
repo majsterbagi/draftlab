@@ -1,4 +1,20 @@
 export const PROJECT_CHANGES = {
+    "draftcargo": [
+        {
+            "date": "2025-12-21 00:56",
+            "version": "GIT",
+            "type": "FIX",
+            "desc": "Remove stats.json from distribution to prevent overwriting server data",
+            "details": null
+        },
+        {
+            "date": "2025-12-21 00:54",
+            "version": "GIT",
+            "type": "FEAT",
+            "desc": "Fix stats counter, add download.php, and fix Vite build structure",
+            "details": null
+        }
+    ],
     "suntrack": [
         {
             "date": "2025-12-20 21:04",

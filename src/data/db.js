@@ -90,6 +90,12 @@ const RAW_DATA = {
 
             changes: [
                 {
+                    version: "v0.6.0",
+                    date: "2025-12-21",
+                    type: "FEAT",
+                    desc: "Stats & Download Fix: Zaimplementowano bezpieczny licznik transferów z blokowaniem plików, dodano dedykowany skrypt pobierania oraz naprawiono strukturę budowania Vite dla API."
+                },
+                {
                     version: "v.0.5.0",
                     date: "2025-12-18",
                     type: "FEAT",
