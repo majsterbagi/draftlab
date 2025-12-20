@@ -91,6 +91,35 @@
             document.getElementById('p-ver').innerText = project.version;
             document.getElementById('p-about').innerText = project.details?.about || project.desc;
 
+            // 1b. SEO Injection
+            document.title = `${project.title} - Changelog | DraftLab.pl`;
+
+            // Meta Description
+            let metaDesc = document.querySelector('meta[name="description"]');
+            if (!metaDesc) {
+                metaDesc = document.createElement('meta');
+                metaDesc.name = "description";
+                document.getElementsByTagName('head')[0].appendChild(metaDesc);
+            }
+            metaDesc.content = `Changelog i szczegóły projektu ${project.title}. ${project.desc}`;
+
+            // Open Graph
+            const ogTags = {
+                'og:title': `${project.title} | DraftLab`,
+                'og:description': project.desc,
+                'og:url': window.location.href
+            };
+
+            for (const [property, content] of Object.entries(ogTags)) {
+                let tag = document.querySelector(`meta[property="${property}"]`);
+                if (!tag) {
+                    tag = document.createElement('meta');
+                    tag.setAttribute('property', property);
+                    document.getElementsByTagName('head')[0].appendChild(tag);
+                }
+                tag.content = content;
+            }
+
             // 2. Features
             const featuresEl = document.getElementById('p-features');
             if (project.details?.features) {

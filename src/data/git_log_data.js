@@ -1,5 +1,21 @@
 export const GIT_LOG_DATA = [
     {
+        "hash": "81ee910",
+        "date": "2025-12-20 18:24",
+        "type": "FIX",
+        "component": "SYS",
+        "desc": "System Log - usunięcie zielonego paska interfejsu",
+        "details": "Zlikwidowano nieprawidłowo wyświetlający się zielony pasek gradientowy w górnej części interfejsu dziennika systemowego. Usunięto element div z klasą fixed top-0 zawierający gradient from-tech-green."
+    },
+    {
+        "hash": "3053b20",
+        "date": "2025-12-20 14:13",
+        "type": "DOCS",
+        "component": "LOG",
+        "desc": "Synchronizacja wygenerowanych danych logów",
+        "details": null
+    },
+    {
         "hash": "f9b9ac1",
         "date": "2025-12-20 14:11",
         "type": "STYLE",
@@ -381,22 +397,6 @@ export const GIT_LOG_DATA = [
         "type": "UPDATE",
         "component": "SYS",
         "desc": "Add project-specific icons (sun for SunTrack, package for DraftCargo)",
-        "details": null
-    },
-    {
-        "hash": "f87797f",
-        "date": "2025-12-18 23:16",
-        "type": "UPDATE",
-        "component": "SYS",
-        "desc": "Add DraftCargo changelog and details to db.js",
-        "details": null
-    },
-    {
-        "hash": "f8585c4",
-        "date": "2025-12-18 23:13",
-        "type": "BYPASS",
-        "component": "SYS",
-        "desc": "Base64 encoding to avoid tmp folder (Error 6)",
         "details": null
     }
 ];

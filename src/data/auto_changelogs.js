@@ -1,4 +1,13 @@
 export const PROJECT_CHANGES = {
+    "suntrack": [
+        {
+            "date": "2025-12-20 20:57",
+            "version": "v2.0",
+            "type": "MAJOR",
+            "desc": "Kompletna przebudowa aplikacji SunTrack",
+            "details": "• Nowy minimalistyczny design inspirowany Lumy\n• Wizualizacja nieba z płynnymi gradientami kolorów\n• Trajektorie sezonowe (wiosna, lato, jesień, zima) z przełącznikami\n• Suwak czasu na dole ekranu z przyciskiem TERAZ\n• Efekt lens flare przy słońcu\n• Księżyc widoczny tylko w nocy\n• Wyszukiwarka miast ograniczona do Polski\n• Automatyczna geolokalizacja przy każdym uruchomieniu\n• Reverse geocoding do pobierania nazwy miasta\n• Wycentrowane trajektorie względem solar noon\n• Nowy dashboard z kartami: Wschód, Zachód, Długość Dnia, Golden AM, Golden PM, Zmiana\n• Panel przełączników pór roku z ikonami (kwiat, słońce, liść, płatek śniegu)\n• Responsywny design z safe-area-inset dla iPhone\n• Nagłówek Nucleus z nawigacją"
+        }
+    ],
     "atmosphere": [
         {
             "date": "2025-12-19 22:43",
