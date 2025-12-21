@@ -1,5 +1,13 @@
 export const GIT_LOG_DATA = [
     {
+        "hash": "844f554",
+        "date": "2025-12-21 00:58",
+        "type": "SYS",
+        "component": "SYS",
+        "desc": "Update changelog for DraftCargo v0.6.0 and refresh system logs",
+        "details": null
+    },
+    {
         "hash": "75d9b76",
         "date": "2025-12-21 00:56",
         "type": "FIX",
@@ -389,14 +397,6 @@ export const GIT_LOG_DATA = [
         "type": "STYLE",
         "component": "SYS",
         "desc": "Change Atmosphere card color to green",
-        "details": null
-    },
-    {
-        "hash": "bde6819",
-        "date": "2025-12-19 21:21",
-        "type": "SYS",
-        "component": "SYS",
-        "desc": "Restore public folder structure and persist fixes",
         "details": null
     }
 ];

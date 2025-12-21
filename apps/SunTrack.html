@@ -118,9 +118,10 @@
         /* === SEASON TOGGLE PANEL === */
         .season-panel {
             position: absolute;
-            top: 50%;
+            top: 60px;
+            /* Fixed position below header */
             right: 12px;
-            transform: translateY(-50%);
+            transform: none;
             display: flex;
             flex-direction: column;
             gap: 8px;
@@ -130,11 +131,11 @@
         .season-toggle {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
             cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 6px;
-            background: rgba(0, 0, 0, 0.3);
+            padding: 3px 6px;
+            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(5px);
             transition: background 0.2s;
         }
@@ -244,7 +245,11 @@
             transform: translate(-50%, 50%);
             box-shadow: 0 0 40px 15px rgba(255, 200, 100, 0.5);
             z-index: 5;
-            transition: background 0.3s, box-shadow 0.3s;
+            transition: background 0.3s, box-shadow 0.3s, opacity 0.3s;
+            /* Default position - center of sky, hidden until JS positions it */
+            left: 50%;
+            bottom: 50%;
+            display: none;
         }
 
         .moon-orb {
@@ -594,32 +599,86 @@
             color: #000;
         }
 
-        .time-slider {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 100%;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-            outline: none;
-            cursor: pointer;
+        /* Fix trajectory consistency */
+        /* .stealth-mode .trajectory-season override removed to match standard thickness */
+
+        /* Stealth Mode System */
+        .stealth-mode .season-panel {
+            display: flex !important;
+            position: fixed !important;
+            top: 30% !important;
+            right: 20px !important;
+            bottom: auto !important;
+            z-index: 2005;
+        }
+
+        /* Make season toggles subtle in stealth mode */
+        .stealth-mode .season-toggle:not(#stealth-trigger) {
+            opacity: 0.4;
+            transition: opacity 0.2s;
+        }
+
+        .stealth-mode .season-toggle:not(#stealth-trigger):hover {
+            opacity: 0.9;
+        }
+
+        #stealth-trigger {
             display: none;
-            /* Hidden - using sky slider instead */
+            /* Disabled - feature needs work */
+            opacity: 0.6;
+            transition: opacity 0.2s;
         }
 
-        .time-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 20px;
-            height: 20px;
-            background: var(--accent-color);
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0, 255, 157, 0.4);
-            transition: transform 0.2s;
+        #stealth-trigger:hover {
+            opacity: 1;
         }
 
-        .time-slider::-webkit-slider-thumb:hover {
-            transform: scale(1.1);
+        /* Stealth Mode Dashboard Overlay - Transparent with Glass Effect */
+        .stealth-mode .dashboard {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.95), transparent) !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+            backdrop-filter: none !important;
+            pointer-events: auto;
+            padding-bottom: 40px;
+        }
+
+        /* Restore visibility of all elements */
+        .stealth-mode .stats-grid,
+        .stealth-mode .section-label {
+            display: grid !important;
+        }
+
+        .stealth-mode .section-label {
+            display: block !important;
+            opacity: 0.5;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Glass Cards */
+        .stealth-mode .stat-card,
+        .stealth-mode .time-display {
+            background: rgba(10, 12, 16, 0.4) !important;
+            backdrop-filter: blur(12px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4) !important;
+        }
+
+        .stealth-mode .stat-value,
+        .stealth-mode .current-time {
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Slider visible transparent */
+        .stealth-mode .sky-slider-overlay {
+            display: flex !important;
+            background: transparent !important;
+            border-top: none !important;
+            backdrop-filter: none !important;
         }
 
         /* === FOOTER === */
@@ -629,6 +688,45 @@
             color: rgba(255, 255, 255, 0.2);
             padding: 16px 0;
             font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* === STEALTH MODE === */
+        body.stealth-mode {
+            padding-top: 0;
+            overflow: hidden;
+        }
+
+        .stealth-mode dl-overlay-header,
+        .stealth-mode .footer-info {
+            display: none !important;
+        }
+
+        /* Stealth mode: expanded view to show sun below horizon */
+        .stealth-mode .sky-container {
+            height: 100dvh;
+        }
+
+        /* Stealth mode landscape: SINGLE HORIZON LINE */
+        .stealth-mode .landscape {
+            bottom: auto;
+            top: calc(var(--std-sky-height) - 1px);
+            height: 1px !important;
+            background: rgba(255, 255, 255, 0.2);
+            pointer-events: none;
+        }
+
+        .stealth-mode .landscape svg {
+            display: none;
+        }
+
+        /* Dashed horizon line removed for cleaner look matching standard mode */
+        .stealth-mode .sky-container::after {
+            display: none;
+        }
+
+        /* Keep sun visible when below horizon */
+        .stealth-mode .sun-orb {
+            z-index: 10;
         }
 
         /* === RESPONSIVE === */
@@ -649,11 +747,187 @@
                 padding: 12px;
             }
         }
+
+        /* === STEALTH MODE FINAL OVERRIDES === */
+        /* Force hiding stats and labels */
+        .stealth-mode .stats-grid,
+        .stealth-mode .section-label {
+            display: none !important;
+        }
+
+        /* Dashboard Container - clean */
+        .stealth-mode .dashboard {
+            background: transparent !important;
+            border: none !important;
+            background-image: none !important;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: flex-end !important;
+        }
+
+        /* Time Display - Compact Capsule */
+        .stealth-mode .time-display {
+            position: fixed !important;
+            bottom: 30px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            background: rgba(10, 12, 16, 0.4) !important;
+            backdrop-filter: blur(8px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
+            border-radius: 99px;
+            padding: 8px 24px !important;
+            min-width: unset !important;
+            width: auto !important;
+            max-width: 90vw !important;
+            z-index: 1000;
+            text-align: center;
+            gap: 12px;
+        }
+
+        .stealth-mode .current-time {
+            font-size: 24px !important;
+            /* Smaller font */
+        }
+
+        .stealth-mode .current-phase,
+        .stealth-mode .current-date {
+            font-size: 10px !important;
+            opacity: 0.7;
+        }
+
+        /* Slider - Compact Capsule */
+        .stealth-mode .sky-slider-overlay {
+            position: fixed !important;
+            bottom: 90px !important;
+            /* Closer to time */
+            left: 50% !important;
+            right: auto !important;
+            transform: translateX(-50%) !important;
+            width: 200px !important;
+            /* Much narrower */
+            max-width: 90vw !important;
+            z-index: 999;
+            background: rgba(10, 12, 16, 0.4) !important;
+            backdrop-filter: blur(8px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
+            border-radius: 99px !important;
+            padding: 8px 16px !important;
+        }
+
+        .stealth-mode .sky-slider-container {
+            background: transparent !important;
+            gap: 8px;
+        }
+
+        .stealth-mode .sky-now-btn {
+            font-size: 9px;
+            padding: 4px 8px;
+        }
+
+        /* Fix Landscape Appearance in Stealth Mode - Subtle Line */
+        .stealth-mode .landscape path {
+            fill: none !important;
+            stroke: rgba(255, 255, 255, 0.15);
+            /* Subtle stroke only */
+            stroke-width: 1px;
+            filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.1));
+        }
+
+        /* Remove solid fill override */
+        .stealth-mode .landscape svg path {
+            fill: none !important;
+        }
+
+        /* === CUSTOM SUNTRACK HEADER === */
+        .suntrack-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 6px 16px;
+            padding-top: max(6px, env(safe-area-inset-top));
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            pointer-events: none;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .suntrack-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+            pointer-events: auto;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .suntrack-brand i {
+            color: #FFD700;
+            filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.5));
+        }
+
+        .suntrack-name {
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+        }
+
+        .suntrack-by {
+            font-size: 10px;
+            opacity: 0.3;
+            font-weight: 400;
+            margin-left: 4px;
+        }
+
+        .suntrack-header .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 8px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.2s;
+            pointer-events: auto;
+            backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .suntrack-header .back-btn:hover {
+            background: var(--accent-color);
+            color: #000;
+            border-color: var(--accent-color);
+        }
+
+        /* Hide Nucleus header if it appears */
+        dl-overlay-header {
+            display: none !important;
+        }
     </style>
 </head>
 
 <body>
-    <!-- Nucleus Header will be injected here -->
+    <!-- Custom SunTrack Header -->
+    <div class="suntrack-header">
+        <div class="suntrack-brand">
+            <i data-lucide="sun" width="18"></i>
+            <span class="suntrack-name">SunTrack</span>
+            <span class="suntrack-by">by draftlab.pl</span>
+        </div>
+        <a href="../index.html" class="back-btn">
+            <i data-lucide="arrow-left" width="12"></i> POWRÓT
+        </a>
+    </div>
 
     <!-- Sky Visualization -->
     <div class="sky-container" id="sky-container">
@@ -705,6 +979,13 @@
                 <i data-lucide="snowflake" class="icon" width="14" style="color: #87ceeb;"></i>
                 <span class="label">ZIM</span>
             </label>
+
+            <div style="height: 1px; background: rgba(255,255,255,0.1); margin: 2px 0;"></div>
+
+            <div class="season-toggle" id="stealth-trigger">
+                <i data-lucide="eye" class="icon" id="stealth-icon-panel" style="color: #00ff9d;"></i>
+                <span class="label">TRYB</span>
+            </div>
         </div>
 
         <div class="landscape">
@@ -775,11 +1056,60 @@
     </script>
 
     <script>
-        // === STATE ===
         let LAT = 52.2297; // Default: Warsaw
         let LNG = 21.0122;
         let isLive = true;
+        let stealthMode = localStorage.getItem('suntrack_stealth') === 'true';
         let searchTimeout = null;
+
+        let savedToggleStates = null;
+
+        function toggleStealthMode() {
+            stealthMode = !stealthMode;
+            document.body.classList.toggle('stealth-mode', stealthMode);
+            localStorage.setItem('suntrack_stealth', stealthMode);
+
+            const icon = document.getElementById('stealth-icon-panel');
+            if (stealthMode) {
+                icon.setAttribute('data-lucide', 'eye-off');
+                icon.style.color = '#ff6b6b';
+
+                // Save current toggle states before enabling all
+                savedToggleStates = {
+                    spring: toggleSpring.checked,
+                    summer: toggleSummer.checked,
+                    autumn: toggleAutumn.checked,
+                    winter: toggleWinter.checked
+                };
+
+                // Enable all trajectories in stealth mode
+                toggleSpring.checked = true;
+                toggleSummer.checked = true;
+                toggleAutumn.checked = true;
+                toggleAutumn.checked = true;
+                toggleWinter.checked = true;
+            } else {
+                icon.setAttribute('data-lucide', 'eye');
+                icon.style.color = '#00ff9d';
+
+                // Restore previous toggle states
+                if (savedToggleStates) {
+                    toggleSpring.checked = savedToggleStates.spring;
+                    toggleSummer.checked = savedToggleStates.summer;
+                    toggleAutumn.checked = savedToggleStates.autumn;
+                    toggleWinter.checked = savedToggleStates.winter;
+                }
+            }
+            initSeasonToggles();
+
+            // Force redraw and ensure layout is calculated
+            requestAnimationFrame(() => {
+                drawSeasonalTrajectories();
+                update(parseInt(skySlider.value));
+            });
+
+            lucide.createIcons();
+        }
 
         // === DOM REFS ===
         const skyContainer = document.getElementById('sky-container');
@@ -802,6 +1132,47 @@
         const toggleSummer = document.getElementById('toggle-summer');
         const toggleAutumn = document.getElementById('toggle-autumn');
         const toggleWinter = document.getElementById('toggle-winter');
+
+        // Configuration - Dynamic calculation to match standard mode pixels
+        // Configuration - Dynamic calculation to match standard mode pixels
+        const getHorizonConfig = () => {
+            const container = document.getElementById('sky-container');
+            const vh = container ? container.clientHeight : window.innerHeight;
+
+            // Standard height calc
+            const stdHeight = Math.max(window.innerHeight * 0.45, 280);
+
+            // Set CSS variable for Standard Height (used by Landscape in Stealth Mode)
+            if (container) {
+                container.style.setProperty('--std-sky-height', `${stdHeight}px`);
+            }
+
+            // Standard config
+            const stdHorizonY = 18; // 18% from bottom
+            const stdSkyRange = 70;
+
+            if (!stealthMode) return { horizonY: stdHorizonY, skyRange: stdSkyRange };
+
+            // Stealth mode: dynamic calibration based on REAL container height
+
+            // 1. Calculate Standard Horizon Position (pixels from TOP)
+            const horizonPxFromTop = stdHeight * (1 - (stdHorizonY / 100));
+
+            // 2. Calculate New Horizon Y (pixels from BOTTOM of Stealth Container)
+            const horizonPxFromBottomStealth = vh - horizonPxFromTop;
+            const newHorizonY = (horizonPxFromBottomStealth / vh) * 100;
+
+            // Update CSS variable for the horizon line (if we were using it, but we might repurpose/remove usage)
+            if (container) {
+                container.style.setProperty('--stealth-horizon-y', `${newHorizonY}%`);
+            }
+
+            // 3. Calculate New Sky Range (Amplitude)
+            const amplitudePx = stdHeight * (stdSkyRange / 100);
+            const newSkyRange = (amplitudePx / vh) * 100;
+
+            return { horizonY: newHorizonY, skyRange: newSkyRange };
+        };
 
         // === HELPERS ===
         const fmt = date => (date && !isNaN(date))
@@ -963,38 +1334,70 @@
 
             // Sky gradient
             const grad = getGradient(altDeg);
-            skyContainer.style.background = `linear-gradient(180deg, ${grad.top}, ${grad.mid}, ${grad.bottom})`;
+
+            if (stealthMode) {
+                // In stealth mode, we allow the gradient to extend.
+                // However, to keep the "horizon" visual, we can mirror or darken the bottom.
+                // User requested sky color to be BELOW horizon too.
+                // So we just use the full gradient but maybe stretched or repeated.
+
+                // Simpler approach: Just use the standard gradient covering the full 100vh area
+                // but ensuring the "Horizon" color (bottom of grad) sits roughly at the horizon line
+                // and then perhaps fades out or continues below.
+
+                const { horizonY } = getHorizonConfig();
+                const horizonStop = 100 - horizonY;
+
+                // We stretch the 'mid' and 'bottom' parts to cover the extended area
+                skyContainer.style.background = `linear-gradient(180deg, 
+                    ${grad.top} 0%, 
+                    ${grad.mid} ${horizonStop * 0.4}%, 
+                    ${grad.bottom} ${horizonStop}%, 
+                    ${grad.bottom} 100%)`;
+            } else {
+                skyContainer.style.background = `linear-gradient(180deg, ${grad.top}, ${grad.mid}, ${grad.bottom})`;
+            }
 
             // Sun position
             const xPercent = (mins / 1440) * 100;
 
             // Layout Tuning
-            const horizonY = 18; // Matches visual gradient transition line
-            const skyRange = 70; // 18% + 70% = 88% peak
+            const { horizonY, skyRange } = getHorizonConfig();
 
             let yPercent = horizonY + (altDeg / 90) * skyRange;
-            yPercent = Math.max(-20, Math.min(120, yPercent));
+            // In stealth mode, allow sun to go much further below horizon
+            const minY = stealthMode ? -60 : -20;
+            yPercent = Math.max(minY, Math.min(120, yPercent));
 
             sunOrb.style.left = xPercent + '%';
             sunOrb.style.bottom = yPercent + '%';
 
             // Sun visibility & Opacity
-            if (altDeg > -8) {
+            const isSunVisible = altDeg > -8 || stealthMode;
+            if (isSunVisible) {
                 sunOrb.style.display = 'block';
-                // Interpolate opacity from 0 (-8deg) to 1 (-2deg)
-                let opacity = Math.max(0, Math.min(1, (altDeg + 8) / 6));
+                // Opacity logic:
+                // Below horizon (< 0): faint (0.2 - 0.5)
+                // Above horizon (>= 0): full (1.0)
+                let opacity;
+                if (altDeg < 0) {
+                    // From -18 (night) to 0 (horizon), opacity goes 0.1 -> 0.5
+                    opacity = 0.1 + Math.max(0, (altDeg + 18) / 18) * 0.4;
+                } else {
+                    opacity = 1;
+                }
+
                 sunOrb.style.opacity = opacity;
 
                 if (altDeg < 4) {
-                    sunOrb.style.background = '#ffb347';
+                    sunOrb.style.background = altDeg < -2 ? '#ff6b6b' : '#ffb347'; // Redder when deep under
                     sunOrb.style.boxShadow = `0 0 50px 20px rgba(255, 140, 50, ${0.6 * opacity})`;
                 } else {
                     sunOrb.style.background = '#fff';
                     sunOrb.style.boxShadow = `0 0 40px 15px rgba(255, 200, 100, ${0.5 * opacity})`;
                 }
 
-                updateFlare(xPercent, 100 - yPercent, opacity); // 100-y because top is 0 in JS logic but bottom is 0 in CSS?
-                // CSS is bottom: yPercent. So top is 100 - yPercent.
+                updateFlare(xPercent, 100 - yPercent, altDeg > -2 ? opacity : 0);
             } else {
                 sunOrb.style.display = 'none';
                 lensFlare.style.opacity = 0;
@@ -1024,8 +1427,7 @@
                 winter: new Date(currentYear, 11, 21)  // Dec 21
             };
 
-            const horizonSVG = 18;
-            const skyRangeSVG = 70;
+            const { horizonY: horizonSVG, skyRange: skyRangeSVG } = getHorizonConfig();
 
             Object.entries(seasonDates).forEach(([season, date]) => {
                 // Calculate solar noon for this date to center the trajectory
@@ -1148,6 +1550,14 @@
             update(mins);
         });
 
+        document.getElementById('stealth-trigger').addEventListener('click', toggleStealthMode);
+
+        // Handle resize for dynamic horizon calculation
+        window.addEventListener('resize', () => {
+            drawSeasonalTrajectories();
+            update(parseInt(skySlider.value));
+        });
+
         // === INIT ===
         function init() {
             // Load saved location
@@ -1162,6 +1572,14 @@
 
             // Display current location name
             citySearch.value = savedCity || 'Warszawa';
+
+            // Initialize Stealth Mode
+            if (stealthMode) {
+                document.body.classList.add('stealth-mode');
+                const icon = document.getElementById('stealth-icon-panel');
+                icon.setAttribute('data-lucide', 'eye-off');
+                icon.style.color = '#ff6b6b';
+            }
 
             // Set current time
             const now = new Date();
