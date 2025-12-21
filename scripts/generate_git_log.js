@@ -69,7 +69,7 @@ exec(GIT_COMMAND, (error, stdout, stderr) => {
             type,
             component,
             desc: desc.charAt(0).toUpperCase() + desc.slice(1),
-            details: bodyRaw.length > 0 ? bodyRaw : null
+            details: bodyRaw.length > 0 ? bodyRaw.replace(/inspirowany Lumy|inspirowana Lumy|Lumy/gi, '').trim() : null
         };
     }).filter(l => l !== null);
 
@@ -90,7 +90,7 @@ exec(GIT_COMMAND, (error, stdout, stderr) => {
 
             appChangelogs[projectId].push({
                 date: log.date,
-                version: "GIT",
+                version: `#${log.hash}`,
                 type: log.type,
                 desc: log.desc,
                 details: log.details

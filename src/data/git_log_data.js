@@ -1,5 +1,13 @@
 export const GIT_LOG_DATA = [
     {
+        "hash": "b3fb03a",
+        "date": "2025-12-21 22:54",
+        "type": "FEAT",
+        "component": "SUNTRACK",
+        "desc": "Ulepszenia UI - smuklejszy nagłówek, poprawione ikony pór roku, wyłączony tryb Stealth",
+        "details": null
+    },
+    {
         "hash": "844f554",
         "date": "2025-12-21 00:58",
         "type": "SYS",
@@ -93,7 +101,7 @@ export const GIT_LOG_DATA = [
         "type": "FEAT",
         "component": "SUNTRACK",
         "desc": "V2.0 - Kompletna przebudowa aplikacji",
-        "details": "MAJOR UPDATE:\n- Nowy minimalistyczny design inspirowany Lumy\n- Wizualizacja nieba z płynnymi gradientami kolorów\n- Trajektorie sezonowe (wiosna, lato, jesień, zima) z przełącznikami\n- Suwak czasu na dole ekranu z przyciskiem TERAZ\n- Efekt lens flare przy słońcu\n- Księżyc widoczny tylko w nocy\n- Wyszukiwarka miast ograniczona do Polski\n- Automatyczna geolokalizacja przy każdym uruchomieniu\n- Reverse geocoding do pobierania nazwy miasta\n- Wycentrowane trajektorie względem solar noon\n- Dashboard z kartami: Wschód, Zachód, Długość Dnia, Golden AM/PM, Zmiana\n- Panel przełączników pór roku z ikonami Lucide\n- Responsywny design z safe-area-inset dla iPhone\n- Nagłówek Nucleus z nawigacją"
+        "details": "MAJOR UPDATE:\n- Nowy minimalistyczny design \n- Wizualizacja nieba z płynnymi gradientami kolorów\n- Trajektorie sezonowe (wiosna, lato, jesień, zima) z przełącznikami\n- Suwak czasu na dole ekranu z przyciskiem TERAZ\n- Efekt lens flare przy słońcu\n- Księżyc widoczny tylko w nocy\n- Wyszukiwarka miast ograniczona do Polski\n- Automatyczna geolokalizacja przy każdym uruchomieniu\n- Reverse geocoding do pobierania nazwy miasta\n- Wycentrowane trajektorie względem solar noon\n- Dashboard z kartami: Wschód, Zachód, Długość Dnia, Golden AM/PM, Zmiana\n- Panel przełączników pór roku z ikonami Lucide\n- Responsywny design z safe-area-inset dla iPhone\n- Nagłówek Nucleus z nawigacją"
     },
     {
         "hash": "81ee910",
@@ -389,14 +397,6 @@ export const GIT_LOG_DATA = [
         "type": "FEAT",
         "component": "ATMOSPHERE",
         "desc": "Add changelog and reorder apps",
-        "details": null
-    },
-    {
-        "hash": "c286464",
-        "date": "2025-12-19 21:25",
-        "type": "STYLE",
-        "component": "SYS",
-        "desc": "Change Atmosphere card color to green",
         "details": null
     }
 ];

@@ -45,8 +45,19 @@ class UnifiedLog extends HTMLElement {
             raw: log
         }));
 
-        // 3. Combine & Sort
-        this.combinedLogs = [...appLogs, ...sysLogs].sort((a, b) => new Date(b.date) - new Date(a.date));
+        // 3. Combine, Deduplicate & Sort
+        const combined = [...appLogs, ...sysLogs];
+        
+        // Deduplicate by desc (same message = same change)
+        const seen = new Set();
+        const unique = combined.filter(log => {
+            const key = log.desc;
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+        });
+        
+        this.combinedLogs = unique.sort((a, b) => new Date(b.date) - new Date(a.date));
     }
 
     setFilter(newFilter) {

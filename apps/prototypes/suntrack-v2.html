@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+    <!-- iOS PWA Settings -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SunTrack">
+    <meta name="theme-color" content="#0f2027" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0f2027" media="(prefers-color-scheme: dark)">
+
+    <title>SunTrack Prototype v2 | DraftLab.pl</title>
+
+    <!-- Import JetBrains Mono for consistency -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.8.0/suncalc.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --bg-top: #0f2027;
+            --bg-mid: #203a43;
+            --bg-bottom: #2c5364;
+            --glass-bg: rgba(20, 20, 25, 0.85);
+            --text-primary: #ffffff;
+            --sun-x: 50%;
+            --sun-y: 60%;
+        }
+
+        html {
+            background-color: #0f2027;
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            height: 100dvh;
+            padding-top: env(safe-area-inset-top);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(180deg, var(--bg-top), var(--bg-mid), var(--bg-bottom));
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            color: var(--text-primary);
+            overscroll-behavior: none;
+        }
+
+        /* --- DRAFTLAB HEADER OVERLAY --- */
+        .draftlab-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 15px 20px;
+            padding-top: max(15px, env(safe-area-inset-top));
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), transparent);
+            pointer-events: none;
+        }
+
+        .draftlab-logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            color: #fff;
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            pointer-events: auto;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .back-btn {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 6px 12px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(4px);
+            pointer-events: auto;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            color: #fff;
+            border-color: #00ff9d;
+        }
+
+        /* Prototype Badge */
+        .prototype-badge {
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 107, 107, 0.9);
+            color: #fff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 6px 16px;
+            border-radius: 20px;
+            z-index: 1000;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* --- SKY CONTAINER --- */
+        .sky-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        /* GWIAZDY */
+        .stars-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1.5s ease;
+            z-index: 1;
+        }
+
+        .stars {
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(1.5px 1.5px at 20px 30px, #fff, rgba(0, 0, 0, 0)),
+                radial-gradient(1.5px 1.5px at 150px 70px, #fff, rgba(0, 0, 0, 0)),
+                radial-gradient(2px 2px at 50px 160px, #ddd, rgba(0, 0, 0, 0)),
+                radial-gradient(1.5px 1.5px at 200px 40px, #fff, rgba(0, 0, 0, 0)),
+                radial-gradient(2px 2px at 300px 120px, #fff, rgba(0, 0, 0, 0));
+            background-repeat: repeat;
+            background-size: 350px 350px;
+            animation: twinkle 4s infinite ease-in-out;
+        }
+
+        .landscape-layer {
+            position: absolute;
+            bottom: 50%;
+            left: 0;
+            width: 100%;
+            height: 40%;
+            z-index: 6;
+            pointer-events: none;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .window {
+            fill: #1a1a1a;
+            transition: fill 3s ease, filter 3s ease;
+        }
+
+        .landscape-layer.lights-on .window {
+            fill: #FCD067;
+            filter: drop-shadow(0 0 5px rgba(252, 208, 103, 0.6));
+        }
+
+        .landscape-layer.lights-on .window:nth-child(3n) {
+            animation: flicker 7s infinite alternate;
+        }
+
+        .landscape-layer.lights-on .window:nth-child(7n) {
+            animation: flicker 5s infinite alternate-reverse;
+        }
+
+        @keyframes flicker {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        .smoke-particle {
+            fill: rgba(255, 255, 255, 0.6);
+            animation: smoke-rise 6s infinite ease-out;
+            opacity: 0;
+            transform-box: fill-box;
+            transform-origin: center;
+        }
+
+        .s1 {
+            animation-delay: 0s;
+            transform: scale(0.8);
+        }
+
+        .s2 {
+            animation-delay: 2s;
+            transform: scale(1);
+        }
+
+        .s3 {
+            animation-delay: 4s;
+            transform: scale(1.2);
+        }
+
+        @keyframes smoke-rise {
+            0% {
+                transform: translateY(0) scale(0.5);
+                opacity: 0.6;
+            }
+
+            50% {
+                opacity: 0.4;
+            }
+
+            100% {
+                transform: translateY(-40px) scale(2.5) translateX(10px);
+                opacity: 0;
+            }
+        }
+
+        .world-variant {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 1s ease;
+            fill: #000510;
+        }
+
+        .world-variant.active {
+            opacity: 1;
+        }
+
+        @keyframes twinkle {
+
+            0%,
+            100% {
+                opacity: 0.9;
+            }
+
+            50% {
+                opacity: 0.6;
+            }
+        }
+
+        .day-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 2s ease;
+            z-index: 2;
+        }
+
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 100px;
+            filter: blur(12px);
+            opacity: 0.9;
+        }
+
+        .cloud::after,
+        .cloud::before {
+            content: '';
+            position: absolute;
+            background: inherit;
+            border-radius: 50%;
+        }
+
+        .cloud::after {
+            width: 50%;
+            height: 100%;
+            top: -50%;
+            left: 10%;
+        }
+
+        .cloud::before {
+            width: 60%;
+            height: 140%;
+            top: -70%;
+            right: 15%;
+        }
+
+        .c1 {
+            width: 160px;
+            height: 60px;
+            top: 15%;
+            left: -20%;
+            animation: float 45s linear infinite;
+        }
+
+        .c3 {
+            width: 120px;
+            height: 40px;
+            top: 25%;
+            left: -20%;
+            animation: float 60s linear infinite 15s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateX(-150px);
+            }
+
+            100% {
+                transform: translateX(120vw);
+            }
+        }
+
+        .bird-container {
+            position: absolute;
+            top: 20%;
+            left: -10%;
+            animation: fly-across 20s linear infinite 2s;
+            opacity: 0.8;
+            z-index: 3;
+        }
+
+        .bird {
+            width: 12px;
+            height: 8px;
+            fill: none;
+            stroke: rgba(0, 0, 0, 0.75);
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            animation: wing-flap 0.5s infinite alternate;
+        }
+
+        .b-small {
+            width: 8px;
+            height: 6px;
+            position: absolute;
+            top: 10px;
+            left: -15px;
+            animation-delay: 0.1s;
+        }
+
+        .b-tiny {
+            width: 6px;
+            height: 4px;
+            position: absolute;
+            top: -5px;
+            left: -25px;
+            animation-delay: 0.2s;
+        }
+
+        @keyframes fly-across {
+            0% {
+                transform: translateX(-50px) translateY(0) scale(0.8);
+            }
+
+            25% {
+                transform: translateX(30vw) translateY(10px) scale(0.9);
+            }
+
+            50% {
+                transform: translateX(60vw) translateY(-5px) scale(1);
+            }
+
+            100% {
+                transform: translateX(120vw) translateY(15px) scale(0.8);
+            }
+        }
+
+        @keyframes wing-flap {
+            0% {
+                d: path("M0 4 Q6 8 12 4");
+                transform: translateY(0);
+            }
+
+            100% {
+                d: path("M0 4 Q6 0 12 4");
+                transform: translateY(2px);
+            }
+        }
+
+        .sun-orb {
+            position: absolute;
+            left: var(--sun-x);
+            bottom: var(--sun-y);
+            width: 42px;
+            height: 42px;
+            background: #fff;
+            border-radius: 50%;
+            transform: translate(-50%, 50%);
+            box-shadow: 0 0 30px 10px rgba(255, 215, 0, 0.4);
+            z-index: 5;
+            transition: box-shadow 0.3s ease, background 0.3s ease;
+        }
+
+        .sun-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 350%;
+            height: 350%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 65%);
+            opacity: 0.5;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .ui-panel {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            max-height: 60dvh;
+            background: var(--glass-bg);
+            backdrop-filter: blur(35px) saturate(110%);
+            -webkit-backdrop-filter: blur(35px) saturate(110%);
+            border-radius: 36px 36px 0 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 -1px 20px rgba(255, 255, 255, 0.1), 0 -10px 50px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 24px calc(20px + env(safe-area-inset-bottom)) 24px;
+            box-sizing: border-box;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+
+        .location-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .location-badge:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #00ff9d;
+            color: #fff;
+        }
+
+        .date-text {
+            display: none;
+        }
+
+        .main-time {
+            font-size: 42px;
+            font-weight: 200;
+            margin: 0;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -2px;
+            background: linear-gradient(180deg, #fff 20%, rgba(255, 255, 255, 0.7) 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.1));
+        }
+
+        @media (max-height: 700px) {
+            .main-time {
+                font-size: 38px;
+                margin: 0;
+            }
+
+            .ui-panel {
+                height: auto;
+                max-height: 60dvh;
+            }
+
+            .header {
+                margin-bottom: 5px;
+            }
+        }
+
+        .ground-filler {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: #000510;
+            z-index: 5;
+        }
+
+        .content-area {
+            position: relative;
+            flex-grow: 1;
+            overflow-y: auto;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            margin-top: 2px;
+            padding-bottom: 2px;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.04);
+            padding: 6px;
+            border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .info-label {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 2px;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .info-value {
+            font-size: 15px;
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+            color: #fff;
+            line-height: 1.1;
+        }
+
+        .slider-wrapper {
+            margin-top: auto;
+            padding-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+            z-index: 20;
+            flex-shrink: 0;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 4px;
+        }
+
+        .slider-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 700;
+        }
+
+        .reset-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            font-size: 10px;
+            padding: 8px 16px;
+            border-radius: 14px;
+            transition: all 0.2s;
+        }
+
+        .reset-btn:hover {
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        input[type=range] {
+            width: 100%;
+            appearance: none;
+            -webkit-appearance: none;
+            background: transparent;
+            margin: 0;
+            position: relative;
+            z-index: 2;
+            cursor: pointer;
+        }
+
+        input[type=range]:focus {
+            outline: none;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 6px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            appearance: none;
+            -webkit-appearance: none;
+            height: 32px;
+            width: 32px;
+            border-radius: 50%;
+            background: #ffffff;
+            cursor: grab;
+            margin-top: -14px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        input[type=range]:active::-webkit-slider-thumb {
+            transform: scale(1.1);
+            background: #f0f0f0;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-white font-sans overflow-hidden">
+
+    <!-- DRAFTLAB HEADER OVERLAY -->
+    <div class="draftlab-header">
+        <a href="../index.html" class="draftlab-logo">
+            <span style="width:8px; height:8px; background:#00ff9d; border-radius:50%; display:inline-block;"></span>
+            DraftLab<span style="opacity:0.5">.pl</span>
+        </a>
+        <a href="../changelog.html?id=suntrack" class="back-btn">
+            <i data-lucide="arrow-left" width="12"></i> POWRÓT
+        </a>
+    </div>
+
+    <!-- Prototype Badge -->
+    <div class="prototype-badge">⚠️ Prototyp v2.0 - Archiwum</div>
+
+    <!-- NIEBO + ŚWIAT -->
+    <div class="sky-container" id="sky-container">
+        <div id="stars-wrapper" class="stars-wrapper">
+            <div class="stars"></div>
+        </div>
+
+        <div class="day-layer" id="day-layer">
+            <div class="cloud c1"></div>
+            <div class="cloud c3"></div>
+
+            <div class="bird-container">
+                <svg class="bird" viewBox="0 0 12 8">
+                    <path d="M0 4 Q6 8 12 4" fill="none" stroke="currentColor" />
+                </svg>
+                <svg class="bird b-small" viewBox="0 0 12 8">
+                    <path d="M0 4 Q6 8 12 4" fill="none" stroke="currentColor" />
+                </svg>
+                <svg class="bird b-tiny" viewBox="0 0 12 8">
+                    <path d="M0 4 Q6 8 12 4" fill="none" stroke="currentColor" />
+                </svg>
+            </div>
+        </div>
+
+        <div class="sun-orb" id="sun-orb">
+            <div class="sun-glow"></div>
+        </div>
+
+        <!-- DYNAMICZNY KRAJOBRAZ -->
+        <div class="landscape-layer" id="landscape-layer">
+            <!-- 1. VILLAGE / NATURE -->
+            <svg class="world-variant active" id="world-village" viewBox="0 0 1440 320"
+                preserveAspectRatio="xMidYMax slice">
+                <g transform="translate(0, 40)">
+                    <path d="M0,280 C300,250 500,300 800,260 C1100,220 1300,280 1440,260 L1440,320 L0,320 Z"
+                        fill="#0b1016"></path>
+                    <path d="M0,320 L0,290 C200,290 400,220 600,240 C900,270 1200,240 1440,290 L1440,320 Z"
+                        fill="#000510"></path>
+
+                    <g transform="translate(1050, 220)">
+                        <path d="M0,60 L0,30 L30,0 L60,30 L60,60 Z" fill="#252f3b" />
+                        <rect x="20" y="35" width="20" height="20" class="window" rx="2" />
+                    </g>
+
+                    <g transform="translate(300, 200)">
+                        <rect x="42" y="-5" width="4" height="25" fill="#252f3b" />
+                        <rect x="40" y="-8" width="8" height="3" fill="#252f3b" />
+                        <path d="M10,20 L10,0 L35,0 L35,20 L55,20 L60,35 L60,45 L0,45 L0,35 Z" fill="#252f3b" />
+                        <circle cx="15" cy="45" r="16" fill="#252f3b" />
+                        <circle cx="55" cy="48" r="10" fill="#252f3b" />
+                        <circle cx="15" cy="45" r="6" fill="#151a21" />
+                        <circle cx="55" cy="48" r="4" fill="#151a21" />
+                        <path d="M14,4 L31,4 L31,18 L14,18 Z" class="window" />
+                    </g>
+
+                    <circle cx="100" cy="230" r="30" fill="#0b1016" />
+                    <rect x="90" y="230" width="20" height="40" fill="#0b1016" />
+
+                    <g transform="translate(800, 260)">
+                        <rect x="-5" y="0" width="10" height="15" fill="#0b1016" />
+                        <path d="M-20,0 L0,-30 L20,0 Z" fill="#000510" />
+                        <path d="M-15,-20 L0,-45 L15,-20 Z" fill="#000510" />
+                        <path d="M-10,-40 L0,-60 L10,-40 Z" fill="#000510" />
+                    </g>
+                </g>
+            </svg>
+
+            <!-- 2. TOWN / SUBURB -->
+            <svg class="world-variant" id="world-town" viewBox="0 0 1440 320" preserveAspectRatio="xMidYMax slice">
+                <rect x="0" y="290" width="1440" height="30" fill="#000510" />
+
+                <g transform="translate(200, 210)">
+                    <rect x="10" y="30" width="80" height="60" fill="#000510" />
+                    <path d="M0,30 L50,0 L100,30" fill="#000510" />
+                    <rect x="70" y="5" width="10" height="20" fill="#000510" />
+                    <circle cx="75" cy="0" r="6" class="smoke-particle s1" />
+                    <circle cx="75" cy="0" r="8" class="smoke-particle s2" />
+                    <circle cx="75" cy="0" r="10" class="smoke-particle s3" />
+                    <rect x="25" y="45" width="20" height="20" class="window" />
+                    <rect x="55" y="45" width="20" height="20" class="window" />
+                </g>
+
+                <g transform="translate(600, 180)">
+                    <rect x="20" y="60" width="80" height="60" fill="#000510" />
+                    <path d="M20,60 L60,20 L100,60" fill="#000510" />
+                    <rect x="0" y="40" width="30" height="80" fill="#000510" />
+                    <path d="M0,40 L15,10 L30,40" fill="#000510" />
+                    <rect x="10" y="55" width="10" height="20" class="window" rx="5" />
+                    <circle cx="60" cy="50" r="8" class="window" />
+                </g>
+
+                <g transform="translate(1100, 220)">
+                    <rect x="0" y="20" width="100" height="60" fill="#000510" />
+                    <path d="M0,20 L50,-10 L100,20" fill="#000510" />
+                    <rect x="15" y="35" width="25" height="25" class="window" />
+                    <rect x="60" y="35" width="25" height="25" class="window" />
+                </g>
+            </svg>
+
+            <!-- 3. CITY / METROPOLIS -->
+            <svg class="world-variant" id="world-city" viewBox="0 0 1440 320" preserveAspectRatio="xMidYMax slice">
+                <defs>
+                    <rect id="w-small" width="3" height="3" class="window" />
+                </defs>
+                <rect x="0" y="280" width="1440" height="40" fill="#000510" />
+                <g id="city-back"></g>
+                <g id="city-mid"></g>
+                <g id="city-front"></g>
+            </svg>
+        </div>
+    </div>
+
+    <div class="ground-filler"></div>
+
+    <!-- UI -->
+    <div class="ui-panel">
+        <div class="header">
+            <div style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 2px;">
+                <div class="location-badge" id="location-badge">
+                    <i data-lucide="map-pin" width="10"></i> <span id="location-name">Warszawa</span>
+                </div>
+                <div class="date-text" id="date-text" style="font-size: 11px; opacity: 0.6; text-transform: uppercase;">
+                    --</div>
+            </div>
+            <div class="main-time" id="main-time">12:00</div>
+        </div>
+
+        <div class="content-area">
+            <div id="info-grid" class="info-grid">
+                <div class="info-card">
+                    <span class="info-label"><i data-lucide="sunrise" width="10"></i> Wschód</span>
+                    <span class="info-value" id="sunrise-val">--:--</span>
+                </div>
+                <div class="info-card">
+                    <span class="info-label"><i data-lucide="sunset" width="10"></i> Zachód</span>
+                    <span class="info-value" id="sunset-val">--:--</span>
+                </div>
+                <div class="info-card">
+                    <span class="info-label"><i data-lucide="moon" width="10"></i> Faza</span>
+                    <span class="info-value" style="font-size: 14px;" id="phase-val">--</span>
+                </div>
+
+                <div class="info-card">
+                    <span class="info-label"><i data-lucide="sparkles" width="9"></i> Złota Rano</span>
+                    <span class="info-value" id="golden-am-val">--:--</span>
+                </div>
+                <div class="info-card">
+                    <span class="info-label"><i data-lucide="sparkles" width="9"></i> Złota Wiecz.</span>
+                    <span class="info-value" id="golden-pm-val">--:--</span>
+                </div>
+                <div class="info-card">
+                    <span class="info-label"><i data-lucide="move-up" width="10"></i> Alt</span>
+                    <span class="info-value" id="elevation-val">0°</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="slider-wrapper">
+            <div class="slider-header">
+                <span class="slider-label">Podróż w czasie</span>
+                <button class="reset-btn" onclick="resetToNow()">TERAZ</button>
+            </div>
+            <input type="range" id="time-slider" min="0" max="1439" value="720">
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        let LAT = 52.2297;
+        let LNG = 21.0122;
+        let isLive = true;
+        let clockInterval = null;
+
+        const sunOrb = document.getElementById('sun-orb');
+        const starsWrapper = document.getElementById('stars-wrapper');
+        const dayLayer = document.getElementById('day-layer');
+        const root = document.documentElement;
+        const locationNameEl = document.getElementById('location-name');
+        const slider = document.getElementById('time-slider');
+
+        const now = new Date();
+        const dateOptions = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+        document.getElementById('date-text').innerText = now.toLocaleDateString('pl-PL', dateOptions);
+
+        const COLOR_KEYS = [
+            { alt: -90, stops: ['#040810', '#0a0f1c', '#151b2b'] },
+            { alt: -12, stops: ['#0f172a', '#2e3b55', '#605868'] },
+            { alt: -6, stops: ['#2c1a3d', '#8a4c60', '#ffcda5'] },
+            { alt: -2, stops: ['#4b2c35', '#d96c6c', '#ffd6a5'] },
+            { alt: 5, stops: ['#3a6ea5', '#88c0d0', '#e0f7fa'] },
+            { alt: 25, stops: ['#285e92', '#69b3e7', '#f0fbff'] }
+        ];
+
+        function lerpColor(c1, c2, f) {
+            const hex2rgb = (hex) => {
+                const r = parseInt(hex.slice(1, 3), 16);
+                const g = parseInt(hex.slice(3, 5), 16);
+                const b = parseInt(hex.slice(5, 7), 16);
+                return [r, g, b];
+            }
+            const rgb1 = hex2rgb(c1);
+            const rgb2 = hex2rgb(c2);
+            const r = Math.round(rgb1[0] + (rgb2[0] - rgb1[0]) * f);
+            const g = Math.round(rgb1[1] + (rgb2[1] - rgb1[1]) * f);
+            const b = Math.round(rgb1[2] + (rgb2[2] - rgb1[2]) * f);
+            return `rgb(${r},${g},${b})`;
+        }
+
+        function getGradient(alt) {
+            let start = COLOR_KEYS[0], end = COLOR_KEYS[COLOR_KEYS.length - 1];
+            for (let i = 0; i < COLOR_KEYS.length - 1; i++) {
+                if (alt >= COLOR_KEYS[i].alt && alt <= COLOR_KEYS[i + 1].alt) {
+                    start = COLOR_KEYS[i]; end = COLOR_KEYS[i + 1]; break;
+                }
+            }
+            const factor = Math.min(1, Math.max(0, (alt - start.alt) / (end.alt - start.alt)));
+            return {
+                top: lerpColor(start.stops[0], end.stops[0], factor),
+                mid: lerpColor(start.stops[1], end.stops[1], factor),
+                bottom: lerpColor(start.stops[2], end.stops[2], factor)
+            };
+        }
+
+        function update(mins) {
+            const h = Math.floor(mins / 60);
+            const m = Math.floor(mins % 60);
+            const currentTimeStr = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+            document.getElementById('main-time').innerText = currentTimeStr;
+
+            const d = new Date();
+            d.setHours(h, m, 0);
+
+            const times = SunCalc.getTimes(d, LAT, LNG);
+            const pos = SunCalc.getPosition(d, LAT, LNG);
+
+            const fmt = date => (date && !isNaN(date)) ? date.getHours().toString().padStart(2, '0') + ':' + date.getMinutes().toString().padStart(2, '0') : '--:--';
+            const fmtRange = (start, end) => {
+                if (!start || !end || isNaN(start) || isNaN(end)) return '--:--';
+                return `${fmt(start)} - ${fmt(end)}`;
+            };
+
+            document.getElementById('sunrise-val').innerText = fmt(times.sunrise);
+            document.getElementById('sunset-val').innerText = fmt(times.sunset);
+            document.getElementById('golden-am-val').innerText = fmtRange(times.sunrise, times.goldenHourEnd);
+            document.getElementById('golden-pm-val').innerText = fmtRange(times.goldenHour, times.sunset);
+
+            const altDeg = pos.altitude * (180 / Math.PI);
+            document.getElementById('elevation-val').innerText = Math.round(altDeg) + '°';
+
+            let phase = "Noc";
+            if (altDeg > 6) phase = "Dzień";
+            else if (altDeg > -4) phase = "Złota Godzina";
+            else if (altDeg > -12) phase = "Blue Hour";
+            document.getElementById('phase-val').innerText = phase;
+
+            const grad = getGradient(altDeg);
+            root.style.setProperty('--bg-top', grad.top);
+            root.style.setProperty('--bg-mid', grad.mid);
+            root.style.setProperty('--bg-bottom', grad.bottom);
+
+            let starsOp = 0; let dayOp = 0;
+            if (altDeg < -12) { starsOp = 1; dayOp = 0; }
+            else if (altDeg < -6) { starsOp = ((-6 - altDeg) / 6); dayOp = 0; }
+            else if (altDeg < 0) { starsOp = 0; dayOp = (altDeg - (-6)) / 6; }
+            else { starsOp = 0; dayOp = 1; }
+
+            starsWrapper.style.opacity = starsOp;
+            dayLayer.style.opacity = dayOp;
+
+            const xPercent = (mins / 1440) * 100;
+            let horizonY = 52;
+            const skyRange = 45;
+            let visualAlt = altDeg * 2.5;
+            if (visualAlt > 90) visualAlt = 90;
+            let yPercent = horizonY + (visualAlt / 90) * skyRange;
+
+            root.style.setProperty('--sun-x', xPercent + '%');
+            root.style.setProperty('--sun-y', yPercent + '%');
+
+            if (altDeg < 4 && altDeg > -4) {
+                sunOrb.style.background = '#ffba5a';
+                sunOrb.style.boxShadow = '0 0 60px 20px rgba(255, 120, 50, 0.8)';
+            } else if (altDeg >= 4) {
+                sunOrb.style.background = '#fffae5';
+                sunOrb.style.boxShadow = '0 0 50px 15px rgba(255, 245, 200, 0.5)';
+            } else {
+                sunOrb.style.background = 'transparent';
+                sunOrb.style.boxShadow = 'none';
+            }
+
+            const landscapeEl = document.getElementById('landscape-layer');
+            if (altDeg < -4) {
+                landscapeEl.classList.add('lights-on');
+            } else {
+                landscapeEl.classList.remove('lights-on');
+            }
+        }
+
+        function generateMetropolis() {
+            const createBuilding = (x, w, h, layerId, color, hasWindows) => {
+                const ns = "http://www.w3.org/2000/svg";
+                const g = document.createElementNS(ns, "g");
+                const baseY = 300;
+                g.setAttribute("transform", `translate(${x}, ${baseY - h})`);
+
+                const rect = document.createElementNS(ns, "rect");
+                rect.setAttribute("width", w);
+                rect.setAttribute("height", h);
+                rect.setAttribute("fill", color);
+                g.appendChild(rect);
+
+                if (hasWindows) {
+                    const winG = document.createElementNS(ns, "g");
+                    const cols = Math.floor(w / 6);
+                    const rows = Math.floor(h / 6);
+
+                    for (let r = 1; r < rows - 1; r++) {
+                        for (let c = 1; c < cols - 1; c++) {
+                            if (Math.random() > 0.4) {
+                                const use = document.createElementNS(ns, "use");
+                                use.setAttribute("href", "#w-small");
+                                use.setAttribute("x", c * 5);
+                                use.setAttribute("y", r * 5);
+                                winG.appendChild(use);
+                            }
+                        }
+                    }
+                    g.appendChild(winG);
+                }
+                document.getElementById(layerId).appendChild(g);
+            };
+
+            let x = -50;
+            while (x < 1500) {
+                const w = 10 + Math.random() * 20;
+                const h = 20 + Math.random() * 40;
+                createBuilding(x, w, h, 'city-back', '#030508', false);
+                x += w - 2;
+            }
+
+            x = -20;
+            while (x < 1500) {
+                if (Math.random() > 0.3) {
+                    const w = 20 + Math.random() * 30;
+                    const h = 40 + Math.random() * 50;
+                    createBuilding(x, w, h, 'city-mid', '#050a10', Math.random() > 0.5);
+                    x += w + Math.random() * 5;
+                } else {
+                    x += 10;
+                }
+            }
+
+            x = 0;
+            while (x < 1500) {
+                if (Math.random() > 0.6) {
+                    const w = 30 + Math.random() * 40;
+                    const h = 60 + Math.random() * 60;
+                    createBuilding(x, w, h, 'city-front', '#080d14', true);
+                    x += w + Math.random() * 40;
+                } else {
+                    x += 20;
+                }
+            }
+        }
+
+        function startClock() {
+            if (clockInterval) clearInterval(clockInterval);
+            clockInterval = setInterval(() => {
+                if (isLive) {
+                    const d = new Date();
+                    const totalMins = d.getHours() * 60 + d.getMinutes() + (d.getSeconds() / 60);
+                    slider.value = totalMins;
+                    update(totalMins);
+                }
+            }, 1000);
+        }
+
+        function resetToNow() {
+            isLive = true;
+            const d = new Date();
+            const mins = d.getHours() * 60 + d.getMinutes();
+            slider.value = mins;
+            update(mins);
+        }
+        window.resetToNow = resetToNow;
+
+        slider.addEventListener('input', (e) => {
+            isLive = false;
+            update(parseFloat(e.target.value));
+        });
+
+        window.addEventListener('resize', () => {
+            if (!isLive) update(parseFloat(slider.value));
+            else resetToNow();
+        });
+
+        const badgeBtn = document.getElementById('location-badge');
+        const newBadgeBtn = badgeBtn.cloneNode(true);
+        badgeBtn.parentNode.replaceChild(newBadgeBtn, badgeBtn);
+
+        newBadgeBtn.addEventListener('click', () => {
+            initLocation();
+        });
+
+        async function locateByIP() {
+            locationNameEl.innerHTML = '<span style="color:#f59e0b">Namierzanie IP...</span>';
+            try {
+                const response = await fetch('https://ipapi.co/json/');
+                if (!response.ok) throw new Error("IP API Fail");
+                const data = await response.json();
+                LAT = data.latitude;
+                LNG = data.longitude;
+                const city = data.city || data.region || "Lokalizacja IP";
+                updateWorldType('city', city);
+                if (isLive) resetToNow();
+                locationNameEl.innerText = city.toUpperCase();
+            } catch (err) {
+                locationNameEl.innerText = "WARSZAWA (OFFLINE)";
+            }
+        }
+
+        function initLocation() {
+            locationNameEl.innerHTML = '<span style="color:#00ff9d">Szukam GPS...</span>';
+
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    async (position) => {
+                        LAT = position.coords.latitude;
+                        LNG = position.coords.longitude;
+                        if (isLive) resetToNow();
+
+                        try {
+                            const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${LAT}&lon=${LNG}`);
+                            const data = await response.json();
+                            const addr = data.address;
+                            const placeName = addr.city || addr.town || addr.village || addr.suburb || "GPS PRECYZYJNY";
+                            locationNameEl.innerText = placeName.toUpperCase();
+                            const type = addr.city ? 'city' : (addr.town || addr.suburb ? 'town' : 'village');
+                            updateWorldType(type, placeName);
+                        } catch (e) {
+                            locationNameEl.innerText = `${LAT.toFixed(2)}, ${LNG.toFixed(2)}`;
+                        }
+                    },
+                    (error) => {
+                        locateByIP();
+                    },
+                    { enableHighAccuracy: false, timeout: 5000, maximumAge: 0 }
+                );
+            } else {
+                locateByIP();
+            }
+        }
+
+        function updateWorldType(type, debugName) {
+            document.querySelectorAll('.world-variant').forEach(el => el.classList.remove('active'));
+            if (type === 'city') document.getElementById('world-city').classList.add('active');
+            else if (type === 'town') document.getElementById('world-town').classList.add('active');
+            else document.getElementById('world-village').classList.add('active');
+        }
+
+        generateMetropolis();
+        resetToNow();
+        startClock();
+
+        locationNameEl.innerHTML = 'WARSZAWA <span style="opacity:0.5; font-size:9px; margin-left:5px;">(KLIKNIJ)</span>';
+        updateWorldType('city', 'Default');
+    </script>
+</body>
+
+</html>
