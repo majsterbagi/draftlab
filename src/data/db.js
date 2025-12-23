@@ -20,40 +20,46 @@ const RAW_DATA = {
     ],
     projects: [
         {
-            id: "suntrack",
-            title: "SunTrack",
-            desc: "Wizualizacja pozycji słońca z trajektoriami sezonowymi i automatyczną geolokalizacją.",
-            tags: ["PWA", "SunCalc", "Glassmorphism"],
-            version: "v2.0",
-            url: "apps/SunTrack.html",
-            changelogUrl: "apps/changelog.html?id=suntrack",
-            icon: "sun",
+            id: "labyrinth-qr",
+            title: "LabyrinthQR",
+            desc: "Industrialny generator kodów QR. Pełna personalizacja: Kształty, Kolory, Logo.",
+            tags: ["QR Generator", "Client-Side", "Canvas"],
+            version: "v1.0.0",
+            url: "apps/LabyrinthQR.html",
+            changelogUrl: "apps/changelog.html?id=labyrinth-qr",
+            icon: "qr-code",
             active: true,
-            color: "yellow",
+            color: "green",
 
             details: {
-                about: "Aplikacja webowa typu PWA do wizualizacji pozycji słońca i śledzenia faz dnia. Narzędzie dedykowane fotografom i miłośnikom nieba, łączące fizycznie poprawne dane astronomiczne z artystycznym interfejsem.",
+                about: "Zaawansowany generator kodów QR w estetyce Industrial Tech. Pozwala na tworzenie unikalnych kodów z własnym logo, gradientami i niestandardowymi kształtami modułów. Generowanie kodów działa lokalnie, z opcją zapisu wiadomości w chmurze (Leave Message).",
                 features: [
-                    { title: "Trajektorie Sezonowe", desc: "Porównanie ścieżek słońca: wiosna, lato, jesień, zima z kolorowymi liniami." },
-                    { title: "Wizualizacja Nieba", desc: "Płynne gradienty kolorów zależne od wysokości słońca, efekt lens flare." },
-                    { title: "Auto-Geolokalizacja", desc: "Automatyczne wykrywanie pozycji przy każdym uruchomieniu z reverse geocoding." },
-                    { title: "Dashboard Danych", desc: "Wschód, zachód, długość dnia, Golden Hour AM/PM, zmiana względem najdłuższego dnia." }
+                    { title: "Advanced Styling", desc: "Zmiana kształtu modułów (Dots, Rounded, Liquid) i narożników." },
+                    { title: "Hybrid Core", desc: "Generowanie QR w przeglądarce + opcjonalny hosting wiadomości i zdjęć." },
+                    { title: "Logo Support", desc: "Możliwość wgrania własnego znaku graficznego na środek kodu." },
+                    { title: "Smart Templates", desc: "Gotowe szablony dla Wi-Fi, vCard i Linków." }
                 ],
-                techStack: ["HTML5 / CSS3", "Vanilla JS (ES6+)", "SunCalc v1.8.0", "Lucide Icons", "Nominatim API"],
+                techStack: ["Vanilla JS", "QR Code Styling Lib", "Canvas API", "FileReader API"],
                 roadmap: [
-                    { done: true, task: "Trajektorie sezonowe" },
-                    { done: true, task: "Automatyczna geolokalizacja" },
-                    { done: false, task: "Wybór lokalizacji z mapy" },
-                    { done: false, task: "Powiadomienia o Złotej Godzinie" }
+                    { done: true, task: "Integracja biblioteki generującej" },
+                    { done: true, task: "Panel konfiguracji wyglądu" },
+                    { done: false, task: "Zapisywanie presetów" },
+                    { done: false, task: "Generowanie kodów wektorowych (SVG)" }
                 ]
             },
 
             changes: [
                 {
-                    version: "v2.0",
-                    date: "2025-12-20 21:00",
-                    type: "MAJOR",
-                    desc: "Kompletna przebudowa aplikacji: nowy minimalistyczny design, trajektorie sezonowe z przełącznikami, płynne gradienty nieba, lens flare, automatyczna geolokalizacja z reverse geocoding, wyszukiwarka ograniczona do Polski, wycentrowane trajektorie względem solar noon, responsywny dashboard."
+                    version: "v1.0.1",
+                    date: "2025-12-23",
+                    type: "POLISH",
+                    desc: "UI/UX Polish: Ujednolicenie nawigacji (Nucleus Header), poprawa widoczności inputów (High Contrast), typografia bez łamania linii dla Wi-Fi, precyzyjniejszy opis funkcji."
+                },
+                {
+                    version: "v1.0.0",
+                    date: "2025-12-23",
+                    type: "INIT",
+                    desc: "Initial Release: Premiera generatora LabyrinthQR z pełną obsługą stylizacji i prywatności."
                 }
             ]
         },
@@ -104,6 +110,44 @@ const RAW_DATA = {
             ]
         },
         {
+            id: "suntrack",
+            title: "SunTrack",
+            desc: "Wizualizacja pozycji słońca z trajektoriami sezonowymi i automatyczną geolokalizacją.",
+            tags: ["PWA", "SunCalc", "Glassmorphism"],
+            version: "v2.0",
+            url: "apps/SunTrack.html",
+            changelogUrl: "apps/changelog.html?id=suntrack",
+            icon: "sun",
+            active: true,
+            color: "yellow",
+
+            details: {
+                about: "Aplikacja webowa typu PWA do wizualizacji pozycji słońca i śledzenia faz dnia. Narzędzie dedykowane fotografom i miłośnikom nieba, łączące fizycznie poprawne dane astronomiczne z artystycznym interfejsem.",
+                features: [
+                    { title: "Trajektorie Sezonowe", desc: "Porównanie ścieżek słońca: wiosna, lato, jesień, zima z kolorowymi liniami." },
+                    { title: "Wizualizacja Nieba", desc: "Płynne gradienty kolorów zależne od wysokości słońca, efekt lens flare." },
+                    { title: "Auto-Geolokalizacja", desc: "Automatyczne wykrywanie pozycji przy każdym uruchomieniu z reverse geocoding." },
+                    { title: "Dashboard Danych", desc: "Wschód, zachód, długość dnia, Golden Hour AM/PM, zmiana względem najdłuższego dnia." }
+                ],
+                techStack: ["HTML5 / CSS3", "Vanilla JS (ES6+)", "SunCalc v1.8.0", "Lucide Icons", "Nominatim API"],
+                roadmap: [
+                    { done: true, task: "Trajektorie sezonowe" },
+                    { done: true, task: "Automatyczna geolokalizacja" },
+                    { done: false, task: "Wybór lokalizacji z mapy" },
+                    { done: false, task: "Powiadomienia o Złotej Godzinie" }
+                ]
+            },
+
+            changes: [
+                {
+                    version: "v2.0",
+                    date: "2025-12-20 21:00",
+                    type: "MAJOR",
+                    desc: "Kompletna przebudowa aplikacji: nowy minimalistyczny design, trajektorie sezonowe z przełącznikami, płynne gradienty nieba, lens flare, automatyczna geolokalizacja z reverse geocoding, wyszukiwarka ograniczona do Polski, wycentrowane trajektorie względem solar noon, responsywny dashboard."
+                }
+            ]
+        },
+        {
             id: 'atmosphere',
             title: 'Atmosphere',
             desc: 'Dziennik klimatyczny HomePod mini. Wizualizacja temperatury i wilgotności w cyklu dobowym (4 pomiary na dzień).',
@@ -135,13 +179,23 @@ const RAW_DATA = {
             changes: []
         },
         {
-            id: "slot_03",
-            title: "Slot_03: Empty",
+            id: "slot_05",
+            title: "Slot_05: Empty",
             desc: "Czekam na kolejny pomysł...",
             tags: [],
             version: "TBD",
             url: "#",
-            active: false,
+            active: true,
+            color: "gray"
+        },
+        {
+            id: "slot_06",
+            title: "Slot_06: Empty",
+            desc: "Miejsce na kolejny projekt...",
+            tags: [],
+            version: "TBD",
+            url: "#",
+            active: true,
             color: "gray"
         }
     ],

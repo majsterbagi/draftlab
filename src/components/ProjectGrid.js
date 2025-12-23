@@ -19,7 +19,10 @@ class ProjectGrid extends HTMLElement {
 
         const renderProject = (p, isHidden = false) => {
             const baseClass = "group border transition-all duration-300 relative overflow-hidden flex flex-col h-full";
-            const activeClass = p.active
+            // Determine visual state: Active ONLY if active=true AND url is not hash
+            const isLive = p.active && p.url && p.url !== '#';
+
+            const activeClass = isLive
                 ? "border-tech-gray bg-[#0f0f0f] hover:border-tech-green"
                 : "border-tech-gray/30 bg-[#0f0f0f]/50 opacity-60 border-dashed";
             const hiddenClass = isHidden ? "empty-slot hidden" : "";
@@ -32,10 +35,10 @@ class ProjectGrid extends HTMLElement {
                 gray: { gradient: 'from-gray-500 to-white', icon: 'text-tech-dim', border: '' }
             };
             const colors = colorMap[p.color] || colorMap.gray;
-            const iconName = p.icon || (p.active ? 'box' : 'box');
+            const iconName = p.icon || 'box';
 
             // LOGIKA PRZYCISKÓW (ZMIANA)
-            const actionButtons = p.active
+            const actionButtons = isLive
                 ? `
                 <div class="mt-auto flex gap-2 pt-2">
                     <a href="${p.url}" class="flex-grow py-2 bg-tech-gray text-center text-sm font-bold uppercase tracking-wider hover:bg-white hover:text-black transition-colors border border-transparent group-hover:border-white/20">
@@ -51,7 +54,7 @@ class ProjectGrid extends HTMLElement {
 
             return `
             <article class="${baseClass} ${activeClass} ${hiddenClass} min-h-[300px]">
-                ${p.active ? `<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${colors.gradient} opacity-70"></div>` : ''}
+                ${isLive ? `<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${colors.gradient} opacity-70"></div>` : ''}
                 
                 <div class="p-6 flex flex-col h-full">
                     <div class="flex justify-between items-start mb-4">
@@ -59,7 +62,7 @@ class ProjectGrid extends HTMLElement {
                             <div class="w-12 h-12 min-w-[3rem] bg-tech-gray/30 rounded flex items-center justify-center ${colors.icon} border border-tech-gray ${colors.border} transition-colors">
                                 <i data-lucide="${iconName}" width="24"></i>
                             </div>
-                            <h3 class="text-xl font-bold ${p.active ? 'group-hover:text-white' : 'text-tech-dim'} transition-colors">${p.title}</h3>
+                            <h3 class="text-xl font-bold ${isLive ? 'group-hover:text-white' : 'text-tech-dim'} transition-colors">${p.title}</h3>
                         </div>
                         <span class="px-2 py-1 text-[10px] uppercase border border-tech-dim text-tech-dim rounded">${p.version}</span>
                     </div>

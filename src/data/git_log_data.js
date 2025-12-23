@@ -1,5 +1,13 @@
 export const GIT_LOG_DATA = [
     {
+        "hash": "5d7159e",
+        "date": "2025-12-21 23:25",
+        "type": "FEAT",
+        "component": "SYS",
+        "desc": "Archiwum Prototypów SunTrack - galeria historycznych wersji aplikacji (v1.0 i v2.0) w sekcji changelog",
+        "details": null
+    },
+    {
         "hash": "b3fb03a",
         "date": "2025-12-21 22:54",
         "type": "FEAT",
@@ -389,14 +397,6 @@ export const GIT_LOG_DATA = [
         "type": "FEAT",
         "component": "ATMOSPHERE",
         "desc": "Add analytics, history nav and update copy",
-        "details": null
-    },
-    {
-        "hash": "277c94e",
-        "date": "2025-12-19 21:28",
-        "type": "FEAT",
-        "component": "ATMOSPHERE",
-        "desc": "Add changelog and reorder apps",
         "details": null
     }
 ];

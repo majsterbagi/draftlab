@@ -15,7 +15,7 @@ class OverlayHeader extends HTMLElement {
         this.innerHTML = `
             <a href="${homeUrl}" class="draftlab-logo">
                 <span style="width:8px; height:8px; background:#00ff9d; border-radius:50%; display:inline-block;"></span>
-                ${title}<span style="opacity:0.5">.pl</span>
+                ${title}
             </a>
             <a href="${homeUrl}" class="back-btn">
                 <i data-lucide="arrow-left" width="12"></i> POWRÓT
