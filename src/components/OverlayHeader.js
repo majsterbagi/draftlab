@@ -13,9 +13,9 @@ class OverlayHeader extends HTMLElement {
         const homeUrl = isSubdir ? '../index.html' : 'index.html';
 
         this.innerHTML = `
-            <a href="${homeUrl}" class="draftlab-logo">
-                <span style="width:8px; height:8px; background:#00ff9d; border-radius:50%; display:inline-block;"></span>
-                ${title}
+            <a href="${homeUrl}" class="draftlab-logo flex items-center gap-2 group text-white hover:text-tech-green transition-colors">
+                <i data-lucide="flask-conical" class="text-tech-green w-5 h-5 stroke-[2.5] fill-tech-green/20 group-hover:fill-tech-green transition-colors"></i>
+                <span class="font-bold tracking-tight">${title}</span>
             </a>
             <a href="${homeUrl}" class="back-btn">
                 <i data-lucide="arrow-left" width="12"></i> POWRÓT

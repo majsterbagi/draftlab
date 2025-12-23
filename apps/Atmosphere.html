@@ -27,13 +27,24 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="../src/style.css">
+    <script type="module" src="../src/main.js"></script>
 </head>
 
 <body class="bg-tech-bg text-white font-sans bg-grid-pattern selection:bg-tech-green selection:text-black">
 
-    <!-- Nucleus Header will be injected here -->
+    <dl-header></dl-header>
+    <div class="scanline"></div>
 
-    <div class="dl-dashboard pt-[calc(60px+env(safe-area-inset-top))]">
+    <div class="dl-dashboard pt-[calc(80px+env(safe-area-inset-top))]">
+        <!-- App Title Section -->
+        <div class="mb-8 flex items-center gap-4 border-l-4 border-tech-green pl-4">
+            <i data-lucide="cloud" class="text-tech-green w-10 h-10"></i>
+            <div>
+                <h1 class="text-3xl font-bold tracking-tighter uppercase leading-none">Atmosphere</h1>
+                <p class="text-tech-dim text-[10px] uppercase tracking-[0.2em] mt-1 font-mono">/
+                    Climate_Monitoring_System v0.2</p>
+            </div>
+        </div>
         <!-- Quick Nav -->
         <div style="display: flex; justify-content: flex-end; margin-bottom: 12px;">
             <a href="AtmosphereAnalytics.html"
@@ -53,20 +64,20 @@
         </div>
 
 
-        <div class="dl-section-label">LIVE STATUS</div>
+        <div class="dl-section-label" data-i18n="atmo.live">LIVE STATUS</div>
 
         <!-- Live Stats Row -->
         <div class="dl-stats-grid mb-5">
             <div class="dl-stat-card">
                 <div class="dl-stat-label">
-                    TEMP
+                    <span data-i18n="atmo.temp">TEMP</span>
                     <i data-lucide="thermometer" width="12"></i>
                 </div>
                 <div class="dl-stat-value" id="current-temp">--<span class="dl-stat-unit">°C</span></div>
             </div>
             <div class="dl-stat-card">
                 <div class="dl-stat-label">
-                    WILGOTNOŚĆ
+                    <span data-i18n="atmo.humidity">WILGOTNOŚĆ</span>
                     <i data-lucide="droplets" width="12"></i>
                 </div>
                 <div class="dl-stat-value" id="current-humidity">--<span class="dl-stat-unit">%</span></div>
@@ -76,7 +87,7 @@
         <!-- Chart Area -->
         <div class="dl-chart-container">
             <div class="dl-chart-header">
-                <div class="dl-chart-title">Wykres 24H</div>
+                <div class="dl-chart-title" data-i18n="atmo.chart.24h">Wykres 24H</div>
                 <div class="dl-chart-title !text-tech-green/60 font-mono" id="last-update">--:--</div>
             </div>
             <div class="dl-chart-wrapper">
@@ -87,13 +98,13 @@
             </div>
         </div>
 
-        <div class="dl-section-label mt-5">ANALYTICS (DOBA)</div>
+        <div class="dl-section-label mt-5" data-i18n="atmo.analytics.day">ANALYTICS (DOBA)</div>
 
         <!-- Analytics Row -->
         <div class="dl-stats-grid mb-5">
             <div class="dl-stat-card">
                 <div class="dl-stat-label">
-                    MIN / MAX
+                    <span data-i18n="atmo.minmax">MIN / MAX</span>
                     <i data-lucide="bar-chart-2" width="12"></i>
                 </div>
                 <div class="dl-stat-value !text-lg">
@@ -102,7 +113,7 @@
             </div>
             <div class="dl-stat-card">
                 <div class="dl-stat-label">
-                    ŚREDNIA / WILG.
+                    <span data-i18n="atmo.avg_hum">ŚREDNIA / WILG.</span>
                     <i data-lucide="activity" width="12"></i>
                 </div>
                 <div class="dl-stat-value !text-lg">
@@ -113,13 +124,13 @@
             </div>
         </div>
 
-        <div class="dl-section-label mt-5">PORY DNIA</div>
+        <div class="dl-section-label mt-5" data-i18n="atmo.periods">PORY DNIA</div>
 
         <!-- Time of Day Stats -->
         <div class="dl-stats-grid mb-5 !grid-cols-4">
             <div class="dl-stat-card !p-2">
                 <div class="dl-stat-label !text-[9px]">
-                    RANO
+                    <span data-i18n="atmo.period.morning">RANO</span>
                     <i data-lucide="sunrise" width="10"></i>
                 </div>
                 <div class="dl-stat-value !text-sm" id="time-morning">--<span class="dl-stat-unit">°C</span>
@@ -127,7 +138,7 @@
             </div>
             <div class="dl-stat-card !p-2">
                 <div class="dl-stat-label !text-[9px]">
-                    POŁUDNIE
+                    <span data-i18n="atmo.period.noon">POŁUDNIE</span>
                     <i data-lucide="sun" width="10"></i>
                 </div>
                 <div class="dl-stat-value !text-sm" id="time-noon">--<span class="dl-stat-unit">°C</span>
@@ -135,7 +146,7 @@
             </div>
             <div class="dl-stat-card !p-2">
                 <div class="dl-stat-label !text-[9px]">
-                    WIECZÓR
+                    <span data-i18n="atmo.period.evening">WIECZÓR</span>
                     <i data-lucide="sunset" width="10"></i>
                 </div>
                 <div class="dl-stat-value !text-sm" id="time-evening">--<span class="dl-stat-unit">°C</span>
@@ -143,7 +154,7 @@
             </div>
             <div class="dl-stat-card !p-2">
                 <div class="dl-stat-label !text-[9px]">
-                    NOC
+                    <span data-i18n="atmo.period.night">NOC</span>
                     <i data-lucide="moon" width="10"></i>
                 </div>
                 <div class="dl-stat-value !text-sm" id="time-night">--<span class="dl-stat-unit">°C</span>
@@ -160,9 +171,15 @@
     <script type="module">
         import { init as initNucleus } from '../src/core/Nucleus.js';
         import { init as initAtmosphere } from '../src/apps/Atmosphere.js';
+        import { i18n } from '../src/utils/i18n.js';
 
         initNucleus();
         initAtmosphere();
+
+        // Init i18n static
+        i18n.updateStaticElements();
+        // Subscribe handled in Atmosphere.js mostly, but here we can add it too for safety if strictly static
+        i18n.subscribe(() => i18n.updateStaticElements());
 
         lucide.createIcons();
     </script>

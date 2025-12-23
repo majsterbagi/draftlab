@@ -334,7 +334,8 @@ function renderChart(data) {
                     grid: { color: 'rgba(255,255,255,0.05)', drawBorder: false },
                     ticks: {
                         color: 'rgba(255,255,255,0.3)',
-                        font: { size: 10 }
+                        font: { size: 10 },
+                        stepSize: 0.5
                     },
                     title: {
                         display: true,

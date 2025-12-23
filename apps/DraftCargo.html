@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="../src/style.css">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script type="module" src="../src/main.js"></script>
 </head>
 
 <body
@@ -15,23 +16,26 @@
 
     <div class="scanline"></div>
 
-    <!-- Nucleus Header will be injected here -->
+    <dl-header></dl-header>
 
-    <main class="flex-grow flex items-center justify-center p-4 pt-24">
+    <main class="flex-grow flex items-center justify-center p-4 pt-8">
         <div class="max-w-xl w-full">
 
             <!-- System Header -->
             <div class="mb-8 flex justify-between items-end border-l-4 border-tech-green pl-4">
                 <div>
                     <h1 class="text-2xl font-bold tracking-tighter uppercase">/ DraftCargo_v0.1</h1>
-                    <p class="text-tech-dim text-xs mt-1">Status: SECURE_CHANNEL_ACTIVE | Limit: 1024MB | TTL: 72H</p>
+                    <p class="text-tech-dim text-xs mt-1" data-i18n="cargo.status">Status: SECURE_CHANNEL_ACTIVE |
+                        Limit: 1024MB | TTL: 72H</p>
                 </div>
                 <!-- Stats Counter -->
                 <div class="text-right">
                     <div id="stats-container" class="text-[10px] text-tech-dim font-mono">
                         <span class="block text-[8px] opacity-50">SYSTEM_STATS:</span>
-                        <span class="block">FILES: <b class="text-white" id="stat-count">LOADING</b></span>
-                        <span class="block">VOLUME: <b class="text-white" id="stat-size">LOADING</b></span>
+                        <span class="block">FILES: <b class="text-white" id="stat-count"
+                                data-i18n="shared.loading">LOADING</b></span>
+                        <span class="block">VOLUME: <b class="text-white" id="stat-size"
+                                data-i18n="shared.loading">LOADING</b></span>
                         <span id="debug-status"
                             class="block text-[8px] text-tech-green mt-1 uppercase">INITIALIZING...</span>
                     </div>
@@ -57,9 +61,11 @@
                 <div id="idle-state" class="space-y-4">
                     <i data-lucide="upload-cloud"
                         class="mx-auto w-12 h-12 text-tech-gray group-hover:text-tech-green transition-colors"></i>
-                    <p class="text-sm font-bold tracking-widest text-tech-dim group-hover:text-white uppercase">Wybierz
+                    <p class="text-sm font-bold tracking-widest text-tech-dim group-hover:text-white uppercase"
+                        data-i18n="cargo.drop.title">Wybierz
                         lub przeciągnij plik</p>
-                    <p class="text-[10px] opacity-40 uppercase tracking-tighter">MAX_CARGO_SIZE: 1GB</p>
+                    <p class="text-[10px] opacity-40 uppercase tracking-tighter" data-i18n="cargo.drop.subtitle">
+                        MAX_CARGO_SIZE: 1GB</p>
                 </div>
 
                 <div id="upload-state" class="hidden space-y-4 py-4">
@@ -73,7 +79,7 @@
                             style="width: 0%"></div>
                     </div>
                     <div class="flex justify-between text-[8px] opacity-50 uppercase tracking-tighter">
-                        <span>Sending chunks...</span>
+                        <span data-i18n="cargo.byte_status">Sending chunks...</span>
                         <span id="byte-status">0 / 0 MB</span>
                     </div>
                 </div>
@@ -85,25 +91,28 @@
             <div id="result-area" class="mt-8 hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div class="bg-tech-green/10 border border-tech-green/30 p-6 space-y-4">
                     <div class="flex items-center gap-2 text-tech-green font-bold text-xs uppercase">
-                        <i data-lucide="check-circle" width="14"></i> Ładunek zabezpieczony
+                        <i data-lucide="check-circle" width="14"></i> <span data-i18n="cargo.success">Ładunek
+                            zabezpieczony</span>
                     </div>
-                    <p class="text-[10px] text-tech-dim uppercase">Plik zostanie automatycznie usunięty za 72h.</p>
+                    <p class="text-[10px] text-tech-dim uppercase" data-i18n="cargo.success.sub">Plik zostanie
+                        automatycznie usunięty za 72h.</p>
 
                     <div class="flex gap-2">
                         <input type="text" id="share-link" readonly
                             class="flex-grow bg-black/50 border border-tech-gray p-3 text-xs font-mono text-tech-green outline-none">
                         <button onclick="copyLink()"
-                            class="bg-tech-green text-black px-6 font-bold text-xs uppercase hover:bg-white transition-colors">Kopiuj</button>
+                            class="bg-tech-green text-black px-6 font-bold text-xs uppercase hover:bg-white transition-colors"
+                            data-i18n="cargo.btn.copy">Kopiuj</button>
                     </div>
                 </div>
             </div>
 
             <!-- Terminal Info -->
             <div class="mt-12 space-y-2 opacity-30 text-[9px] font-mono leading-tight">
-                <p>> System: DraftCargo Initialization...</p>
-                <p>> Protocol: HTTP/2 Chunked Transfer</p>
-                <p>> Lifecycle: 259200s (72h)</p>
-                <p>> Ready for input_</p>
+                <p data-i18n="cargo.sys.init">> System: DraftCargo Initialization...</p>
+                <p data-i18n="cargo.sys.proto">> Protocol: HTTP/2 Chunked Transfer</p>
+                <p data-i18n="cargo.sys.life">> Lifecycle: 259200s (72h)</p>
+                <p data-i18n="cargo.sys.ready">> Ready for input_</p>
             </div>
 
         </div>
@@ -112,10 +121,13 @@
     <script type="module">
         import { init as initNucleus } from '../src/core/Nucleus.js';
         import { CargoController } from '../src/core/CargoController.js';
+        import { i18n } from '../src/utils/i18n.js';
 
         // Init UI
         initNucleus();
         lucide.createIcons();
+        i18n.updateStaticElements();
+        i18n.subscribe(() => i18n.updateStaticElements());
 
         // Stats Logic - tries PHP first, then JSON fallback for local dev
         const updateStats = async () => {
@@ -191,7 +203,7 @@
                 updateStats(); // Refresh stats after upload
             },
             onError: (err) => {
-                alert('Transfer error: ' + err);
+                alert(i18n.t('cargo.error') || 'Transfer error: ' + err);
                 resetUI();
             }
         });
@@ -200,7 +212,7 @@
             const input = document.getElementById('share-link');
             input.select();
             document.execCommand('copy');
-            alert('Link skopiowany do schowka!');
+            alert(i18n.t('cargo.copied') || 'Link skopiowany do schowka!');
         };
 
         function resetUI() {

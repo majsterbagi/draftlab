@@ -38,12 +38,29 @@
 
 
     <script type="module" src="./src/main.js"></script>
+    <!-- I18n Init Script -->
+    <script type="module">
+        import { i18n } from './src/utils/i18n.js';
+
+        // Initial static update
+        document.addEventListener('DOMContentLoaded', () => {
+            i18n.updateStaticElements();
+
+            // Subscribe to future updates
+            i18n.subscribe(() => {
+                i18n.updateStaticElements();
+                // Update html lang attr
+                document.documentElement.lang = i18n.lang;
+            });
+        });
+    </script>
 </head>
 
 <body
     class="font-mono bg-tech-bg bg-grid-pattern min-h-screen flex flex-col relative overflow-x-hidden selection:bg-tech-green selection:text-black">
 
     <div class="scanline"></div>
+    <div class="vignette"></div>
     <dl-header></dl-header>
 
     <main class="flex-grow max-w-7xl mx-auto px-4 w-full">
@@ -53,17 +70,21 @@
             <div class="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-tech-green"></div>
 
             <div class="max-w-3xl mx-auto text-center md:text-left">
-                <p class="text-tech-green mb-3 text-xs tracking-widest uppercase">> Inicjalizacja warsztatu...</p>
-                <h1 class="text-3xl md:text-5xl font-bold mb-4 leading-tight">
+                <p id="hero-init-text" data-i18n="hero.init"
+                    class="text-tech-green mb-3 text-xs tracking-widest uppercase inline-block">> Inicjalizacja
+                    warsztatu...</p>
+                <h1 data-i18n="hero.title" data-i18n-html="true"
+                    class="text-3xl md:text-5xl font-bold mb-4 leading-tight">
                     Eksperymentalny <br>
                     Warsztat Web <span class="text-tech-green">AI</span><span class="cursor-blink">_</span>
                 </h1>
-                <p class="text-tech-dim text-base md:text-lg leading-relaxed mb-6 max-w-2xl">
+                <p data-i18n="hero.subtitle" data-i18n-html="true" style="text-wrap: balance;"
+                    class="text-tech-dim text-base md:text-lg leading-relaxed mb-6 max-w-2xl mx-auto md:mx-0">
                     Kolekcja aplikacji webowych współtworzonych z modelami językowymi.
                     Od promptu do wdrożenia. Testuję granice kodu i wyobraźni.
                 </p>
                 <div class="flex flex-wrap gap-4 justify-center md:justify-start">
-                    <a href="#projekty"
+                    <a href="#projekty" data-i18n="hero.cta"
                         class="group relative px-5 py-2.5 bg-transparent border border-tech-green text-tech-green hover:bg-tech-green hover:text-black transition-all duration-300 font-bold uppercase text-xs tracking-wider">
                         <span
                             class="absolute -top-1 -left-1 w-2 h-2 border-t border-l border-tech-green opacity-0 group-hover:opacity-100 transition-opacity"></span>
@@ -78,7 +99,8 @@
         <section id="projekty" class="pt-20 pb-8 border-t border-tech-gray border-dashed">
             <div class="flex items-center justify-between mb-12 border-b border-tech-gray pb-4">
                 <h2 class="text-2xl font-bold text-white flex items-center gap-2">
-                    <i data-lucide="folder-git-2" class="text-tech-green"></i> REPOZYTORIUM
+                    <i data-lucide="folder-git-2" class="text-tech-green"></i> <span
+                        data-i18n="section.repo">REPOZYTORIUM</span>
                 </h2>
                 <span class="text-xs text-tech-dim hidden sm:inline-block">/PUBLIC/APPS</span>
             </div>
@@ -95,15 +117,17 @@
             <!-- Row 2: Manifest & Tech Stack -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
                 <div>
-                    <h3 class="text-tech-green font-bold mb-4 uppercase tracking-widest text-sm">/ Manifest</h3>
-                    <p class="text-tech-dim leading-relaxed text-sm">
+                    <h3 data-i18n="section.manifest"
+                        class="text-tech-green font-bold mb-4 uppercase tracking-widest text-sm">/ Manifest</h3>
+                    <p data-i18n="manifest.text" class="text-tech-dim leading-relaxed text-sm">
                         DraftLab.pl to mój cyfrowy brudnopis. Tutaj testuję granice współpracy człowiek-maszyna,
                         zamieniając prompty w kod.
                     </p>
                 </div>
 
                 <div>
-                    <h3 class="text-tech-green font-bold mb-4 uppercase tracking-widest text-sm">/ Tech Stack</h3>
+                    <h3 data-i18n="section.stack"
+                        class="text-tech-green font-bold mb-4 uppercase tracking-widest text-sm">/ Tech Stack</h3>
                     <dl-tech-stack></dl-tech-stack>
                 </div>
             </div>
@@ -117,6 +141,38 @@
     <script type="module" src="./src/components/UnifiedLog.js"></script>
     <script>
         lucide.createIcons();
+    </script>
+
+    <style>
+        @keyframes subtleFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #hero-init-text {
+            opacity: 0;
+        }
+
+        #hero-init-text.fade-in {
+            animation: subtleFadeIn 1.5s ease-out forwards;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const heroText = document.getElementById('hero-init-text');
+            // Subtle fade-in after a short delay
+            setTimeout(() => {
+                heroText.classList.add('fade-in');
+            }, 200);
+        });
     </script>
 </body>
 

@@ -4,6 +4,7 @@
  */
 
 import { SITE_DATA } from '../data/db.js';
+import { i18n } from '../utils/i18n.js';
 
 let globalData = [];
 let currentDate = new Date(); // Start with "Today"
@@ -22,6 +23,9 @@ export async function init() {
 
     if (prevBtn) prevBtn.addEventListener('click', () => changeDate(-1));
     if (nextBtn) nextBtn.addEventListener('click', () => changeDate(1));
+
+    // Subscribe to language changes
+    i18n.subscribe(() => updateView());
 
     try {
         const response = await fetch(API_URL);
@@ -70,8 +74,9 @@ function updateView() {
 
     const today = new Date();
     const isToday = isSameDay(currentDate, today);
+    const locale = i18n.lang === 'en' ? 'en-US' : 'pl-PL';
 
-    dateDisplay.textContent = isToday ? 'DZISIAJ' : currentDate.toLocaleDateString('pl-PL', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    dateDisplay.textContent = isToday ? i18n.t('shared.today') : currentDate.toLocaleDateString(locale, { day: '2-digit', month: '2-digit', year: 'numeric' });
 
     // Disable "Next" if today (cannot predict future)
     const nextBtn = document.getElementById('next-date');
@@ -100,24 +105,25 @@ function updateCurrentStats(data, empty = false) {
     const tempEl = document.getElementById('current-temp');
     const humEl = document.getElementById('current-humidity');
     const updateEl = document.getElementById('last-update');
+    const locale = i18n.lang === 'en' ? 'en-US' : 'pl-PL';
 
     if (!tempEl || !humEl || !updateEl) return;
 
     if (empty || data.length === 0) {
         tempEl.innerHTML = '--<span class="stat-unit">°C</span>';
         humEl.innerHTML = '--<span class="stat-unit">%</span>';
-        updateEl.textContent = 'BRAK DANYCH';
+        updateEl.textContent = i18n.t('shared.no_data');
         return;
     }
 
     // Since 'data' is sorted, the last element is the latest for that day
     const latest = data[data.length - 1];
     const date = new Date(latest.timestamp * 1000);
-    const timeStr = date.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
+    const timeStr = date.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
 
     tempEl.innerHTML = `${latest.temp.toFixed(1)}<span class="stat-unit">°C</span>`;
     humEl.innerHTML = `${latest.humidity.toFixed(0)}<span class="stat-unit">%</span>`;
-    updateEl.textContent = `Ostatni pomiar: ${timeStr}`;
+    updateEl.textContent = `${i18n.t('atmo.last_update')}: ${timeStr}`;
 }
 
 function updateDailyAnalytics(data) {
@@ -192,6 +198,7 @@ function renderChart(dailyData) {
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
+    const locale = i18n.lang === 'en' ? 'en-US' : 'pl-PL';
 
     if (chartInstance) {
         chartInstance.destroy();
@@ -199,7 +206,7 @@ function renderChart(dailyData) {
 
     const labels = dailyData.map(entry => {
         const date = new Date(entry.timestamp * 1000);
-        return date.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
+        return date.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
     });
 
     const temps = dailyData.map(entry => entry.temp);
@@ -216,7 +223,7 @@ function renderChart(dailyData) {
             labels: labels,
             datasets: [
                 {
-                    label: 'Temperatura (°C)',
+                    label: `${i18n.t('atmo.chart.temp')} (°C)`,
                     data: temps,
                     borderColor: '#00ff9d',
                     backgroundColor: '#00ff9d',
@@ -227,7 +234,7 @@ function renderChart(dailyData) {
                     pointHoverRadius: 6
                 },
                 {
-                    label: 'Wilgotność (%)',
+                    label: `${i18n.t('atmo.chart.hum')} (%)`,
                     data: humidity,
                     borderColor: '#00a8ff',
                     backgroundColor: humGradient,
@@ -248,7 +255,17 @@ function renderChart(dailyData) {
                 intersect: false,
             },
             plugins: {
-                legend: { display: false },
+                legend: {
+                    display: true,
+                    position: 'top',
+                    align: 'end',
+                    labels: {
+                        color: 'rgba(255,255,255,0.6)',
+                        font: { size: 10, family: 'JetBrains Mono' },
+                        boxWidth: 12,
+                        padding: 15
+                    }
+                },
                 tooltip: {
                     backgroundColor: 'rgba(15, 16, 18, 0.9)',
                     titleColor: '#888',

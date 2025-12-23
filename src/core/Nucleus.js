@@ -29,7 +29,7 @@ const NUCLEUS_CONFIG = {
             font-weight: 700;
             color: #fff;
             text-decoration: none;
-            font-size: 14px;
+            font-size: 18px;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -92,6 +92,6 @@ function renderHeader() {
 export function init() {
     console.log('[Nucleus] Initializing environment (Web Components Mode)...');
     injectStyles();
-    renderHeader();
+    // renderHeader(); // Disabled - using explicit <dl-header>
     console.log('[Nucleus] Ready.');
 }

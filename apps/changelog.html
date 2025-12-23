@@ -8,13 +8,14 @@
     <link rel="stylesheet" href="../src/style.css">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-
-
+    <script type="module" src="../src/main.js"></script>
 </head>
 
-<body class="bg-tech-bg bg-grid-pattern min-h-screen flex flex-col items-center pt-20 pb-12 px-4">
+<body class="bg-tech-bg bg-grid-pattern min-h-screen flex flex-col items-center pt-0 pb-12 px-4">
 
-    <div class="w-full max-w-3xl">
+    <dl-header></dl-header>
+
+    <div class="w-full max-w-3xl mt-24">
         <!-- Header handled by Nucleus.js -->
 
         <header class="border-b border-tech-gray pb-8 mb-10">
@@ -88,20 +89,37 @@
     </script>
     <script type="module">
         import { SITE_DATA } from '../src/data/db.js';
+        import { i18n } from '../src/utils/i18n.js';
 
         const params = new URLSearchParams(window.location.search);
         const projectId = params.get('id');
         const project = SITE_DATA.projects.find(p => p.id === projectId);
 
-        if (project) {
+        const renderProject = () => {
+            if (!project) {
+                document.body.innerHTML = "<div class='text-white p-10'>PROJECT NOT FOUND</div>";
+                return;
+            }
+
+            const lang = i18n.lang;
+            const isEn = lang === 'en';
+
+            // Helpers
+            const getTxt = (obj, key) => isEn ? (obj[key + '_en'] || obj[key]) : obj[key];
+            const getDetails = () => isEn ? (project.details_en || project.details) : project.details;
+
+            const pTitle = getTxt(project, 'title');
+            const pDesc = getTxt(project, 'desc');
+            const details = getDetails();
+
             // 1. Header
             const iconHtml = project.icon ? `<i data-lucide="${project.icon}" class="text-tech-green mr-3 md:mr-5 inline-block align-middle mb-1" style="width: 0.9em; height: 0.9em;"></i>` : '';
-            document.getElementById('p-title').innerHTML = `${iconHtml}${project.title}`;
+            document.getElementById('p-title').innerHTML = `${iconHtml}${pTitle}`;
             document.getElementById('p-ver').innerText = project.version;
-            document.getElementById('p-about').innerText = project.details?.about || project.desc;
+            document.getElementById('p-about').innerText = details?.about || pDesc;
 
             // 1b. SEO Injection
-            document.title = `${project.title} - Changelog | DraftLab.pl`;
+            document.title = `${pTitle} - Changelog | DraftLab.pl`;
 
             // Meta Description
             let metaDesc = document.querySelector('meta[name="description"]');
@@ -110,36 +128,19 @@
                 metaDesc.name = "description";
                 document.getElementsByTagName('head')[0].appendChild(metaDesc);
             }
-            metaDesc.content = `Changelog i szczegóły projektu ${project.title}. ${project.desc}`;
-
-            // Open Graph
-            const ogTags = {
-                'og:title': `${project.title} | DraftLab`,
-                'og:description': project.desc,
-                'og:url': window.location.href
-            };
-
-            for (const [property, content] of Object.entries(ogTags)) {
-                let tag = document.querySelector(`meta[property="${property}"]`);
-                if (!tag) {
-                    tag = document.createElement('meta');
-                    tag.setAttribute('property', property);
-                    document.getElementsByTagName('head')[0].appendChild(tag);
-                }
-                tag.content = content;
-            }
+            metaDesc.content = `Changelog: ${pTitle}. ${pDesc}`;
 
             // 2. Features
             const featuresEl = document.getElementById('p-features');
-            if (project.details?.features) {
-                featuresEl.innerHTML = project.details.features.map(f => `
+            if (details?.features) {
+                featuresEl.innerHTML = details.features.map(f => `
                     <div class="bg-[#0f0f0f]/50 border border-tech-gray/50 p-4 hover:border-tech-green/30 transition-colors group">
                         <h4 class="text-white text-xs font-bold mb-1 group-hover:text-tech-green">${f.title}</h4>
                         <p class="text-tech-dim text-xs leading-relaxed">${f.desc}</p>
                     </div>
                 `).join('');
             } else {
-                featuresEl.innerHTML = `<div class="text-tech-dim text-xs">Brak danych o funkcjach.</div>`;
+                featuresEl.innerHTML = `<div class="text-tech-dim text-xs">${isEn ? 'No feature data.' : 'Brak danych o funkcjach.'}</div>`;
             }
 
             // 2b. Prototypes (only for SunTrack)
@@ -171,7 +172,7 @@
                         </div>
                         <p class="text-tech-dim text-xs leading-relaxed">${p.desc}</p>
                         <div class="mt-3 flex items-center gap-2 text-[10px] text-tech-green font-bold uppercase tracking-widest group-hover:underline">
-                            <i data-lucide="play" width="10"></i> Uruchom Demo
+                            <i data-lucide="play" width="10"></i> ${isEn ? 'Launch Demo' : 'Uruchom Demo'}
                         </div>
                     </a>
                 `).join('');
@@ -179,16 +180,16 @@
 
             // 3. Tech Stack
             const stackEl = document.getElementById('p-stack');
-            if (project.details?.techStack) {
-                stackEl.innerHTML = project.details.techStack.map(t => `
+            if (details?.techStack) {
+                stackEl.innerHTML = details.techStack.map(t => `
                     <span class="text-[10px] border border-tech-gray text-tech-dim px-2 py-1 bg-black">${t}</span>
                 `).join('');
             }
 
             // 4. Roadmap
             const roadmapEl = document.getElementById('p-roadmap');
-            if (project.details?.roadmap) {
-                roadmapEl.innerHTML = project.details.roadmap.map(item => `
+            if (details?.roadmap) {
+                roadmapEl.innerHTML = details.roadmap.map(item => `
                     <li class="flex items-start gap-3">
                         <div class="mt-0.5 w-3 h-3 border border-tech-gray flex items-center justify-center ${item.done ? 'bg-tech-green border-tech-green' : ''}">
                             ${item.done ? '<i data-lucide="check" class="text-black" width="8"></i>' : ''}
@@ -205,7 +206,7 @@
 
             const renderChangelog = () => {
                 if (!project.changes || project.changes.length === 0) {
-                    logEl.innerHTML = '<div class="text-tech-dim text-xs">Brak zmian.</div>';
+                    logEl.innerHTML = `<div class="text-tech-dim text-xs">${isEn ? 'No changes.' : 'Brak zmian.'}</div>`;
                     return;
                 }
 
@@ -240,15 +241,19 @@
                     `;
                 }).join('');
 
-                // Pagination Controls (Only if needed)
+                // Pagination Controls
+                const prevText = isEn ? 'Newer' : 'Nowsze';
+                const nextText = isEn ? 'Older' : 'Starsze';
+                const pageText = isEn ? 'PAGE' : 'STRONA';
+
                 const paginationHtml = totalPages > 1 ? `
                     <div class="flex justify-between items-center mt-4 pt-6 border-t border-tech-gray border-dashed">
                         <button id="prev-page" class="flex items-center gap-2 px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-tech-green border border-transparent hover:border-tech-green transition-all disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:border-transparent" ${currentPage === 1 ? 'disabled' : ''}>
-                            <i data-lucide="arrow-left" width="14"></i> Nowsze
+                            <i data-lucide="arrow-left" width="14"></i> ${prevText}
                         </button>
-                        <span class="text-[10px] text-tech-dim font-mono">STRONA ${currentPage} / ${totalPages}</span>
+                        <span class="text-[10px] text-tech-dim font-mono">${pageText} ${currentPage} / ${totalPages}</span>
                         <button id="next-page" class="flex items-center gap-2 px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-tech-green border border-transparent hover:border-tech-green transition-all disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:border-transparent" ${currentPage === totalPages ? 'disabled' : ''}>
-                            Starsze <i data-lucide="arrow-right" width="14"></i>
+                            ${nextText} <i data-lucide="arrow-right" width="14"></i>
                         </button>
                     </div>
                 ` : '';
@@ -269,11 +274,17 @@
             };
 
             renderChangelog();
-        } else {
-            document.body.innerHTML = "<div class='text-white p-10'>PROJECT NOT FOUND</div>";
-        }
+            i18n.updateStaticElements(); // Update header
+            lucide.createIcons();
+        };
 
-        lucide.createIcons();
+        // Init
+        if (project) {
+            renderProject();
+            i18n.subscribe(() => {
+                renderProject();
+            });
+        }
     </script>
 </body>
 

@@ -15,14 +15,16 @@ const RAW_DATA = {
         }
     },
     menu: [
-        { name: "WARSZTAT", url: "index.html" },
-        { name: "O MNIE", url: "about.html" }
+        { name: "WARSZTAT", name_en: "WORKSHOP", url: "index.html" },
+        { name: "O MNIE", name_en: "ABOUT", url: "about.html" }
     ],
     projects: [
         {
             id: "labyrinth-qr",
             title: "LabyrinthQR",
+            title_en: "LabyrinthQR",
             desc: "Industrialny generator kodów QR. Pełna personalizacja: Kształty, Kolory, Logo.",
+            desc_en: "Industrial QR code generator. Full customization: Shapes, Colors, Logo.",
             tags: ["QR Generator", "Client-Side", "Canvas"],
             version: "v1.0.0",
             url: "apps/LabyrinthQR.html",
@@ -47,6 +49,22 @@ const RAW_DATA = {
                     { done: false, task: "Generowanie kodów wektorowych (SVG)" }
                 ]
             },
+            details_en: {
+                about: "Advanced QR code generator in Industrial Tech aesthetics. Allows creating unique codes with custom logos, gradients, and module shapes. Code generation works locally, with an option to save messages in the cloud (Leave Message).",
+                features: [
+                    { title: "Advanced Styling", desc: "Change module shapes (Dots, Rounded, Liquid) and corners." },
+                    { title: "Hybrid Core", desc: "Browser-based QR generation + optional message and image hosting." },
+                    { title: "Logo Support", desc: "Ability to upload a custom graphic mark to the center of the code." },
+                    { title: "Smart Templates", desc: "Ready-made templates for Wi-Fi, vCard, and Links." }
+                ],
+                techStack: ["Vanilla JS", "QR Code Styling Lib", "Canvas API", "FileReader API"],
+                roadmap: [
+                    { done: true, task: "Generator library integration" },
+                    { done: true, task: "Appearance configuration panel" },
+                    { done: false, task: "Saving presets" },
+                    { done: false, task: "Vector code generation (SVG)" }
+                ]
+            },
 
             changes: [
                 {
@@ -66,7 +84,9 @@ const RAW_DATA = {
         {
             id: "draftcargo",
             title: "DraftCargo",
+            title_en: "DraftCargo",
             desc: "Prywatny transfer plików do 1GB. Automatyczne czyszczenie po 72h.",
+            desc_en: "Private file transfer up to 1GB. Auto-cleanup after 72h.",
             tags: ["PHP", "Base64", "Chunking"],
             version: "v.0.5.0",
             url: "apps/DraftCargo.html",
@@ -93,6 +113,24 @@ const RAW_DATA = {
                     { done: false, task: "Opcjonalne hasło do pliku" }
                 ]
             },
+            details_en: {
+                about: "Private alternative to WeTransfer. Allows sending files up to 1GB without registration. Files are automatically deleted after 72 hours. Optimized for restrictive shared hosting.",
+                features: [
+                    { title: "Chunked Upload", desc: "Files split into 512KB chunks. Stable upload even with poor connection." },
+                    { title: "Base64 Bypass", desc: "Unique method bypassing server restrictions without tmp folder." },
+                    { title: "Auto-Cleanup (72h)", desc: "CRON script automatically deletes expired files." },
+                    { title: "Mobile Ready", desc: "Optimized for mobile browsers (iOS Safari, Chrome)." }
+                ],
+                techStack: ["PHP 8.x", "Vanilla JS (ES6+)", "Base64 Encoding", "CRON Jobs", "Lucide Icons"],
+                roadmap: [
+                    { done: true, task: "Basic file upload" },
+                    { done: true, task: "Chunking for large files" },
+                    { done: true, task: "Bypass for restrictive hosting" },
+                    { done: true, task: "Mobile optimization" },
+                    { done: false, task: "Download progress preview" },
+                    { done: false, task: "Optional file password" }
+                ]
+            },
 
             changes: [
                 {
@@ -112,7 +150,9 @@ const RAW_DATA = {
         {
             id: "suntrack",
             title: "SunTrack",
+            title_en: "SunTrack",
             desc: "Wizualizacja pozycji słońca z trajektoriami sezonowymi i automatyczną geolokalizacją.",
+            desc_en: "Sun position visualization with seasonal trajectories and automatic geolocation.",
             tags: ["PWA", "SunCalc", "Glassmorphism"],
             version: "v2.0",
             url: "apps/SunTrack.html",
@@ -128,13 +168,15 @@ const RAW_DATA = {
                     { title: "Wizualizacja Nieba", desc: "Płynne gradienty kolorów zależne od wysokości słońca, efekt lens flare." },
                     { title: "Auto-Geolokalizacja", desc: "Automatyczne wykrywanie pozycji przy każdym uruchomieniu z reverse geocoding." },
                     { title: "Dashboard Danych", desc: "Wschód, zachód, długość dnia, Golden Hour AM/PM, zmiana względem najdłuższego dnia." }
-                ],
-                techStack: ["HTML5 / CSS3", "Vanilla JS (ES6+)", "SunCalc v1.8.0", "Lucide Icons", "Nominatim API"],
-                roadmap: [
-                    { done: true, task: "Trajektorie sezonowe" },
-                    { done: true, task: "Automatyczna geolokalizacja" },
-                    { done: false, task: "Wybór lokalizacji z mapy" },
-                    { done: false, task: "Powiadomienia o Złotej Godzinie" }
+                ]
+            },
+            details_en: {
+                about: "PWA web application for visualizing sun position and tracking day phases. A tool dedicated to photographers and sky enthusiasts, combining physically correct astronomical data with an artistic interface.",
+                features: [
+                    { title: "Seasonal Trajectories", desc: "Comparison of sun paths: spring, summer, autumn, winter with colored lines." },
+                    { title: "Sky Visualization", desc: "Smooth color gradients depending on sun altitude, lens flare effect." },
+                    { title: "Auto-Geolocation", desc: "Automatic position detection on every launch with reverse geocoding." },
+                    { title: "Data Dashboard", desc: "Sunrise, sunset, day length, Golden Hour AM/PM, change versus longest day." }
                 ]
             },
 
@@ -150,7 +192,9 @@ const RAW_DATA = {
         {
             id: 'atmosphere',
             title: 'Atmosphere',
+            title_en: 'Atmosphere',
             desc: 'Dziennik klimatyczny HomePod mini. Wizualizacja temperatury i wilgotności w cyklu dobowym (4 pomiary na dzień).',
+            desc_en: 'HomePod mini climate journal. Visualization of temperature and humidity in a daily cycle (4 measurements per day).',
             version: 'v0.2.1',
             active: true,
             url: './apps/Atmosphere.html',
@@ -175,27 +219,47 @@ const RAW_DATA = {
                     { done: false, task: "Eksport danych do CSV" }
                 ]
             },
+            details_en: {
+                about: "Air parameter monitoring system using HomePod mini sensors. Data is automatically collected by iOS Shortcuts and visualized on an interactive chart.",
+                features: [
+                    { title: "Daily Timeline", desc: "Interactive line chart showing climate changes in 6-hour cycles." },
+                    { title: "iOS Integration", desc: "Automatic data collection 4x daily (06:00, 12:00, 18:00, 00:00)." },
+                    { title: "Analytics Dashboard", desc: "Data analysis over a week, month, or year range with aggregation." },
+                    { title: "Lightweight API", desc: "Minimalist PHP backend requiring no SQL database." }
+                ],
+                techStack: ["Chart.js", "PHP 8.x (JSON Storage)", "iOS Shortcuts", "Vanilla JS", "Tailwind CSS"],
+                roadmap: [
+                    { done: true, task: "Data reception from HomePod" },
+                    { done: true, task: "Chart visualization" },
+                    { done: true, task: "Analytics page with ranges" },
+                    { done: false, task: "Data export to CSV" }
+                ]
+            },
 
             changes: []
         },
         {
             id: "slot_05",
             title: "Slot_05: Empty",
-            desc: "Czekam na kolejny pomysł...",
+            title_en: "Slot_05: Empty",
+            desc: "Miejsce na kolejny projekt...",
+            desc_en: "Place for the next project...",
             tags: [],
             version: "TBD",
             url: "#",
-            active: true,
+            active: false,
             color: "gray"
         },
         {
             id: "slot_06",
             title: "Slot_06: Empty",
+            title_en: "Slot_06: Empty",
             desc: "Miejsce na kolejny projekt...",
+            desc_en: "Place for the next project...",
             tags: [],
             version: "TBD",
             url: "#",
-            active: true,
+            active: false,
             color: "gray"
         }
     ],
@@ -203,17 +267,23 @@ const RAW_DATA = {
         {
             date: "2025-12-17",
             title: "Tutaj będzie panel z newsami",
-            content: "Bedzie działać ale potrzeba czasu :)"
+            title_en: "News panel coming soon",
+            content: "Bedzie działać ale potrzeba czasu :)",
+            content_en: "It will work but needs time :)"
         },
         {
             date: "2025-12-17",
             title: "System Update",
-            content: "Refaktoryzacja struktury DraftLab. Przejście na Web Components i architekturę modułową."
+            title_en: "System Update",
+            content: "Refaktoryzacja struktury DraftLab. Przejście na Web Components i architekturę modułową.",
+            content_en: "DraftLab structure refactoring. Transition to Web Components and modular architecture."
         },
         {
             date: "2025-12-16",
             title: "Inicjalizacja",
-            content: "Pierwszy commit projektu. Uruchomienie środowiska developerskiego."
+            title_en: "Initialization",
+            content: "Pierwszy commit projektu. Uruchomienie środowiska developerskiego.",
+            content_en: "First project commit. launching development environment."
         }
     ]
 };

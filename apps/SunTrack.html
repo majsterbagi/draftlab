@@ -22,6 +22,7 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="../src/style.css">
+    <script type="module" src="../src/main.js"></script>
 
     <style>
         :root {
@@ -130,19 +131,19 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
-            z-index: 15;
+            z-index: 30;
         }
 
         .season-toggle {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 3px;
             cursor: pointer;
-            padding: 3px 6px;
+            padding: 2px 5px;
             border-radius: 4px;
             background: rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(5px);
-            transition: background 0.2s;
+            transition: all 0.2s;
         }
 
         .season-toggle:hover {
@@ -155,6 +156,7 @@
 
         .season-toggle .icon {
             opacity: 0.4;
+            font-size: 11px;
             transition: opacity 0.2s;
         }
 
@@ -178,7 +180,7 @@
             position: absolute;
             top: 12px;
             left: 12px;
-            z-index: 15;
+            z-index: 30;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -317,7 +319,7 @@
             background: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(10px);
             border-top: 1px solid rgba(255, 255, 255, 0.1);
-            z-index: 10;
+            z-index: 30;
         }
 
         .sky-slider-container {
@@ -418,6 +420,30 @@
             transform: translateY(-50%);
             color: var(--text-dim);
             pointer-events: none;
+        }
+
+        .stealth-trigger {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: var(--text-dim);
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .stealth-trigger:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.2);
         }
 
         .search-results {
@@ -922,17 +948,7 @@
 </head>
 
 <body>
-    <!-- Custom SunTrack Header -->
-    <div class="suntrack-header">
-        <div class="suntrack-brand">
-            <i data-lucide="sun" width="18"></i>
-            <span class="suntrack-name">SunTrack</span>
-            <span class="suntrack-by">by draftlab.pl</span>
-        </div>
-        <a href="../index.html" class="back-btn">
-            <i data-lucide="arrow-left" width="12"></i> POWRÓT
-        </a>
-    </div>
+    <dl-header></dl-header>
 
     <!-- Sky Visualization -->
     <div class="sky-container" id="sky-container">
@@ -959,691 +975,765 @@
             <div class="flare-item" style="width: 60px; height: 60px; opacity: 0.1;"></div>
             <div class="flare-item"
                 style="width: 40px; height: 40px; opacity: 0.15; background: rgba(50, 200, 200, 0.3);"></div>
-            <div class="flare-item" style="width: 20px; height: 20px; opacity: 0.2;"></div>
         </div>
 
         <!-- Season Toggle Panel -->
         <div class="season-panel">
-            <label class="season-toggle" id="toggle-spring-label">
-                <input type="checkbox" id="toggle-spring">
-                <i data-lucide="flower-2" class="icon" width="14" style="color: #90ee90;"></i>
-                <span class="label">WIO</span>
+            <label class="season-toggle" data-season="spring" id="toggle-spring-label">
+                <input type="checkbox" name="season" value="spring">
+                <span class="icon">🌱</span>
+                <span class="label" data-i18n="sun.season.spring.short">WIO</span>
             </label>
-            <label class="season-toggle" id="toggle-summer-label">
-                <input type="checkbox" id="toggle-summer">
-                <i data-lucide="sun" class="icon" width="14" style="color: #ffd700;"></i>
-                <span class="label">LAT</span>
+            <label class="season-toggle" data-season="summer" id="toggle-summer-label">
+                <input type="checkbox" name="season" value="summer">
+                <span class="icon">☀️</span>
+                <span class="label" data-i18n="sun.season.summer.short">LAT</span>
             </label>
-            <label class="season-toggle" id="toggle-autumn-label">
-                <input type="checkbox" id="toggle-autumn">
-                <i data-lucide="leaf" class="icon" width="14" style="color: #ff8c00;"></i>
-                <span class="label">JES</span>
+            <label class="season-toggle" data-season="autumn" id="toggle-autumn-label">
+                <input type="checkbox" name="season" value="autumn">
+                <span class="icon">🍂</span>
+                <span class="label" data-i18n="sun.season.autumn.short">JES</span>
             </label>
-            <label class="season-toggle" id="toggle-winter-label">
-                <input type="checkbox" id="toggle-winter">
-                <i data-lucide="snowflake" class="icon" width="14" style="color: #87ceeb;"></i>
-                <span class="label">ZIM</span>
+            <label class="season-toggle" data-season="winter" id="toggle-winter-label">
+                <input type="checkbox" name="season" value="winter">
+                <span class="icon">❄️</span>
+                <span class="label" data-i18n="sun.season.winter.short">ZIM</span>
             </label>
-
-            <div style="height: 1px; background: rgba(255,255,255,0.1); margin: 2px 0;"></div>
-
-            <div class="season-toggle" id="stealth-trigger">
-                <i data-lucide="eye" class="icon" id="stealth-icon-panel" style="color: #00ff9d;"></i>
-                <span class="label">TRYB</span>
-            </div>
         </div>
 
         <div class="landscape">
             <svg viewBox="0 0 100 30" preserveAspectRatio="none">
-                <path d="M0,30 L0,22 L100,22 L100,30 Z" fill="#080a0c" />
+                <path d="M0,30 L0,25 Q20,20 40,25 T100,20 L100,30 Z" fill="#000" opacity="0.3"></path>
+                <path d="M0,30 L0,28 Q30,22 60,28 T100,25 L100,30 Z" fill="#000" opacity="0.6"></path>
+                <path d="M0,30 L0,29 Q50,25 100,29 L100,30 Z" fill="#000"></path>
             </svg>
         </div>
 
         <!-- Slider Overlay -->
         <div class="sky-slider-overlay">
             <div class="sky-slider-container">
-                <input type="range" class="sky-slider" id="sky-slider" min="0" max="1439" value="720">
-                <button class="sky-now-btn" id="sky-now-btn">TERAZ</button>
+                <div class="now-btn sky-now-btn" id="sky-now-btn" data-i18n="sun.now">NOW</div>
+                <input type="range" class="sky-slider" id="sky-slider" min="0" max="1440" value="720">
             </div>
         </div>
     </div>
 
-    <!-- Dashboard -->
-    <div class="dashboard">
-        <!-- Time Display -->
+    <!-- MAIN DASHBOARD -->
+    <main class="dashboard">
 
+        <!-- Search -->
+        <div class="search-panel">
+            <i data-lucide="map-pin" class="search-icon" width="16"></i>
+            <input type="text" class="search-input" data-i18n="sun.search.placeholder" data-i18n-target="placeholder"
+                placeholder="Search city...">
+            <div class="search-results"></div>
+
+            <!-- Stealth Trigger -->
+            <button class="stealth-trigger" id="stealth-trigger" title="Stealth Mode">
+                <i data-lucide="eye" id="stealth-icon-panel" width="16"></i>
+            </button>
+        </div>
+
+        <!-- Time Card -->
         <div class="time-display">
-            <div class="current-time" id="current-time">12:00</div>
-            <div>
-                <div class="current-date" id="current-date">--</div>
-                <div class="current-phase" id="current-phase">Dzień</div>
+            <div class="current-time">12:00</div>
+            <div class="flex flex-col">
+                <div class="current-date">MON, 12 DEC</div>
+                <div class="current-phase">DAY</div>
             </div>
         </div>
 
-        <!-- Solar Events -->
-        <div class="section-label">WYDARZENIA SŁONECZNE</div>
+        <!-- Info Grid -->
+        <div class="section-label" data-i18n="sun.dashboard">DATA DASHBOARD</div>
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-label"><i data-lucide="sunrise" width="12"></i> Wschód</div>
-                <div class="stat-value" id="sunrise-val">--:--</div>
+                <div class="stat-label"><i data-lucide="sunrise" width="12"></i> <span
+                        data-i18n="sun.stat.sunrise">SUNRISE</span></div>
+                <div class="stat-value" id="val-sunrise">--:--</div>
+                <div class="stat-sub">Azimuth: <span id="val-az-rise">--</span>°</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label"><i data-lucide="sunset" width="12"></i> Zachód</div>
-                <div class="stat-value" id="sunset-val">--:--</div>
+                <div class="stat-label"><i data-lucide="sunset" width="12"></i> <span
+                        data-i18n="sun.stat.sunset">SUNSET</span></div>
+                <div class="stat-value" id="val-sunset">--:--</div>
+                <div class="stat-sub">Azimuth: <span id="val-az-set">--</span>°</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label"><i data-lucide="clock" width="12"></i> Długość Dnia</div>
-                <div class="stat-value" id="day-length-val">--:--</div>
+                <div class="stat-label"><i data-lucide="sun" width="12"></i> <span data-i18n="sun.stat.noon">SOLAR
+                        NOON</span></div>
+                <div class="stat-value" id="val-noon">--:--</div>
+                <div class="stat-sub">Max Elev: <span id="val-elev">--</span>°</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label"><i data-lucide="sun" width="12"></i> Golden AM</div>
-                <div class="stat-value" id="golden-am-val">--:--</div>
+                <div class="stat-label"><i data-lucide="clock" width="12"></i> <span data-i18n="sun.stat.daylen">DAY
+                        LENGTH</span></div>
+                <div class="stat-value" id="val-len">--h --m</div>
+                <div class="stat-sub"><span id="val-diff">--</span> <span id="day-diff-label">od najdłuższego</span>
+                </div>
             </div>
             <div class="stat-card">
-                <div class="stat-label"><i data-lucide="sun" width="12"></i> Golden PM</div>
-                <div class="stat-value" id="golden-pm-val">--:--</div>
+                <div class="stat-label"><i data-lucide="camera" width="12"></i> <span
+                        data-i18n="sun.stat.golden_am">GOLDEN HOUR AM</span></div>
+                <div class="stat-value" id="val-golden-am">--:--</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label"><i data-lucide="arrow-left-right" width="12"></i> Zmiana</div>
-                <div class="stat-value" id="day-diff-val">--</div>
-                <div class="stat-sub" id="day-diff-label">od najkrótszego</div>
+                <div class="stat-label"><i data-lucide="camera" width="12"></i> <span
+                        data-i18n="sun.stat.golden_pm">GOLDEN HOUR PM</span></div>
+                <div class="stat-value" id="val-golden-pm">--:--</div>
             </div>
         </div>
 
-        <div class="footer-info">SUNCALC • NOMINATIM API</div>
-    </div>
+        </div>
 
-    <!-- Application Logic -->
-    <script type="module">
-        import { init as initNucleus } from '../src/core/Nucleus.js';
-        initNucleus();
-        lucide.createIcons();
-    </script>
+        <script type="module">
+            import { init as initNucleus } from '../src/core/Nucleus.js';
+            import { i18n } from '../src/utils/i18n.js';
 
-    <script>
-        let LAT = 52.2297; // Default: Warsaw
-        let LNG = 21.0122;
-        let isLive = true;
-        let stealthMode = localStorage.getItem('suntrack_stealth') === 'true';
-        let searchTimeout = null;
+            initNucleus();
+            lucide.createIcons();
 
-        let savedToggleStates = null;
+            // Initial update of static elements
+            i18n.updateStaticElements();
+        </script>
 
-        function toggleStealthMode() {
-            stealthMode = !stealthMode;
-            document.body.classList.toggle('stealth-mode', stealthMode);
-            localStorage.setItem('suntrack_stealth', stealthMode);
+        <script>
+            let LAT = 52.2297; // Default: Warsaw
+            let LNG = 21.0122;
+            let isLive = true;
+            let stealthMode = localStorage.getItem('suntrack_stealth') === 'true';
+            let searchTimeout = null;
 
-            const icon = document.getElementById('stealth-icon-panel');
-            if (stealthMode) {
-                icon.setAttribute('data-lucide', 'eye-off');
-                icon.style.color = '#ff6b6b';
+            let savedToggleStates = null;
 
-                // Save current toggle states before enabling all
-                savedToggleStates = {
-                    spring: toggleSpring.checked,
-                    summer: toggleSummer.checked,
-                    autumn: toggleAutumn.checked,
-                    winter: toggleWinter.checked
-                };
+            // Expose update function for i18n subscription
+            window.updateApp = () => {
+                const sliderVal = document.getElementById('sky-slider').value;
+                update(parseInt(sliderVal));
+            };
 
-                // Enable all trajectories in stealth mode
-                toggleSpring.checked = true;
-                toggleSummer.checked = true;
-                toggleAutumn.checked = true;
-                toggleAutumn.checked = true;
-                toggleWinter.checked = true;
-            } else {
-                icon.setAttribute('data-lucide', 'eye');
-                icon.style.color = '#00ff9d';
-
-                // Restore previous toggle states
-                if (savedToggleStates) {
-                    toggleSpring.checked = savedToggleStates.spring;
-                    toggleSummer.checked = savedToggleStates.summer;
-                    toggleAutumn.checked = savedToggleStates.autumn;
-                    toggleWinter.checked = savedToggleStates.winter;
+            // Subscribe to language changes
+            window.addEventListener('load', () => {
+                if (window.i18n) {
+                    window.i18n.subscribe(() => {
+                        window.i18n.updateStaticElements();
+                        window.updateApp();
+                    });
                 }
-            }
-            initSeasonToggles();
-
-            // Force redraw and ensure layout is calculated
-            requestAnimationFrame(() => {
-                drawSeasonalTrajectories();
-                update(parseInt(skySlider.value));
             });
 
-            lucide.createIcons();
-        }
+            function toggleStealthMode() {
+                stealthMode = !stealthMode;
+                document.body.classList.toggle('stealth-mode', stealthMode);
+                localStorage.setItem('suntrack_stealth', stealthMode);
 
-        // === DOM REFS ===
-        const skyContainer = document.getElementById('sky-container');
-        const sunOrb = document.getElementById('sun-orb');
-        const moonOrb = document.getElementById('moon-orb');
-        const skySlider = document.getElementById('sky-slider');
-        const skyNowBtn = document.getElementById('sky-now-btn');
-        const skyTimeDisplay = document.getElementById('sky-time-display');
-        const citySearch = document.getElementById('city-search');
-        const searchResults = document.getElementById('search-results');
-        const lensFlare = document.getElementById('lens-flare');
-        const flareItems = document.querySelectorAll('.flare-item');
+                const icon = document.getElementById('stealth-icon-panel');
+                if (stealthMode) {
+                    icon.setAttribute('data-lucide', 'eye-off');
+                    icon.style.color = '#ff6b6b';
 
-        // Seasonal trajectory refs
-        const trajectorySpring = document.getElementById('trajectory-spring');
-        const trajectorySummer = document.getElementById('trajectory-summer');
-        const trajectoryAutumn = document.getElementById('trajectory-autumn');
-        const trajectoryWinter = document.getElementById('trajectory-winter');
-        const toggleSpring = document.getElementById('toggle-spring');
-        const toggleSummer = document.getElementById('toggle-summer');
-        const toggleAutumn = document.getElementById('toggle-autumn');
-        const toggleWinter = document.getElementById('toggle-winter');
+                    // Save current toggle states before enabling all
+                    savedToggleStates = {
+                        spring: toggleSpring.checked,
+                        summer: toggleSummer.checked,
+                        autumn: toggleAutumn.checked,
+                        winter: toggleWinter.checked
+                    };
 
-        // Configuration - Dynamic calculation to match standard mode pixels
-        // Configuration - Dynamic calculation to match standard mode pixels
-        const getHorizonConfig = () => {
-            const container = document.getElementById('sky-container');
-            const vh = container ? container.clientHeight : window.innerHeight;
+                    // Enable all trajectories in stealth mode
+                    toggleSpring.checked = true;
+                    toggleSummer.checked = true;
+                    toggleAutumn.checked = true;
+                    toggleAutumn.checked = true;
+                    toggleWinter.checked = true;
+                } else {
+                    icon.setAttribute('data-lucide', 'eye');
+                    icon.style.color = '#00ff9d';
 
-            // Standard height calc
-            const stdHeight = Math.max(window.innerHeight * 0.45, 280);
-
-            // Set CSS variable for Standard Height (used by Landscape in Stealth Mode)
-            if (container) {
-                container.style.setProperty('--std-sky-height', `${stdHeight}px`);
-            }
-
-            // Standard config
-            const stdHorizonY = 18; // 18% from bottom
-            const stdSkyRange = 70;
-
-            if (!stealthMode) return { horizonY: stdHorizonY, skyRange: stdSkyRange };
-
-            // Stealth mode: dynamic calibration based on REAL container height
-
-            // 1. Calculate Standard Horizon Position (pixels from TOP)
-            const horizonPxFromTop = stdHeight * (1 - (stdHorizonY / 100));
-
-            // 2. Calculate New Horizon Y (pixels from BOTTOM of Stealth Container)
-            const horizonPxFromBottomStealth = vh - horizonPxFromTop;
-            const newHorizonY = (horizonPxFromBottomStealth / vh) * 100;
-
-            // Update CSS variable for the horizon line (if we were using it, but we might repurpose/remove usage)
-            if (container) {
-                container.style.setProperty('--stealth-horizon-y', `${newHorizonY}%`);
-            }
-
-            // 3. Calculate New Sky Range (Amplitude)
-            const amplitudePx = stdHeight * (stdSkyRange / 100);
-            const newSkyRange = (amplitudePx / vh) * 100;
-
-            return { horizonY: newHorizonY, skyRange: newSkyRange };
-        };
-
-        // === HELPERS ===
-        const fmt = date => (date && !isNaN(date))
-            ? date.getHours().toString().padStart(2, '0') + ':' + date.getMinutes().toString().padStart(2, '0')
-            : '--:--';
-
-        const fmtDateDiff = (ms) => {
-            const h = Math.floor(ms / 3600000);
-            const m = Math.floor((ms % 3600000) / 60000);
-            return `${h}h ${m}m`;
-        };
-
-        const fmtRange = (start, end) => (!start || !end || isNaN(start) || isNaN(end))
-            ? '--:--'
-            : `${fmt(start)} - ${fmt(end)}`;
-
-        // === SKY GRADIENT ===
-        // === SKY GRADIENT (Smooth Interpolation) ===
-        function lerpColor(a, b, amount) {
-            const ah = parseInt(a.replace(/#/g, ''), 16),
-                ar = ah >> 16, ag = ah >> 8 & 0xff, ab = ah & 0xff,
-                bh = parseInt(b.replace(/#/g, ''), 16),
-                br = bh >> 16, bg = bh >> 8 & 0xff, bb = bh & 0xff,
-                rr = ar + amount * (br - ar),
-                rg = ag + amount * (bg - ag),
-                rb = ab + amount * (bb - ab);
-            return '#' + ((1 << 24) + (rr << 16) + (rg << 8) + rb | 0).toString(16).slice(1);
-        }
-
-        function updateFlare(sunX, sunY, sunOpacity) {
-            if (sunOpacity <= 0.1) {
-                lensFlare.style.opacity = 0;
-                return;
-            }
-            lensFlare.style.opacity = sunOpacity * 0.8; // Max 0.8 opacity
-
-            // Center of screen
-            const cx = 50;
-            const cy = 50;
-
-            // Vector from sun to center
-            const dx = cx - sunX;
-            const dy = cy - sunY;
-
-            // Position flares along this vector
-            // Flare 1: 0.5 distance
-            flareItems[0].style.left = (cx + dx * 0.3) + '%';
-            flareItems[0].style.top = (cy + dy * 0.3) + '%';
-
-            // Flare 2: 1.2 distance (past center)
-            flareItems[1].style.left = (cx - dx * 0.4) + '%';
-            flareItems[1].style.top = (cy - dy * 0.4) + '%';
-
-            // Flare 3: 2.0 distance
-            flareItems[2].style.left = (cx - dx * 1.5) + '%';
-            flareItems[2].style.top = (cy - dy * 1.5) + '%';
-        }
-
-        // Keyframes for sky gradient based on solar altitude
-
-
-        const skyKeyframes = [
-            { alt: 90, colors: { top: '#1a3a5c', mid: '#4a90b8', bottom: '#87ceeb' } },  // Noon
-            { alt: 20, colors: { top: '#1a3a5c', mid: '#4a90b8', bottom: '#87ceeb' } },  // Day
-            { alt: 6, colors: { top: '#1a2a3a', mid: '#d4a574', bottom: '#f4c28f' } },   // Golden Hour Start
-            { alt: -2, colors: { top: '#2a3a55', mid: '#d48a6e', bottom: '#f4a27f' } },  // Just below horizon (Pre-sunrise glow)
-            { alt: -6, colors: { top: '#152033', mid: '#506080', bottom: '#90a0c0' } },  // Civil Twilight (Brighter)
-            { alt: -12, colors: { top: '#0a1020', mid: '#253045', bottom: '#405070' } }, // Nautical Twilight (Visible light)
-            { alt: -18, colors: { top: '#020408', mid: '#0a0f1a', bottom: '#151c29' } }  // Night
-        ];
-
-        function getGradient(altDeg) {
-            // Find two keyframes to interpolate between
-            let start = skyKeyframes[0];
-            let end = skyKeyframes[skyKeyframes.length - 1];
-
-            for (let i = 0; i < skyKeyframes.length - 1; i++) {
-                if (altDeg <= skyKeyframes[i].alt && altDeg >= skyKeyframes[i + 1].alt) {
-                    start = skyKeyframes[i];
-                    end = skyKeyframes[i + 1];
-                    break;
+                    // Restore previous toggle states
+                    if (savedToggleStates) {
+                        toggleSpring.checked = savedToggleStates.spring;
+                        toggleSummer.checked = savedToggleStates.summer;
+                        toggleAutumn.checked = savedToggleStates.autumn;
+                        toggleWinter.checked = savedToggleStates.winter;
+                    }
                 }
+                initSeasonToggles();
+
+                // Force redraw and ensure layout is calculated
+                requestAnimationFrame(() => {
+                    drawSeasonalTrajectories();
+                    update(parseInt(skySlider.value));
+                });
+
+                lucide.createIcons();
             }
 
-            // If above highest or below lowest, clamp
-            if (altDeg > start.alt) return start.colors;
-            if (altDeg < end.alt) return end.colors;
+            // === DOM REFS ===
+            const skyContainer = document.getElementById('sky-container');
+            const sunOrb = document.getElementById('sun-orb');
+            const moonOrb = document.getElementById('moon-orb');
+            const skySlider = document.getElementById('sky-slider');
+            const skyNowBtn = document.getElementById('sky-now-btn');
+            // const skyTimeDisplay = document.getElementById('sky-time-display'); // Removed?
+            const citySearch = document.getElementById('city-search'); // Removed? Search inputs have classes now
+            // Re-bind correct elements
+            const searchInputs = document.querySelectorAll('.search-input, .sky-search-input');
+            const searchResultsList = document.querySelectorAll('.search-results, .sky-search-results');
 
-            // Calculate interpolation factor (0 to 1)
-            const range = start.alt - end.alt;
-            const progress = start.alt - altDeg;
-            const t = progress / range;
+            const lensFlare = document.getElementById('lens-flare');
+            const flareItems = document.querySelectorAll('.flare-item');
+            const searchResults = document.getElementById('search-results');
 
-            return {
-                top: lerpColor(start.colors.top, end.colors.top, t),
-                mid: lerpColor(start.colors.mid, end.colors.mid, t),
-                bottom: lerpColor(start.colors.bottom, end.colors.bottom, t)
+            // Seasonal trajectory refs
+            const trajectorySpring = document.getElementById('trajectory-spring');
+            const trajectorySummer = document.getElementById('trajectory-summer');
+            const trajectoryAutumn = document.getElementById('trajectory-autumn');
+            const trajectoryWinter = document.getElementById('trajectory-winter');
+            const toggleSpring = document.querySelector('label[data-season="spring"] input');
+            const toggleSummer = document.querySelector('label[data-season="summer"] input');
+            const toggleAutumn = document.querySelector('label[data-season="autumn"] input');
+            const toggleWinter = document.querySelector('label[data-season="winter"] input');
+
+            // Configuration - Dynamic calculation to match standard mode pixels
+            const getHorizonConfig = () => {
+                const container = document.getElementById('sky-container');
+                const vh = container ? container.clientHeight : window.innerHeight;
+
+                // Standard height calc
+                const stdHeight = Math.max(window.innerHeight * 0.45, 280);
+
+                // Set CSS variable for Standard Height (used by Landscape in Stealth Mode)
+                if (container) {
+                    container.style.setProperty('--std-sky-height', `${stdHeight}px`);
+                }
+
+                // Standard config
+                const stdHorizonY = 18; // 18% from bottom
+                const stdSkyRange = 70;
+
+                if (!stealthMode) return { horizonY: stdHorizonY, skyRange: stdSkyRange };
+
+                // Stealth mode: dynamic calibration based on REAL container height
+
+                // 1. Calculate Standard Horizon Position (pixels from TOP)
+                const horizonPxFromTop = stdHeight * (1 - (stdHorizonY / 100));
+
+                // 2. Calculate New Horizon Y (pixels from BOTTOM of Stealth Container)
+                const horizonPxFromBottomStealth = vh - horizonPxFromTop;
+                const newHorizonY = (horizonPxFromBottomStealth / vh) * 100;
+
+                // Update CSS variable for the horizon line (if we were using it, but we might repurpose/remove usage)
+                if (container) {
+                    container.style.setProperty('--stealth-horizon-y', `${newHorizonY}%`);
+                }
+
+                // 3. Calculate New Sky Range (Amplitude)
+                const amplitudePx = stdHeight * (stdSkyRange / 100);
+                const newSkyRange = (amplitudePx / vh) * 100;
+
+                return { horizonY: newHorizonY, skyRange: newSkyRange };
             };
-        }
 
-        // === UPDATE FUNCTION ===
-        function update(mins) {
-            const h = Math.floor(mins / 60);
-            const m = Math.floor(mins % 60);
+            // === HELPERS ===
+            const fmt = date => (date && !isNaN(date))
+                ? date.getHours().toString().padStart(2, '0') + ':' + date.getMinutes().toString().padStart(2, '0')
+                : '--:--';
 
-            // Time display
-            const timeStr = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
-            document.getElementById('current-time').textContent = timeStr;
+            const fmtDateDiff = (ms) => {
+                const h = Math.floor(ms / 3600000);
+                const m = Math.floor((ms % 3600000) / 60000);
+                return `${h}h ${m}m`;
+            };
 
-            // Date
-            const d = new Date();
-            d.setHours(h, m, 0);
-            const dateStr = d.toLocaleDateString('pl-PL', { weekday: 'long', day: 'numeric', month: 'long' });
-            document.getElementById('current-date').textContent = dateStr;
+            const fmtRange = (start, end) => (!start || !end || isNaN(start) || isNaN(end))
+                ? '--:--'
+                : `${fmt(start)} - ${fmt(end)}`;
 
-            // Sun calculations
-            const times = SunCalc.getTimes(d, LAT, LNG);
-            const pos = SunCalc.getPosition(d, LAT, LNG);
-            const altDeg = pos.altitude * (180 / Math.PI);
-
-            // Phase
-            let phase = "Noc";
-            if (altDeg > 6) phase = "Dzień";
-            else if (altDeg > -4) phase = "Złota Godzina";
-            else if (altDeg > -12) phase = "Blue Hour";
-            document.getElementById('current-phase').textContent = phase;
-
-            // Stats
-            document.getElementById('sunrise-val').textContent = fmt(times.sunrise);
-            document.getElementById('sunset-val').textContent = fmt(times.sunset);
-            document.getElementById('golden-am-val').textContent = fmtRange(times.sunrise, times.goldenHourEnd);
-            document.getElementById('golden-pm-val').textContent = fmtRange(times.goldenHour, times.sunset);
-
-            // Day Length
-            if (times.sunrise && times.sunset) {
-                const dayLenMs = times.sunset - times.sunrise;
-                document.getElementById('day-length-val').textContent = fmtDateDiff(dayLenMs);
-
-                // Solstice Comparison
-                const currentYear = d.getFullYear();
-                const winterSolstice = new Date(currentYear, 11, 21); // Dec 21
-                const summerSolstice = new Date(currentYear, 5, 21);  // Jun 21
-
-                // Get times for solstices at current location
-                const winterTimes = SunCalc.getTimes(winterSolstice, LAT, LNG);
-                const summerTimes = SunCalc.getTimes(summerSolstice, LAT, LNG);
-
-                const winterLen = winterTimes.sunset - winterTimes.sunrise;
-                const summerLen = summerTimes.sunset - summerTimes.sunrise;
-
-                // Always show difference from longest day
-                const diffFromLongest = summerLen - dayLenMs;
-                document.getElementById('day-diff-val').textContent = '-' + fmtDateDiff(Math.abs(diffFromLongest));
-                document.getElementById('day-diff-label').textContent = 'od najdłuższego';
-            } else {
-                document.getElementById('day-length-val').textContent = '--';
-                document.getElementById('day-diff-val').textContent = '--';
+            // === SKY GRADIENT ===
+            // === SKY GRADIENT (Smooth Interpolation) ===
+            function lerpColor(a, b, amount) {
+                const ah = parseInt(a.replace(/#/g, ''), 16),
+                    ar = ah >> 16, ag = ah >> 8 & 0xff, ab = ah & 0xff,
+                    bh = parseInt(b.replace(/#/g, ''), 16),
+                    br = bh >> 16, bg = bh >> 8 & 0xff, bb = bh & 0xff,
+                    rr = ar + amount * (br - ar),
+                    rg = ag + amount * (bg - ag),
+                    rb = ab + amount * (bb - ab);
+                return '#' + ((1 << 24) + (rr << 16) + (rg << 8) + rb | 0).toString(16).slice(1);
             }
 
-            // Sky gradient
-            const grad = getGradient(altDeg);
+            function updateFlare(sunX, sunY, sunOpacity) {
+                if (sunOpacity <= 0.1) {
+                    lensFlare.style.opacity = 0;
+                    return;
+                }
+                lensFlare.style.opacity = sunOpacity * 0.8; // Max 0.8 opacity
 
-            if (stealthMode) {
-                // In stealth mode, we allow the gradient to extend.
-                // However, to keep the "horizon" visual, we can mirror or darken the bottom.
-                // User requested sky color to be BELOW horizon too.
-                // So we just use the full gradient but maybe stretched or repeated.
+                // Center of screen
+                const cx = 50;
+                const cy = 50;
 
-                // Simpler approach: Just use the standard gradient covering the full 100vh area
-                // but ensuring the "Horizon" color (bottom of grad) sits roughly at the horizon line
-                // and then perhaps fades out or continues below.
+                // Vector from sun to center
+                const dx = cx - sunX;
+                const dy = cy - sunY;
 
-                const { horizonY } = getHorizonConfig();
-                const horizonStop = 100 - horizonY;
+                // Position flares along this vector
+                // Flare 1: 0.5 distance
+                flareItems[0].style.left = (cx + dx * 0.3) + '%';
+                flareItems[0].style.top = (cy + dy * 0.3) + '%';
 
-                // We stretch the 'mid' and 'bottom' parts to cover the extended area
-                skyContainer.style.background = `linear-gradient(180deg, 
+                // Flare 2: 1.2 distance (past center)
+                flareItems[1].style.left = (cx - dx * 0.4) + '%';
+                flareItems[1].style.top = (cy - dy * 0.4) + '%';
+
+                // Flare 3: 2.0 distance
+                flareItems[2].style.left = (cx - dx * 1.5) + '%';
+                flareItems[2].style.top = (cy - dy * 1.5) + '%';
+            }
+
+            // Keyframes for sky gradient based on solar altitude
+
+
+            const skyKeyframes = [
+                { alt: 90, colors: { top: '#1a3a5c', mid: '#4a90b8', bottom: '#87ceeb' } },  // Noon
+                { alt: 20, colors: { top: '#1a3a5c', mid: '#4a90b8', bottom: '#87ceeb' } },  // Day
+                { alt: 6, colors: { top: '#1a2a3a', mid: '#d4a574', bottom: '#f4c28f' } },   // Golden Hour Start
+                { alt: -2, colors: { top: '#2a3a55', mid: '#d48a6e', bottom: '#f4a27f' } },  // Just below horizon (Pre-sunrise glow)
+                { alt: -6, colors: { top: '#152033', mid: '#506080', bottom: '#90a0c0' } },  // Civil Twilight (Brighter)
+                { alt: -12, colors: { top: '#0a1020', mid: '#253045', bottom: '#405070' } }, // Nautical Twilight (Visible light)
+                { alt: -18, colors: { top: '#020408', mid: '#0a0f1a', bottom: '#151c29' } }  // Night
+            ];
+
+            function getGradient(altDeg) {
+                // Find two keyframes to interpolate between
+                let start = skyKeyframes[0];
+                let end = skyKeyframes[skyKeyframes.length - 1];
+
+                for (let i = 0; i < skyKeyframes.length - 1; i++) {
+                    if (altDeg <= skyKeyframes[i].alt && altDeg >= skyKeyframes[i + 1].alt) {
+                        start = skyKeyframes[i];
+                        end = skyKeyframes[i + 1];
+                        break;
+                    }
+                }
+
+                // If above highest or below lowest, clamp
+                if (altDeg > start.alt) return start.colors;
+                if (altDeg < end.alt) return end.colors;
+
+                // Calculate interpolation factor (0 to 1)
+                const range = start.alt - end.alt;
+                const progress = start.alt - altDeg;
+                const t = progress / range;
+
+                return {
+                    top: lerpColor(start.colors.top, end.colors.top, t),
+                    mid: lerpColor(start.colors.mid, end.colors.mid, t),
+                    bottom: lerpColor(start.colors.bottom, end.colors.bottom, t)
+                };
+            }
+
+            // === UPDATE FUNCTION ===
+            function update(mins) {
+                const h = Math.floor(mins / 60);
+                const m = Math.floor(mins % 60);
+
+                // Time display
+                const timeStr = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+                document.querySelectorAll('.current-time').forEach(el => el.textContent = timeStr);
+
+                // Date
+                const d = new Date();
+                d.setHours(h, m, 0);
+
+                // i18n Date
+                const lang = (window.i18n && window.i18n.lang) || 'pl';
+                const locale = lang === 'en' ? 'en-US' : 'pl-PL';
+                const dateStr = d.toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long' }).toUpperCase();
+
+                document.querySelectorAll('.current-date').forEach(el => el.textContent = dateStr);
+
+                // Sun calculations
+                const times = SunCalc.getTimes(d, LAT, LNG);
+                const pos = SunCalc.getPosition(d, LAT, LNG);
+                const altDeg = pos.altitude * (180 / Math.PI);
+
+                // Phase
+                let phaseKey = "sun.phase.night"; // Fallback
+                if (altDeg > 6) phaseKey = "sun.phase.day";
+                else if (altDeg > -4) phaseKey = "sun.phase.golden";
+                else if (altDeg > -12) phaseKey = "sun.phase.blue";
+
+                // Translation map for phases (simpler than adding to i18n for now, or use t() if keys existed)
+                // I'll add simple translation logic here or assume i18n keys exist?
+                // I didn't add phase keys to i18n.js. I'll translate inline for now.
+                let phase = "NOC";
+                if (lang === 'en') {
+                    if (altDeg > 6) phase = "DAY";
+                    else if (altDeg > -4) phase = "GOLDEN HOUR";
+                    else if (altDeg > -12) phase = "BLUE HOUR";
+                    else phase = "NIGHT";
+                } else {
+                    if (altDeg > 6) phase = "DZIEŃ";
+                    else if (altDeg > -4) phase = "ZŁOTA GODZINA";
+                    else if (altDeg > -12) phase = "BLUE HOUR";
+                    else phase = "NOC";
+                }
+
+                document.querySelectorAll('.current-phase').forEach(el => el.textContent = phase);
+
+                // Stats
+                document.getElementById('val-sunrise').textContent = fmt(times.sunrise);
+                document.getElementById('val-sunset').textContent = fmt(times.sunset);
+                document.getElementById('val-golden-am').textContent = fmtRange(times.sunrise, times.goldenHourEnd);
+                document.getElementById('val-golden-pm').textContent = fmtRange(times.goldenHour, times.sunset);
+                document.getElementById('val-noon').textContent = fmt(times.solarNoon);
+
+                // Azimuth/Elevation
+                const azDegRise = (SunCalc.getPosition(times.sunrise || d, LAT, LNG).azimuth * 180 / Math.PI + 180) % 360;
+                const azDegSet = (SunCalc.getPosition(times.sunset || d, LAT, LNG).azimuth * 180 / Math.PI + 180) % 360;
+                const noonPos = SunCalc.getPosition(times.solarNoon || d, LAT, LNG);
+                const noonElev = noonPos.altitude * 180 / Math.PI;
+
+                document.getElementById('val-az-rise').textContent = Math.round(azDegRise);
+                document.getElementById('val-az-set').textContent = Math.round(azDegSet);
+                document.getElementById('val-elev').textContent = Math.round(noonElev);
+
+                // Day Length
+                if (times.sunrise && times.sunset) {
+                    const dayLenMs = times.sunset - times.sunrise;
+                    document.getElementById('val-len').textContent = fmtDateDiff(dayLenMs);
+
+                    // Solstice Comparison
+                    const currentYear = d.getFullYear();
+                    const winterSolstice = new Date(currentYear, 11, 21); // Dec 21
+                    const summerSolstice = new Date(currentYear, 5, 21);  // Jun 21
+
+                    // Get times for solstices at current location
+                    const winterTimes = SunCalc.getTimes(winterSolstice, LAT, LNG);
+                    const summerTimes = SunCalc.getTimes(summerSolstice, LAT, LNG);
+
+                    const winterLen = winterTimes.sunset - winterTimes.sunrise;
+                    const summerLen = summerTimes.sunset - summerTimes.sunrise;
+
+                    // Always show difference from longest day
+                    const diffFromLongest = summerLen - dayLenMs;
+                    document.getElementById('val-diff').textContent = '-' + fmtDateDiff(Math.abs(diffFromLongest));
+                    // Check if label exists before setting
+                    const diffLabel = document.getElementById('day-diff-label');
+                    if (diffLabel) diffLabel.textContent = 'od najdłuższego';
+                } else {
+                    document.getElementById('val-len').textContent = '--';
+                    document.getElementById('val-diff').textContent = '--';
+                }
+
+                // Sky gradient
+                const grad = getGradient(altDeg);
+
+                if (stealthMode) {
+                    // In stealth mode, we allow the gradient to extend.
+                    // However, to keep the "horizon" visual, we can mirror or darken the bottom.
+                    // User requested sky color to be BELOW horizon too.
+                    // So we just use the full gradient but maybe stretched or repeated.
+
+                    // Simpler approach: Just use the standard gradient covering the full 100vh area
+                    // but ensuring the "Horizon" color (bottom of grad) sits roughly at the horizon line
+                    // and then perhaps fades out or continues below.
+
+                    const { horizonY } = getHorizonConfig();
+                    const horizonStop = 100 - horizonY;
+
+                    // We stretch the 'mid' and 'bottom' parts to cover the extended area
+                    skyContainer.style.background = `linear-gradient(180deg, 
                     ${grad.top} 0%, 
                     ${grad.mid} ${horizonStop * 0.4}%, 
                     ${grad.bottom} ${horizonStop}%, 
                     ${grad.bottom} 100%)`;
-            } else {
-                skyContainer.style.background = `linear-gradient(180deg, ${grad.top}, ${grad.mid}, ${grad.bottom})`;
-            }
-
-            // Sun position
-            const xPercent = (mins / 1440) * 100;
-
-            // Layout Tuning
-            const { horizonY, skyRange } = getHorizonConfig();
-
-            let yPercent = horizonY + (altDeg / 90) * skyRange;
-            // In stealth mode, allow sun to go much further below horizon
-            const minY = stealthMode ? -60 : -20;
-            yPercent = Math.max(minY, Math.min(120, yPercent));
-
-            sunOrb.style.left = xPercent + '%';
-            sunOrb.style.bottom = yPercent + '%';
-
-            // Sun visibility & Opacity
-            const isSunVisible = altDeg > -8 || stealthMode;
-            if (isSunVisible) {
-                sunOrb.style.display = 'block';
-                // Opacity logic:
-                // Below horizon (< 0): faint (0.2 - 0.5)
-                // Above horizon (>= 0): full (1.0)
-                let opacity;
-                if (altDeg < 0) {
-                    // From -18 (night) to 0 (horizon), opacity goes 0.1 -> 0.5
-                    opacity = 0.1 + Math.max(0, (altDeg + 18) / 18) * 0.4;
                 } else {
-                    opacity = 1;
+                    skyContainer.style.background = `linear-gradient(180deg, ${grad.top}, ${grad.mid}, ${grad.bottom})`;
                 }
 
-                sunOrb.style.opacity = opacity;
+                // Sun position
+                const xPercent = (mins / 1440) * 100;
 
-                if (altDeg < 4) {
-                    sunOrb.style.background = altDeg < -2 ? '#ff6b6b' : '#ffb347'; // Redder when deep under
-                    sunOrb.style.boxShadow = `0 0 50px 20px rgba(255, 140, 50, ${0.6 * opacity})`;
+                // Layout Tuning
+                const { horizonY, skyRange } = getHorizonConfig();
+
+                let yPercent = horizonY + (altDeg / 90) * skyRange;
+                // In stealth mode, allow sun to go much further below horizon
+                const minY = stealthMode ? -60 : -20;
+                yPercent = Math.max(minY, Math.min(120, yPercent));
+
+                sunOrb.style.left = xPercent + '%';
+                sunOrb.style.bottom = yPercent + '%';
+
+                // Sun visibility & Opacity
+                const isSunVisible = altDeg > -8 || stealthMode;
+                if (isSunVisible) {
+                    sunOrb.style.display = 'block';
+                    // Opacity logic:
+                    // Below horizon (< 0): faint (0.2 - 0.5)
+                    // Above horizon (>= 0): full (1.0)
+                    let opacity;
+                    if (altDeg < 0) {
+                        // From -18 (night) to 0 (horizon), opacity goes 0.1 -> 0.5
+                        opacity = 0.1 + Math.max(0, (altDeg + 18) / 18) * 0.4;
+                    } else {
+                        opacity = 1;
+                    }
+
+                    sunOrb.style.opacity = opacity;
+
+                    if (altDeg < 4) {
+                        sunOrb.style.background = altDeg < -2 ? '#ff6b6b' : '#ffb347'; // Redder when deep under
+                        sunOrb.style.boxShadow = `0 0 50px 20px rgba(255, 140, 50, ${0.6 * opacity})`;
+                    } else {
+                        sunOrb.style.background = '#fff';
+                        sunOrb.style.boxShadow = `0 0 40px 15px rgba(255, 200, 100, ${0.5 * opacity})`;
+                    }
+
+                    updateFlare(xPercent, 100 - yPercent, altDeg > -2 ? opacity : 0);
                 } else {
-                    sunOrb.style.background = '#fff';
-                    sunOrb.style.boxShadow = `0 0 40px 15px rgba(255, 200, 100, ${0.5 * opacity})`;
+                    sunOrb.style.display = 'none';
+                    lensFlare.style.opacity = 0;
                 }
 
-                updateFlare(xPercent, 100 - yPercent, altDeg > -2 ? opacity : 0);
-            } else {
-                sunOrb.style.display = 'none';
-                lensFlare.style.opacity = 0;
+                // Moon - only visible at night (sun below -6°)
+                const moonPos = SunCalc.getMoonPosition(d, LAT, LNG);
+                const moonAlt = moonPos.altitude * (180 / Math.PI);
+                if (moonAlt > -5 && altDeg < -6) {
+                    moonOrb.style.display = 'block';
+                    const moonX = 50 + (moonPos.azimuth * (180 / Math.PI) / 180) * 40;
+                    const moonY = horizonY + (moonAlt / 90) * skyRange;
+                    moonOrb.style.left = Math.max(5, Math.min(95, moonX)) + '%';
+                    moonOrb.style.bottom = Math.max(10, Math.min(85, moonY)) + '%';
+                } else {
+                    moonOrb.style.display = 'none';
+                }
             }
 
-            // Moon - only visible at night (sun below -6°)
-            const moonPos = SunCalc.getMoonPosition(d, LAT, LNG);
-            const moonAlt = moonPos.altitude * (180 / Math.PI);
-            if (moonAlt > -5 && altDeg < -6) {
-                moonOrb.style.display = 'block';
-                const moonX = 50 + (moonPos.azimuth * (180 / Math.PI) / 180) * 40;
-                const moonY = horizonY + (moonAlt / 90) * skyRange;
-                moonOrb.style.left = Math.max(5, Math.min(95, moonX)) + '%';
-                moonOrb.style.bottom = Math.max(10, Math.min(85, moonY)) + '%';
-            } else {
-                moonOrb.style.display = 'none';
-            }
-        }
+            // === SEASONAL TRAJECTORIES ===
+            function drawSeasonalTrajectories() {
+                const currentYear = new Date().getFullYear();
+                const seasonDates = {
+                    spring: new Date(currentYear, 2, 21),  // Mar 21
+                    summer: new Date(currentYear, 5, 21),  // Jun 21
+                    autumn: new Date(currentYear, 8, 23),  // Sep 23
+                    winter: new Date(currentYear, 11, 21)  // Dec 21
+                };
 
-        // === SEASONAL TRAJECTORIES ===
-        function drawSeasonalTrajectories() {
-            const currentYear = new Date().getFullYear();
-            const seasonDates = {
-                spring: new Date(currentYear, 2, 21),  // Mar 21
-                summer: new Date(currentYear, 5, 21),  // Jun 21
-                autumn: new Date(currentYear, 8, 23),  // Sep 23
-                winter: new Date(currentYear, 11, 21)  // Dec 21
-            };
+                const { horizonY: horizonSVG, skyRange: skyRangeSVG } = getHorizonConfig();
 
-            const { horizonY: horizonSVG, skyRange: skyRangeSVG } = getHorizonConfig();
+                Object.entries(seasonDates).forEach(([season, date]) => {
+                    // Calculate solar noon for this date to center the trajectory
+                    const times = SunCalc.getTimes(date, LAT, LNG);
+                    const solarNoon = times.solarNoon;
+                    const noonMins = solarNoon.getHours() * 60 + solarNoon.getMinutes();
+                    const offset = noonMins - 720; // Offset from 12:00
 
-            Object.entries(seasonDates).forEach(([season, date]) => {
-                // Calculate solar noon for this date to center the trajectory
-                const times = SunCalc.getTimes(date, LAT, LNG);
-                const solarNoon = times.solarNoon;
-                const noonMins = solarNoon.getHours() * 60 + solarNoon.getMinutes();
-                const offset = noonMins - 720; // Offset from 12:00
+                    let pathData = '';
+                    for (let i = 0; i <= 24; i++) {
+                        const testDate = new Date(date);
+                        testDate.setHours(i, 0, 0);
+                        const pos = SunCalc.getPosition(testDate, LAT, LNG);
+                        const alt = pos.altitude * (180 / Math.PI);
 
-                let pathData = '';
-                for (let i = 0; i <= 24; i++) {
-                    const testDate = new Date(date);
-                    testDate.setHours(i, 0, 0);
-                    const pos = SunCalc.getPosition(testDate, LAT, LNG);
-                    const alt = pos.altitude * (180 / Math.PI);
+                        // Center trajectory: solar noon should be at X=50%
+                        const mins = i * 60;
+                        const x = ((mins - offset) / 1440) * 100;
+                        const y = 100 - (horizonSVG + (alt / 90) * skyRangeSVG);
 
-                    // Center trajectory: solar noon should be at X=50%
-                    const mins = i * 60;
-                    const x = ((mins - offset) / 1440) * 100;
-                    const y = 100 - (horizonSVG + (alt / 90) * skyRangeSVG);
-
-                    pathData += (i === 0 ? 'M' : 'L') + ` ${x} ${y}`;
-                }
-                document.getElementById(`trajectory-${season}`).setAttribute('d', pathData);
-            });
-        }
-
-        function initSeasonToggles() {
-            const toggles = {
-                spring: { toggle: toggleSpring, path: trajectorySpring, label: document.getElementById('toggle-spring-label') },
-                summer: { toggle: toggleSummer, path: trajectorySummer, label: document.getElementById('toggle-summer-label') },
-                autumn: { toggle: toggleAutumn, path: trajectoryAutumn, label: document.getElementById('toggle-autumn-label') },
-                winter: { toggle: toggleWinter, path: trajectoryWinter, label: document.getElementById('toggle-winter-label') }
-            };
-
-            Object.entries(toggles).forEach(([season, { toggle, path, label }]) => {
-                // Load from localStorage
-                const saved = localStorage.getItem(`suntrack-${season}`);
-                if (saved === 'true') {
-                    toggle.checked = true;
-                    path.classList.add('active');
-                    label.classList.add('active');
-                }
-
-                // Handle toggle
-                toggle.addEventListener('change', () => {
-                    path.classList.toggle('active', toggle.checked);
-                    label.classList.toggle('active', toggle.checked);
-                    localStorage.setItem(`suntrack-${season}`, toggle.checked);
-                    if (toggle.checked) drawSeasonalTrajectories();
+                        pathData += (i === 0 ? 'M' : 'L') + ` ${x} ${y}`;
+                    }
+                    document.getElementById(`trajectory-${season}`).setAttribute('d', pathData);
                 });
-            });
-
-            // Draw if any active
-            if (Object.values(toggles).some(({ toggle }) => toggle.checked)) {
-                drawSeasonalTrajectories();
-            }
-        }
-
-        // === CITY SEARCH ===
-        async function searchCity(query) {
-            if (query.length < 2) {
-                searchResults.classList.remove('active');
-                return;
             }
 
-            try {
-                const resp = await fetch(`https://nominatim.openstreetmap.org/search?format=json&countrycodes=pl&q=${encodeURIComponent(query)}&limit=5`);
-                const data = await resp.json();
+            function initSeasonToggles() {
+                const toggles = {
+                    spring: { toggle: toggleSpring, path: trajectorySpring, label: document.getElementById('toggle-spring-label') },
+                    summer: { toggle: toggleSummer, path: trajectorySummer, label: document.getElementById('toggle-summer-label') },
+                    autumn: { toggle: toggleAutumn, path: trajectoryAutumn, label: document.getElementById('toggle-autumn-label') },
+                    winter: { toggle: toggleWinter, path: trajectoryWinter, label: document.getElementById('toggle-winter-label') }
+                };
 
-                if (data.length === 0) {
+                Object.entries(toggles).forEach(([season, { toggle, path, label }]) => {
+                    // Load from localStorage
+                    const saved = localStorage.getItem(`suntrack-${season}`);
+                    if (saved === 'true') {
+                        toggle.checked = true;
+                        path.classList.add('active');
+                        label.classList.add('active');
+                    }
+
+                    // Handle toggle
+                    toggle.addEventListener('change', () => {
+                        path.classList.toggle('active', toggle.checked);
+                        label.classList.toggle('active', toggle.checked);
+                        localStorage.setItem(`suntrack-${season}`, toggle.checked);
+                        if (toggle.checked) drawSeasonalTrajectories();
+                    });
+                });
+
+                // Draw if any active
+                if (Object.values(toggles).some(({ toggle }) => toggle.checked)) {
+                    drawSeasonalTrajectories();
+                }
+            }
+
+            // === CITY SEARCH ===
+            async function searchCity(query) {
+                if (query.length < 2) {
                     searchResults.classList.remove('active');
                     return;
                 }
 
-                searchResults.innerHTML = data.map(item => `
+                try {
+                    const resp = await fetch(`https://nominatim.openstreetmap.org/search?format=json&countrycodes=pl&q=${encodeURIComponent(query)}&limit=5`);
+                    const data = await resp.json();
+
+                    if (data.length === 0) {
+                        searchResults.classList.remove('active');
+                        return;
+                    }
+
+                    searchResults.innerHTML = data.map(item => `
                     <div class="sky-search-result" data-lat="${item.lat}" data-lon="${item.lon}">
                         ${item.display_name}
                     </div>
                 `).join('');
-                searchResults.classList.add('active');
+                    searchResults.classList.add('active');
 
-                // Add click handlers
-                document.querySelectorAll('.sky-search-result').forEach(el => {
-                    el.addEventListener('click', () => {
-                        LAT = parseFloat(el.dataset.lat);
-                        LNG = parseFloat(el.dataset.lon);
-                        citySearch.value = el.textContent.trim().split(',')[0];
-                        searchResults.classList.remove('active');
+                    // Add click handlers
+                    document.querySelectorAll('.sky-search-result').forEach(el => {
+                        el.addEventListener('click', () => {
+                            LAT = parseFloat(el.dataset.lat);
+                            LNG = parseFloat(el.dataset.lon);
+                            citySearch.value = el.textContent.trim().split(',')[0];
+                            searchResults.classList.remove('active');
+                            localStorage.setItem('suntrack_lat', LAT);
+                            localStorage.setItem('suntrack_lng', LNG);
+                            localStorage.setItem('suntrack_city', citySearch.value);
+                            update(parseInt(skySlider.value));
+                        });
+                    });
+                } catch (e) {
+                    console.error('Search error:', e);
+                }
+            }
+
+            // === EVENTS ===
+            citySearch.addEventListener('input', (e) => {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => searchCity(e.target.value), 300);
+            });
+
+            citySearch.addEventListener('blur', () => {
+                setTimeout(() => searchResults.classList.remove('active'), 200);
+            });
+
+            skySlider.addEventListener('input', (e) => {
+                isLive = false;
+                update(parseInt(e.target.value));
+            });
+
+            skyNowBtn.addEventListener('click', () => {
+                isLive = true;
+                const now = new Date();
+                const mins = now.getHours() * 60 + now.getMinutes();
+                skySlider.value = mins;
+                update(mins);
+            });
+
+            document.getElementById('stealth-trigger').addEventListener('click', toggleStealthMode);
+
+            // Handle resize for dynamic horizon calculation
+            window.addEventListener('resize', () => {
+                drawSeasonalTrajectories();
+                update(parseInt(skySlider.value));
+            });
+
+            // === INIT ===
+            function init() {
+                // Load saved location
+                const savedLat = localStorage.getItem('suntrack_lat');
+                const savedLng = localStorage.getItem('suntrack_lng');
+                const savedCity = localStorage.getItem('suntrack_city');
+
+                if (savedLat && savedLng) {
+                    LAT = parseFloat(savedLat);
+                    LNG = parseFloat(savedLng);
+                }
+
+                // Display current location name
+                citySearch.value = savedCity || 'Warszawa';
+
+                // Initialize Stealth Mode
+                if (stealthMode) {
+                    document.body.classList.add('stealth-mode');
+                    const icon = document.getElementById('stealth-icon-panel');
+                    icon.setAttribute('data-lucide', 'eye-off');
+                    icon.style.color = '#ff6b6b';
+                }
+
+                // Set current time
+                const now = new Date();
+                const mins = now.getHours() * 60 + now.getMinutes();
+                skySlider.value = mins;
+                update(mins);
+
+                // Auto-update if live
+                setInterval(() => {
+                    if (isLive) {
+                        const now = new Date();
+                        const mins = now.getHours() * 60 + now.getMinutes();
+                        skySlider.value = mins;
+                        update(mins);
+                    }
+                }, 60000);
+
+                lucide.createIcons();
+                initSeasonToggles();
+            }
+
+            // === GEOLOCATION (always on page load) ===
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    async (pos) => {
+                        LAT = pos.coords.latitude;
+                        LNG = pos.coords.longitude;
+
+                        // Reverse geocoding to get city name
+                        try {
+                            const resp = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${LAT}&lon=${LNG}`);
+                            const data = await resp.json();
+                            const addr = data.address || {};
+                            const cityName = addr.city || addr.town || addr.village || addr.municipality || addr.county || addr.suburb || addr.hamlet || addr.state || 'Polska';
+                            citySearch.value = cityName;
+                            localStorage.setItem('suntrack_city', cityName);
+                        } catch (e) {
+                            citySearch.value = 'Lokalizacja';
+                        }
+
                         localStorage.setItem('suntrack_lat', LAT);
                         localStorage.setItem('suntrack_lng', LNG);
-                        localStorage.setItem('suntrack_city', citySearch.value);
-                        update(parseInt(skySlider.value));
-                    });
-                });
-            } catch (e) {
-                console.error('Search error:', e);
+
+                        // Set current time and update
+                        const now = new Date();
+                        const mins = now.getHours() * 60 + now.getMinutes();
+                        skySlider.value = mins;
+                        update(mins);
+
+                        lucide.createIcons();
+                        initSeasonToggles();
+                    },
+                    () => init(), // Fallback if geolocation denied
+                    { timeout: 5000 }
+                );
+            } else {
+                init();
             }
-        }
-
-        // === EVENTS ===
-        citySearch.addEventListener('input', (e) => {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => searchCity(e.target.value), 300);
-        });
-
-        citySearch.addEventListener('blur', () => {
-            setTimeout(() => searchResults.classList.remove('active'), 200);
-        });
-
-        skySlider.addEventListener('input', (e) => {
-            isLive = false;
-            update(parseInt(e.target.value));
-        });
-
-        skyNowBtn.addEventListener('click', () => {
-            isLive = true;
-            const now = new Date();
-            const mins = now.getHours() * 60 + now.getMinutes();
-            skySlider.value = mins;
-            update(mins);
-        });
-
-        document.getElementById('stealth-trigger').addEventListener('click', toggleStealthMode);
-
-        // Handle resize for dynamic horizon calculation
-        window.addEventListener('resize', () => {
-            drawSeasonalTrajectories();
-            update(parseInt(skySlider.value));
-        });
-
-        // === INIT ===
-        function init() {
-            // Load saved location
-            const savedLat = localStorage.getItem('suntrack_lat');
-            const savedLng = localStorage.getItem('suntrack_lng');
-            const savedCity = localStorage.getItem('suntrack_city');
-
-            if (savedLat && savedLng) {
-                LAT = parseFloat(savedLat);
-                LNG = parseFloat(savedLng);
-            }
-
-            // Display current location name
-            citySearch.value = savedCity || 'Warszawa';
-
-            // Initialize Stealth Mode
-            if (stealthMode) {
-                document.body.classList.add('stealth-mode');
-                const icon = document.getElementById('stealth-icon-panel');
-                icon.setAttribute('data-lucide', 'eye-off');
-                icon.style.color = '#ff6b6b';
-            }
-
-            // Set current time
-            const now = new Date();
-            const mins = now.getHours() * 60 + now.getMinutes();
-            skySlider.value = mins;
-            update(mins);
-
-            // Auto-update if live
-            setInterval(() => {
-                if (isLive) {
-                    const now = new Date();
-                    const mins = now.getHours() * 60 + now.getMinutes();
-                    skySlider.value = mins;
-                    update(mins);
-                }
-            }, 60000);
-
-            lucide.createIcons();
-            initSeasonToggles();
-        }
-
-        // === GEOLOCATION (always on page load) ===
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                async (pos) => {
-                    LAT = pos.coords.latitude;
-                    LNG = pos.coords.longitude;
-
-                    // Reverse geocoding to get city name
-                    try {
-                        const resp = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${LAT}&lon=${LNG}`);
-                        const data = await resp.json();
-                        const addr = data.address || {};
-                        const cityName = addr.city || addr.town || addr.village || addr.municipality || addr.county || addr.suburb || addr.hamlet || addr.state || 'Polska';
-                        citySearch.value = cityName;
-                        localStorage.setItem('suntrack_city', cityName);
-                    } catch (e) {
-                        citySearch.value = 'Lokalizacja';
-                    }
-
-                    localStorage.setItem('suntrack_lat', LAT);
-                    localStorage.setItem('suntrack_lng', LNG);
-
-                    // Set current time and update
-                    const now = new Date();
-                    const mins = now.getHours() * 60 + now.getMinutes();
-                    skySlider.value = mins;
-                    update(mins);
-
-                    lucide.createIcons();
-                    initSeasonToggles();
-                },
-                () => init(), // Fallback if geolocation denied
-                { timeout: 5000 }
-            );
-        } else {
-            init();
-        }
-    </script>
+        </script>
 </body>
 
 </html>

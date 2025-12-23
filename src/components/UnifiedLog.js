@@ -47,7 +47,7 @@ class UnifiedLog extends HTMLElement {
 
         // 3. Combine, Deduplicate & Sort
         const combined = [...appLogs, ...sysLogs];
-        
+
         // Deduplicate by desc (same message = same change)
         const seen = new Set();
         const unique = combined.filter(log => {
@@ -56,7 +56,7 @@ class UnifiedLog extends HTMLElement {
             seen.add(key);
             return true;
         });
-        
+
         this.combinedLogs = unique.sort((a, b) => new Date(b.date) - new Date(a.date));
     }
 
@@ -83,14 +83,13 @@ class UnifiedLog extends HTMLElement {
 
         const logsHtml = slicedLogs.map(log => {
             let typeColor = 'text-tech-dim';
-            if (log.type === 'FEAT' || log.type === 'FEATURE' || log.type === 'INIT') typeColor = 'text-tech-green';
-            if (log.type === 'MAJOR' || log.type === 'CORE') typeColor = 'text-yellow-400';
-            if (log.type === 'FIX' || log.type === 'HOTFIX') typeColor = 'text-blue-400';
-            if (log.type === 'STYLE' || log.type === 'VISUAL') typeColor = 'text-purple-400';
-            if (log.type === 'REVERT') typeColor = 'text-red-400';
+            let typeBg = 'bg-tech-dim/10';
 
-            const icon = log.source === 'APP' ? 'database' : 'git-branch';
-            const metaInfo = log.hash ? `#${log.hash}` : (log.source === 'APP' ? 'v' + (log.raw.version || '?') : '');
+            if (log.type === 'FEAT' || log.type === 'FEATURE' || log.type === 'INIT') { typeColor = 'text-tech-green'; typeBg = 'bg-tech-green/10'; }
+            if (log.type === 'MAJOR' || log.type === 'CORE') { typeColor = 'text-yellow-400'; typeBg = 'bg-yellow-400/10'; }
+            if (log.type === 'FIX' || log.type === 'HOTFIX') { typeColor = 'text-blue-400'; typeBg = 'bg-blue-400/10'; }
+            if (log.type === 'STYLE' || log.type === 'VISUAL') { typeColor = 'text-purple-400'; typeBg = 'bg-purple-400/10'; }
+            if (log.type === 'REVERT') { typeColor = 'text-red-400'; typeBg = 'bg-red-400/10'; }
 
             // Format Date: "YYYY-MM-DD HH:MM" -> split
             const dateTime = log.date.split(' ');
@@ -98,28 +97,30 @@ class UnifiedLog extends HTMLElement {
             const timeStr = dateTime[1] || '';
 
             return `
-            <div class="group relative pl-6 pb-6 border-l border-tech-gray last:border-0 last:pb-0">
-                <div class="absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-full bg-[#0f0f0f] border border-tech-gray group-hover:border-tech-green group-hover:bg-tech-green transition-all"></div>
-                
-                <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-1">
-                    <div class="flex items-center gap-3">
-                        <div class="flex items-center gap-1.5 text-[10px] font-mono text-tech-dim opacity-70">
-                            <span>${dateStr}</span>
-                            <span class="text-tech-green/80">${timeStr}</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                             <i data-lucide="${icon}" width="10" class="text-tech-dim/50"></i>
-                             <span class="text-xs text-white font-bold tracking-wide">${log.component}</span>
-                        </div>
-                        <span class="text-[9px] font-bold px-1.5 py-0.5 border border-white/10 rounded ${typeColor}">${log.type}</span>
+            <tr class="hover:bg-white/[0.02] transition-colors group">
+                <td class="py-3 px-6 border-r border-tech-gray/10 text-tech-dim">
+                    <div class="flex flex-col">
+                        <span class="font-bold text-white/70 group-hover:text-white transition-colors">${dateStr}</span>
+                        <span class="text-[10px] opacity-50">${timeStr}</span>
                     </div>
-                     <span class="text-[9px] font-mono text-tech-dim/40 hidden sm:inline-block">${metaInfo}</span>
-                </div>
-                
-                <p class="text-tech-dim text-xs leading-relaxed max-w-2xl group-hover:text-tech-dim/90 transition-colors">
-                    ${log.desc}
-                </p>
-            </div>
+                </td>
+                <td class="py-3 px-4 border-r border-tech-gray/10 text-center">
+                    <span class="text-[10px] font-bold tracking-wider text-white bg-white/5 px-2 py-1 rounded border border-white/5 group-hover:border-white/20 transition-colors">
+                        ${log.component}
+                    </span>
+                </td>
+                <td class="py-3 px-4 border-r border-tech-gray/10 text-center">
+                     <span class="text-[10px] font-bold px-2 py-1 rounded border border-transparent ${typeColor} ${typeBg}">
+                        ${log.type}
+                     </span>
+                </td>
+                <td class="py-3 px-6">
+                    <p class="text-white/80 leading-relaxed max-w-2xl group-hover:text-white transition-colors">
+                        ${log.desc}
+                    </p>
+                    ${log.hash ? `<span class="text-[10px] text-tech-dim/30 mt-1 block">SHA: ${log.hash}</span>` : ''}
+                </td>
+            </tr>
             `;
         }).join('');
 
@@ -140,8 +141,20 @@ class UnifiedLog extends HTMLElement {
                 </div>
 
                 <!-- Content -->
-                <div class="p-6 md:p-8">
-                     ${logsHtml.length > 0 ? logsHtml : '<div class="text-center text-tech-dim text-xs py-8">Brak wpisów dla wybranych kryteriów.</div>'}
+                <div class="p-0 overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-white/5 text-[10px] uppercase tracking-widest text-tech-dim font-bold border-b border-tech-gray">
+                            <tr>
+                                <th class="py-3 px-6 w-32 border-r border-tech-gray/30">Data</th>
+                                <th class="py-3 px-4 w-24 border-r border-tech-gray/30 text-center">Moduł</th>
+                                <th class="py-3 px-4 w-20 border-r border-tech-gray/30 text-center">Typ</th>
+                                <th class="py-3 px-6">Opis Zmiany</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-tech-gray/20 font-mono text-xs">
+                            ${logsHtml.length > 0 ? logsHtml : '<tr><td colspan="4" class="text-center py-8 text-tech-dim">Brak wpisów.</td></tr>'}
+                        </tbody>
+                    </table>
                 </div>
 
                 <!-- Footer -->

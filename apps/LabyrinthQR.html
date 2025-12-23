@@ -16,10 +16,9 @@
 
     <div class="scanline"></div>
 
+    <dl-header></dl-header>
 
-    <main class="flex-grow w-full max-w-7xl mx-auto px-4 pt-24 pb-8">
-
-
+    <main class="flex-grow w-full max-w-7xl mx-auto px-4 pt-12 pb-8 mt-12">
 
         <!-- Header Section -->
         <div class="mb-8 border-b border-tech-gray border-dashed pb-4 flex items-end justify-between">
@@ -56,29 +55,29 @@
                     </div>
 
                     <h2 class="text-white text-sm font-bold mb-4 uppercase flex items-center gap-2">
-                        <i data-lucide="database" class="w-4 h-4 text-tech-green"></i> 1. Dane Wejściowe
+                        <i data-lucide="database" class="w-4 h-4 text-tech-green"></i> <span data-i18n="qr.sect.1">1.
+                            Dane Wejściowe</span>
                     </h2>
 
                     <!-- Type Selector -->
                     <button
                         class="px-3 py-1 text-xs text-tech-green bg-tech-green/20 border border-tech-green rounded transition-all whitespace-nowrap"
-                        id="type-text" title="Generuj kod z dowolnym tekstem.">Tekst</button>
+                        id="type-text" data-i18n="qr.type.text">Tekst</button>
                     <button class="px-3 py-1 text-xs text-tech-dim hover:text-white transition-all whitespace-nowrap"
-                        id="type-page" title="Wyświetl wiadomość lub zdjęcie na bezpiecznej stronie DraftLab.">Zostaw
-                        Wiadomość</button>
+                        id="type-page" data-i18n="qr.type.msg">Zostaw Wiadomość</button>
                     <button class="px-3 py-1 text-xs text-tech-dim hover:text-white transition-all whitespace-nowrap"
-                        id="type-url" title="Przekieruj do strony internetowej.">Link / URL</button>
+                        id="type-url" data-i18n="qr.type.url">Link / URL</button>
                     <button class="px-3 py-1 text-xs text-tech-dim hover:text-white transition-all whitespace-nowrap"
-                        id="type-wifi" title="Automatyczne łączenie z siecią Wi-Fi.">Wi-Fi</button>
+                        id="type-wifi" data-i18n="qr.type.wifi">Wi-Fi</button>
                     <button class="px-3 py-1 text-xs text-tech-dim hover:text-white transition-all whitespace-nowrap"
-                        id="type-card" title="Wirtualna wizytówka do zapisania w kontaktach.">vCard</button>
+                        id="type-card" data-i18n="qr.type.card">vCard</button>
                 </div>
 
                 <!-- Input Fields (Dynamic) -->
                 <div id="input-container" class="space-y-3">
                     <!-- URL Input (Default) -->
                     <div class="input-group" data-type="url">
-                        <label class="block text-xs text-tech-dim mb-1">Adres URL</label>
+                        <label class="block text-xs text-tech-dim mb-1" data-i18n="qr.type.url">Adres URL</label>
                         <input type="text" id="inp-url"
                             class="w-full bg-black border border-tech-gray text-white text-sm p-2 focus:border-tech-green focus:outline-none transition-colors placeholder-white/20"
                             placeholder="https://draftlab.pl" value="https://draftlab.pl">
@@ -89,12 +88,13 @@
                 <!-- 2. Appearance -->
                 <div class="bg-black/40 border border-tech-gray p-4 backdrop-blur-sm relative group">
                     <h2 class="text-white text-sm font-bold mb-4 uppercase flex items-center gap-2">
-                        <i data-lucide="palette" class="w-4 h-4 text-tech-green"></i> 2. Stylizacja
+                        <i data-lucide="palette" class="w-4 h-4 text-tech-green"></i> <span data-i18n="qr.sect.2">2.
+                            Stylizacja</span>
                     </h2>
 
                     <!-- Dots Style -->
                     <div class="mb-4">
-                        <label class="block text-xs text-tech-dim mb-2">Kształt Modułów</label>
+                        <label class="block text-xs text-tech-dim mb-2" data-i18n="qr.shape">Kształt Modułów</label>
                         <div class="grid grid-cols-4 gap-2">
                             <button
                                 class="style-btn active border border-tech-green bg-tech-green/20 text-white text-xs py-2 hover:bg-tech-green/30"
@@ -114,7 +114,8 @@
                     <!-- Colors -->
                     <div class="grid grid-cols-2 gap-4 mb-4">
                         <div>
-                            <label class="block text-xs text-tech-dim mb-1">Kolor Główny</label>
+                            <label class="block text-xs text-tech-dim mb-1" data-i18n="qr.color.main">Kolor
+                                Główny</label>
                             <div class="flex items-center gap-2">
                                 <div
                                     class="h-8 w-8 rounded overflow-hidden border-2 border-white/20 hover:border-tech-green transition-colors relative">
@@ -125,7 +126,7 @@
                             </div>
                         </div>
                         <div>
-                            <label class="block text-xs text-tech-dim mb-1">Kolor Tła</label>
+                            <label class="block text-xs text-tech-dim mb-1" data-i18n="qr.color.bg">Kolor Tła</label>
                             <div class="flex items-center gap-2">
                                 <div
                                     class="h-8 w-8 rounded overflow-hidden border-2 border-white/20 hover:border-tech-green transition-colors relative">
@@ -140,13 +141,13 @@
                     <!-- Logo Upload -->
                     <div class="pt-4 border-t border-tech-gray border-dashed mb-4">
                         <label class="block text-xs text-tech-dim mb-2 flex justify-between">
-                            <span>Logo (Środek)</span>
-                            <span class="text-xs text-tech-green cursor-pointer hover:underline"
-                                id="clear-logo">Usuń</span>
+                            <span data-i18n="qr.logo">Logo (Środek)</span>
+                            <span class="text-xs text-tech-green cursor-pointer hover:underline" id="clear-logo"
+                                data-i18n="qr.logo.remove">Usuń</span>
                         </label>
                         <label
                             class="flex items-center justify-center w-full h-10 border border-tech-gray border-dashed hover:border-tech-green hover:bg-tech-green/5 cursor-pointer transition-all">
-                            <span class="text-xs text-tech-dim">Wybierz plik...</span>
+                            <span class="text-xs text-tech-dim" data-i18n="qr.logo.select">Wybierz plik...</span>
                             <input type="file" id="inp-logo" accept="image/*" class="hidden">
                         </label>
                     </div>
@@ -154,7 +155,7 @@
                     <!-- Size Slider -->
                     <div class="pt-4 border-t border-tech-gray border-dashed">
                         <label class="block text-xs text-tech-dim mb-2 flex justify-between">
-                            <span>Rozmiar</span>
+                            <span data-i18n="qr.size">Rozmiar</span>
                             <span class="text-xs text-tech-green font-mono" id="size-val">250px</span>
                         </label>
                         <input type="range" id="inp-size" min="50" max="2000" step="50" value="250"
@@ -171,7 +172,7 @@
                         </button>
                         <button id="btn-print"
                             class="bg-transparent border border-tech-green text-tech-green font-bold py-3 uppercase tracking-wider hover:bg-tech-green hover:text-black transition-colors flex items-center justify-center gap-2">
-                            <i data-lucide="printer" class="w-4 h-4"></i> Drukuj
+                            <i data-lucide="printer" class="w-4 h-4"></i> <span data-i18n="qr.btn.print">Drukuj</span>
                         </button>
                     </div>
                 </div>
@@ -213,7 +214,14 @@
     <script src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
     <script type="module">
         import { init as initNucleus } from '../src/core/Nucleus.js';
+        import { i18n } from '../src/utils/i18n.js';
+
         initNucleus();
+
+        // Init i18n static elements
+        i18n.updateStaticElements();
+
+        // Note: Dynamic inputs in logic.js will be handled by logic.js subscribing to i18n
     </script>
     <script type="module" src="../src/apps/labyrinth_qr/logic.js"></script>
     <script>

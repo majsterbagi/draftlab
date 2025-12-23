@@ -1,3 +1,5 @@
+import { i18n } from '../../utils/i18n.js';
+
 // Logic for LabyrinthQR
 // Uses qr-code-styling library (loaded globally via script tag)
 
@@ -44,6 +46,14 @@ document.addEventListener("DOMContentLoaded", () => {
     setupInputs();
     setupStyleControls();
     updateQR();
+
+    // Subscribe to language changes
+    i18n.subscribe(() => {
+        renderInputFields(state.type);
+        updateQR();
+        // Note: updateQR re-reads values from inputs. If we re-render inputs, we might lose focus or values if we don't sync state back to inputs correctly.
+        // renderInputFields uses state values to populate inputs, so it should be fine.
+    });
 });
 
 function initQR() {
@@ -160,8 +170,8 @@ function renderInputFields(type) {
     if (type === 'text') {
         container.innerHTML = `
             <div class="input-group">
-                <label class="block text-xs text-tech-dim mb-1">Dowolny Tekst</label>
-                <textarea id="inp-text" rows="3" class="dl-input" placeholder="Wpisz tekst tutaj...">${state.content}</textarea>
+                <label class="block text-xs text-tech-dim mb-1">${i18n.t('qr.inp.text')}</label>
+                <textarea id="inp-text" rows="3" class="dl-input" placeholder="${i18n.t('qr.inp.placeholder')}">${state.content}</textarea>
             </div>
         `;
         document.getElementById('inp-text').addEventListener('input', (e) => { state.content = e.target.value; updateQR(); });
@@ -170,20 +180,20 @@ function renderInputFields(type) {
     else if (type === 'page') {
         container.innerHTML = `
             <div class="input-group mb-4">
-                <label class="block text-xs text-tech-dim mb-1">Tekst na stronie</label>
-                <textarea id="inp-page-text" rows="3" class="dl-input" placeholder="Wiadomość do wyświetlenia...">${state.page.text}</textarea>
+                <label class="block text-xs text-tech-dim mb-1">${i18n.t('qr.inp.page_text')}</label>
+                <textarea id="inp-page-text" rows="3" class="dl-input" placeholder="${i18n.t('qr.inp.page_placeholder')}">${state.page.text}</textarea>
             </div>
             
             <div class="input-group p-3 border border-tech-gray border-dashed bg-tech-green/5">
                 <label class="block text-xs text-tech-dim mb-2 flex justify-between items-center">
-                    <span>Dołącz Zdjęcie (Opcjonalnie)</span>
+                    <span>${i18n.t('qr.inp.img_label')}</span>
                     <i data-lucide="image" class="w-3 h-3 text-tech-green"></i>
                 </label>
                 
                 <input type="file" id="inp-page-file" accept="image/*" class="w-full text-xs text-tech-dim file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-tech-green/10 file:text-tech-green hover:file:bg-tech-green/20 mb-2 cursor-pointer">
                 
                 <div id="upload-status" class="text-[10px] text-tech-dim h-4 flex items-center gap-2">
-                    ${state.page.imgUrl ? '<span class="text-tech-green flex items-center gap-1"><i data-lucide="check" class="w-3 h-3"></i> Obraz dołączony.</span>' : 'Brak zdjęcia.'}
+                    ${state.page.imgUrl ? `<span class="text-tech-green flex items-center gap-1"><i data-lucide="check" class="w-3 h-3"></i> ${i18n.t('qr.inp.img_status_ok')}</span>` : i18n.t('qr.inp.img_status_none')}
                 </div>
             </div>
         `;
@@ -196,9 +206,7 @@ function renderInputFields(type) {
 
         document.getElementById('inp-page-file').addEventListener('change', (e) => {
             handlePageFileUpload(e).then(() => {
-                // Refresh icons after upload status change if needed, but innerHTML replace inside handlePageFileUpload might kill icons if we used Lucide there, 
-                // but handlePageFileUpload writes raw HTML strings so it's fine.
-                // Actually handlePageFileUpload relies on "upload-status" ID.
+                // done
             });
         });
 
@@ -208,7 +216,7 @@ function renderInputFields(type) {
     else if (type === 'url') {
         container.innerHTML = `
             <div class="input-group">
-                <label class="block text-xs text-tech-dim mb-1">Adres URL</label>
+                <label class="block text-xs text-tech-dim mb-1">${i18n.t('qr.type.url')}</label>
                 <input type="text" id="inp-url" class="dl-input" placeholder="https://..." value="${state.content.startsWith('http') ? state.content : 'https://draftlab.pl'}">
             </div>
         `;
@@ -218,15 +226,15 @@ function renderInputFields(type) {
     else if (type === 'wifi') {
         container.innerHTML = `
             <div class="input-group">
-                <label class="block text-xs text-tech-dim mb-1">Nazwa Sieci (SSID)</label>
+                <label class="block text-xs text-tech-dim mb-1">${i18n.t('qr.inp.wifi_ssid')}</label>
                 <input type="text" id="inp-wifi-ssid" class="dl-input" placeholder="MyWiFi" value="${state.wifi.ssid}">
             </div>
             <div class="input-group">
-                <label class="block text-xs text-tech-dim mb-1">Hasło</label>
+                <label class="block text-xs text-tech-dim mb-1">${i18n.t('qr.inp.wifi_pass')}</label>
                 <input type="password" id="inp-wifi-pass" class="dl-input" placeholder="***" value="${state.wifi.pass}">
             </div>
              <div class="input-group">
-                <label class="block text-xs text-tech-dim mb-1">Typ</label>
+                <label class="block text-xs text-tech-dim mb-1">${i18n.t('qr.inp.wifi_enc')}</label>
                 <select id="inp-wifi-enc" class="dl-input bg-black">
                     <option value="WPA">WPA/WPA2</option>
                     <option value="WEP">WEP</option>
@@ -243,15 +251,15 @@ function renderInputFields(type) {
     else if (type === 'vcard') {
         container.innerHTML = `
             <div class="input-group">
-                <label class="block text-xs text-tech-dim mb-1">Imię i Nazwisko</label>
+                <label class="block text-xs text-tech-dim mb-1">${i18n.t('qr.inp.vcard_name')}</label>
                 <input type="text" id="inp-vcard-name" class="dl-input" placeholder="Kamil Bagi" value="${state.vcard.name}">
             </div>
             <div class="input-group">
-                <label class="block text-xs text-tech-dim mb-1">Telefon</label>
+                <label class="block text-xs text-tech-dim mb-1">${i18n.t('qr.inp.vcard_phone')}</label>
                 <input type="text" id="inp-vcard-phone" class="dl-input" placeholder="+48..." value="${state.vcard.phone}">
             </div>
             <div class="input-group">
-                <label class="block text-xs text-tech-dim mb-1">Email</label>
+                <label class="block text-xs text-tech-dim mb-1">${i18n.t('qr.inp.vcard_email')}</label>
                 <input type="email" id="inp-vcard-email" class="dl-input" placeholder="email@example.com" value="${state.vcard.email}">
             </div>
         `;
@@ -400,7 +408,7 @@ async function handlePageFileUpload(e) {
     if (!file) return;
 
     const statusEl = document.getElementById('upload-status');
-    statusEl.innerHTML = '<span class="animate-pulse text-tech-green">Przesyłanie... 0%</span>';
+    statusEl.innerHTML = `<span class="animate-pulse text-tech-green">${i18n.t('qr.uploading')} 0%</span>`;
 
     // Chunked Upload Logic tailored for DraftCargo API
     const CHUNK_SIZE = 1024 * 1024; // 1MB
@@ -440,17 +448,17 @@ async function handlePageFileUpload(e) {
             if (result.fileUrl) {
                 // Done
                 state.page.imgUrl = result.fileUrl; // This is relative "api/download.php..."
-                statusEl.innerHTML = '<span class="text-tech-green">✅ Wgrano pomyślnie!</span>';
+                statusEl.innerHTML = `<span class="text-tech-green">✅ ${i18n.t('qr.uploaded')}</span>`;
                 updateQR();
             } else {
                 // Progress
                 const percent = Math.round(((chunkIndex + 1) / totalChunks) * 100);
-                statusEl.innerHTML = '<span class="animate-pulse text-tech-green">Przesyłanie... ' + percent + '%</span>';
+                statusEl.innerHTML = `<span class="animate-pulse text-tech-green">${i18n.t('qr.uploading')} ${percent}%</span>`;
             }
 
         } catch (err) {
             console.error(err);
-            statusEl.innerHTML = '<span class="text-red-500">Błąd przesyłania.</span>';
+            statusEl.innerHTML = `<span class="text-red-500">${i18n.t('qr.upload_error')}</span>`;
             break;
         }
     }
