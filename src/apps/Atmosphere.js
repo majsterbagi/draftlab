@@ -298,10 +298,21 @@ function renderChart(dailyData) {
                 },
                 y1: {
                     type: 'linear',
-                    display: false,
+                    display: true,
                     position: 'right',
                     min: 0,
-                    max: 100
+                    max: 100,
+                    grid: { display: false },
+                    ticks: {
+                        color: 'rgba(0, 168, 255, 0.5)',
+                        font: { size: 10 }
+                    },
+                    title: {
+                        display: true,
+                        text: '%',
+                        color: 'rgba(0, 168, 255, 0.5)',
+                        font: { size: 10 }
+                    }
                 }
             }
         }

@@ -1,5 +1,13 @@
 export const GIT_LOG_DATA = [
     {
+        "hash": "8fb6faa",
+        "date": "2025-12-23 22:02",
+        "type": "FEAT",
+        "component": "SYS",
+        "desc": "Kompleksowa optymalizacja UI i usprawnienia Atmosphere",
+        "details": "- Atmosphere: Legendy wykresów (Green/Blue) i skala 0.5°C w Analytics\n- Header: Zwiększenie logo do 18px i ikony do w-6 na wszystkich stronach\n- Hero: Wdrożenie text-wrap: balance oraz poprawki typograficzne (i&nbsp;wyobraźni)\n- Hero: Przywrócenie migającego kursora po ładowaniu tłumaczeń\n- UI: Usunięcie nadmiarowych przycisków <dl-return> i ujednolicenie nagłówków\n- Data: Synchronizacja statusów projektów i opisów pustych slotów"
+    },
+    {
         "hash": "738b8b0",
         "date": "2025-12-23 19:38",
         "type": "UPDATE",
@@ -389,14 +397,6 @@ export const GIT_LOG_DATA = [
         "type": "FIX",
         "component": "ATMOSPHERE",
         "desc": "Enable scrollbar and downgrade to v0.1.0",
-        "details": null
-    },
-    {
-        "hash": "add8618",
-        "date": "2025-12-19 21:35",
-        "type": "STYLE",
-        "component": "ATMOSPHERE",
-        "desc": "Move analytics section below chart",
         "details": null
     }
 ];
