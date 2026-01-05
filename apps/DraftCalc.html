@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>DraftCalc | DraftLab.pl</title>
+
+    <meta name="theme-color" content="#0b0c0e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Fonts & Icons -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Styles & Core -->
+    <link rel="stylesheet" href="../src/style.css">
+    <script type="module" src="../src/main.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #0b0c0e;
+            --panel-bg: #141418;
+            --sidebar-bg: #0f0f11;
+            --accent-color: #10b981;
+            /* Green for DraftCalc - darker, more readable */
+            --accent-green: #10b981;
+            --accent-red: #f43f5e;
+            --text-color: #e0e0e0;
+            --text-dim: rgba(255, 255, 255, 0.4);
+            --grid-line: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.08);
+            --border-radius: 16px;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image:
+                linear-gradient(var(--grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+            background-size: 40px 40px;
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            padding-top: 0;
+        }
+
+        /* Layout */
+        .app-layout {
+            display: flex;
+            flex: 1;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            padding-top: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sidebar {
+            width: 320px;
+            background: var(--sidebar-bg);
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow-y: auto;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 50;
+        }
+
+        /* Mobile Sidebar Toggle */
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 40;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+
+        /* Dashboard Card */
+        .dashboard-container {
+            width: 100%;
+            max-width: 800px;
+            margin-top: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dashboard-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Gradient Top */
+        .dashboard-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-color), #10b981, #059669);
+            opacity: 0.8;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            flex: 1;
+            min-width: 100px;
+            padding: 10px;
+            text-align: center;
+            background: transparent;
+            border: 1px solid transparent;
+            /* Fix border jump */
+            color: var(--text-dim);
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .nav-tab:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-tab.active {
+            background: var(--accent-color);
+            color: #000;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        /* Inputs Area */
+        .inputs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            align-items: flex-end;
+        }
+
+        .input-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .input-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            color: var(--text-dim);
+            margin-left: 2px;
+        }
+
+        .input-field {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            color: #fff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 24px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .input-field:focus {
+            border-color: var(--accent-color);
+            background: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        /* Result Section */
+        .result-section {
+            margin-top: 20px;
+            text-align: center;
+            min-height: 120px;
+            /* Prevent layout shift */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .result-divider {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            gap: 15px;
+            margin-bottom: 15px;
+            opacity: 0.3;
+        }
+
+        .result-divider-line {
+            flex: 1;
+            height: 1px;
+            background: #fff;
+        }
+
+        .result-divider-text {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .result-value-big {
+            font-size: 48px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            margin-bottom: 5px;
+            background: linear-gradient(180deg, #fff, #ccc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .result-value-big.positive {
+            background: linear-gradient(180deg, var(--accent-green), #059669);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
+        .result-value-big.negative {
+            background: linear-gradient(180deg, var(--accent-red), #be123c);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
+        .result-explanation {
+            font-size: 14px;
+            color: var(--text-dim);
+            max-width: 80%;
+            line-height: 1.5;
+        }
+
+        /* Visualizer */
+        .visualizer-container {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border);
+            height: 180px;
+            display: flex;
+            align-items: flex-end;
+            /* Bars grow up */
+            justify-content: center;
+            gap: 40px;
+            position: relative;
+        }
+
+        .vis-label {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-dim);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Sidebar Items */
+        .history-item {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.2s;
+            border-radius: 8px;
+        }
+
+        .history-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .history-time {
+            font-size: 10px;
+            color: var(--text-dim);
+            font-family: 'JetBrains Mono';
+            margin-bottom: 2px;
+        }
+
+        .history-desc {
+            font-size: 12px;
+            color: #bbb;
+            margin-bottom: 4px;
+        }
+
+        .history-res {
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            font-family: 'JetBrains Mono';
+        }
+
+
+        /* Responsive */
+        @media (max-width: 800px) {
+            .app-layout {
+                flex-direction: column;
+                overflow-y: auto;
+                height: auto;
+            }
+
+            .main-content {
+                padding: 10px;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                transform: translateX(100%);
+                box-shadow: -5px 0 20px rgba(0, 0, 0, 0.5);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .inputs-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Mode Info Styles */
+        .mode-info-container {
+            background: rgba(16, 185, 129, 0.08);
+            border-left: 2px solid var(--accent-color);
+            padding: 12px 16px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 24px;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .mode-info-desc {
+            font-size: 13px;
+            color: var(--text-dim);
+            line-height: 1.4;
+        }
+
+        /* Operation Toggle */
+        .operation-toggle {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .operation-toggle.hidden {
+            display: none;
+        }
+
+        .operation-option {
+            flex: 1;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .operation-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .operation-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-dim);
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .operation-option:hover .operation-label {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+        }
+
+        .operation-option input:checked+.operation-label {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+            color: #000;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+    <dl-header></dl-header>
+
+    <div class="app-layout">
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header Section - LabyrinthQR Style -->
+            <div class="max-w-[800px] w-full mb-8 border-l-4 border-tech-green pl-4 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <i data-lucide="percent" class="text-tech-green w-10 h-10"></i>
+                    <div>
+                        <h1 class="text-3xl font-bold tracking-tighter uppercase leading-none">DraftCalc</h1>
+                        <p class="text-tech-dim text-[10px] uppercase tracking-[0.2em] mt-1 font-mono"
+                            data-i18n="calc.subtitle">/ Percent_Calculator_System v0.1</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="hidden md:block text-right">
+                        <p class="text-[10px] text-tech-dim uppercase tracking-wider mb-1"
+                            data-i18n="calc.status.label">Status</p>
+                        <span
+                            class="px-2 py-1 border border-tech-green text-tech-green text-[10px] font-mono rounded bg-tech-green/10"
+                            data-i18n="calc.status.ready">READY</span>
+                    </div>
+                    <button id="toggle-history"
+                        class="md:hidden p-2 text-tech-dim hover:text-white border border-transparent hover:border-border rounded-lg transition-all">
+                        <i data-lucide="history" width="20"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <div class="dashboard-container">
+                <nav class="nav-tabs" id="nav-tabs">
+                    <div class="nav-tab active" data-mode="change" data-i18n="calc.mode.change">
+                        <i data-lucide="trending-up" width="16"></i> Zmiana
+                    </div>
+                    <div class="nav-tab" data-mode="percent-of" data-i18n="calc.mode.percent_of">
+                        <i data-lucide="pie-chart" width="16"></i> % z Liczby
+                    </div>
+                    <div class="nav-tab" data-mode="what-percent" data-i18n="calc.mode.what_percent">
+                        <i data-lucide="calculator" width="16"></i> Jaki to %
+                    </div>
+                    <div class="nav-tab" data-mode="add-sub" data-i18n="calc.mode.add_sub">
+                        <i data-lucide="plus" width="16"></i> Dodaj/Odejmij %
+                    </div>
+                </nav>
+
+                <!-- Mode Description Info -->
+                <div id="mode-info" class="mode-info-container">
+                    <div class="mode-info-desc" id="mode-desc">Oblicza procentową różnicę między dwiema liczbami (wzrost
+                        lub spadek).</div>
+                </div>
+
+                <!-- Main Card -->
+                <div class="dashboard-card">
+                    <!-- Inputs -->
+                    <div class="inputs-grid">
+                        <div class="input-wrapper">
+                            <label class="input-label" id="label-a">Stara Wartość</label>
+                            <input type="number" id="input-a" class="input-field" placeholder="0" autofocus>
+                        </div>
+                        <div class="input-wrapper">
+                            <label class="input-label" id="label-b">Nowa Wartość</label>
+                            <input type="number" id="input-b" class="input-field" placeholder="0">
+                        </div>
+                    </div>
+
+                    <!-- Operation Toggle (for add-sub mode) -->
+                    <div id="operation-toggle" class="operation-toggle hidden">
+                        <label class="operation-option">
+                            <input type="radio" name="operation" value="add" checked>
+                            <span class="operation-label">
+                                <i data-lucide="plus" width="14"></i> <span data-i18n="calc.operation.add">Dodaj</span>
+                            </span>
+                        </label>
+                        <label class="operation-option">
+                            <input type="radio" name="operation" value="subtract">
+                            <span class="operation-label">
+                                <i data-lucide="minus" width="14"></i> <span
+                                    data-i18n="calc.operation.subtract">Odejmij</span>
+                            </span>
+                        </label>
+                    </div>
+
+                    <!-- Result -->
+                    <div id="result-container" class="result-section hidden">
+                        <div class="result-divider">
+                            <div class="result-divider-line"></div>
+                            <span class="result-divider-text">WYNIK</span>
+                            <div class="result-divider-line"></div>
+                        </div>
+
+                        <div class="relative group cursor-pointer" id="copy-trigger" title="Kliknij, aby skopiować">
+                            <div class="result-value-big" id="result-value">0%</div>
+                            <div
+                                class="absolute -right-8 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-tech-dim">
+                                <i data-lucide="copy" width="16"></i>
+                            </div>
+                        </div>
+
+                        <p class="result-explanation" id="result-desc">Wpisz liczby powyżej.</p>
+                    </div>
+
+                    <!-- Placeholder for empty state -->
+                    <div id="empty-state" class="text-center text-tech-dim opacity-40 py-10">
+                        <i data-lucide="keyboard" width="32" class="mb-2 mx-auto"></i>
+                        <p class="text-xs uppercase tracking-wider">Wprowadź dane, aby obliczyć</p>
+                    </div>
+
+                    <!-- Visualizer -->
+                    <div class="visualizer-container" id="visualizer">
+                        <div class="vis-label"><i data-lucide="bar-chart-3" width="12"></i> Wizualizacja</div>
+                        <!-- Valid content injected by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar (History) -->
+        <div class="sidebar-overlay" id="sidebar-overlay"></div>
+        <aside class="sidebar" id="sidebar">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-sm font-bold text-tech-dim uppercase tracking-wider flex items-center gap-2">
+                    <i data-lucide="history" width="14"></i> <span data-i18n="calc.history">Historia</span>
+                </h3>
+                <button id="clear-history"
+                    class="text-xs text-red-400 hover:text-red-300 transition-colors flex items-center gap-1 opacity-0 hover:opacity-100"
+                    style="opacity: 0.6">
+                    <i data-lucide="trash-2" width="12"></i> Wyczyść
+                </button>
+            </div>
+
+            <div id="history-list" class="flex flex-col gap-2">
+                <!-- Items -->
+            </div>
+
+            <div class="mt-auto pt-6 text-center">
+                <p class="text-[10px] text-tech-dim opacity-30">DraftCalc v0.1 • Local Storage Enabled</p>
+            </div>
+        </aside>
+    </div>
+
+    <dl-footer></dl-footer>
+
+    <!-- App Logic -->
+    <script type="module" src="../src/apps/DraftCalc.js"></script>
+</body>
+
+</html>

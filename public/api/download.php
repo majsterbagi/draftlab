@@ -1,32 +1,35 @@
 <?php
 /**
- * DraftCargo Download API
+ * DraftCargo - File Download API
+ * Serves uploaded files for download
  */
 
-$uploadDir = __DIR__ . '/uploads/';
-$id = $_GET['id'] ?? '';
+header('Access-Control-Allow-Origin: *');
 
-if (empty($id))
-    die("Error: No file ID specified.");
-
-$safeId = preg_replace('/[^a-zA-Z0-9._-]/', '', $id);
-$filePath = $uploadDir . $safeId;
-
-if (file_exists($filePath)) {
-    $parts = explode('_', $safeId, 3);
-    $displayName = (count($parts) >= 3) ? $parts[2] : $safeId;
-
-    header('Content-Description: File Transfer');
-    header('Content-Type: application/octet-stream');
-    header('Content-Disposition: attachment; filename="' . $displayName . '"');
-    header('Expires: 0');
-    header('Cache-Control: must-revalidate');
-    header('Pragma: public');
-    header('Content-Length: ' . filesize($filePath));
-
-    readfile($filePath);
+if (!isset($_GET['id']) || !isset($_GET['name'])) {
+    http_response_code(400);
+    echo 'Missing file ID or name';
     exit;
-} else {
-    http_response_code(404);
-    die("Error: File not found.");
 }
+
+$fileId = preg_replace('/[^a-zA-Z0-9._-]/', '', $_GET['id']);
+$filename = preg_replace('/[^a-zA-Z0-9._-]/', '', $_GET['name']);
+$uploadDir = __DIR__ . '/../uploads/';
+$filePath = $uploadDir . $fileId . '_' . $filename;
+
+if (!file_exists($filePath)) {
+    http_response_code(404);
+    echo 'File not found or expired';
+    exit;
+}
+
+// Set headers for download
+header('Content-Description: File Transfer');
+header('Content-Type: application/octet-stream');
+header('Content-Disposition: attachment; filename="' . $filename . '"');
+header('Content-Length: ' . filesize($filePath));
+header('Cache-Control: must-revalidate');
+header('Pragma: public');
+
+readfile($filePath);
+exit;

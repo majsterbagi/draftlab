@@ -15,14 +15,17 @@
     <link
         href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap"
         rel="stylesheet">
+
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <!-- SunCalc Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.9.0/suncalc.min.js"></script>
 
-    <!-- Styles -->
+    <!-- Styles & Core -->
     <link rel="stylesheet" href="../src/style.css">
     <script type="module" src="../src/main.js"></script>
+
+    <!-- Styles -->
 
     <style>
         :root {
@@ -55,6 +58,12 @@
         }
 
         /* === SKY VISUALIZATION === */
+        /* Ensure dl-header is visible above sky-container */
+        dl-header {
+            position: relative;
+            z-index: 1000;
+        }
+
         .sky-container {
             position: relative;
             width: 100%;
@@ -131,7 +140,8 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
-            z-index: 30;
+            z-index: 1100;
+            /* Above header (z-index: 1000) for clickability */
         }
 
         .season-toggle {
@@ -151,7 +161,11 @@
         }
 
         .season-toggle input {
-            display: none;
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+            pointer-events: none;
         }
 
         .season-toggle .icon {
@@ -203,6 +217,10 @@
             font-family: 'JetBrains Mono', monospace;
             font-size: 11px;
             width: 120px;
+        }
+
+        .sky-search-input::-moz-placeholder {
+            color: rgba(255, 255, 255, 0.3);
         }
 
         .sky-search-input::placeholder {
@@ -263,12 +281,15 @@
             position: absolute;
             width: 32px;
             height: 32px;
-            background: #f0f0e0;
-            border-radius: 50%;
             transform: translate(-50%, 50%);
-            box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.2);
             z-index: 4;
             display: none;
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4));
+        }
+
+        .moon-orb svg {
+            width: 100%;
+            height: 100%;
         }
 
         .landscape {
@@ -332,6 +353,7 @@
 
         .sky-slider {
             -webkit-appearance: none;
+            -moz-appearance: none;
             appearance: none;
             flex: 1;
             height: 6px;
@@ -407,6 +429,10 @@
 
         .search-input:focus {
             border-color: var(--accent-color);
+        }
+
+        .search-input::-moz-placeholder {
+            color: var(--text-dim);
         }
 
         .search-input::placeholder {
@@ -945,6 +971,7 @@
             display: none !important;
         }
     </style>
+
 </head>
 
 <body>
@@ -968,7 +995,29 @@
             <path class="trajectory-season trajectory-winter" id="trajectory-winter"></path>
         </svg>
         <div class="sun-orb" id="sun-orb"></div>
-        <div class="moon-orb" id="moon-orb"></div>
+        <div class="moon-orb" id="moon-orb">
+            <svg viewBox="0 0 100 100" id="moon-svg">
+                <defs>
+                    <radialGradient id="moonGradient" cx="40%" cy="40%" r="60%">
+                        <stop offset="0%" stop-color="#fffff8" />
+                        <stop offset="50%" stop-color="#f0f0e0" />
+                        <stop offset="100%" stop-color="#d0d0c0" />
+                    </radialGradient>
+                    <clipPath id="moonClip">
+                        <circle cx="50" cy="50" r="48" />
+                    </clipPath>
+                </defs>
+                <!-- Moon base -->
+                <circle cx="50" cy="50" r="48" fill="url(#moonGradient)" />
+                <!-- Moon craters (subtle) -->
+                <circle cx="35" cy="40" r="8" fill="rgba(180,180,170,0.3)" />
+                <circle cx="65" cy="55" r="6" fill="rgba(180,180,170,0.25)" />
+                <circle cx="45" cy="65" r="5" fill="rgba(180,180,170,0.2)" />
+                <circle cx="60" cy="35" r="4" fill="rgba(180,180,170,0.15)" />
+                <!-- Shadow overlay for phase -->
+                <path id="moon-phase-shadow" d="" fill="rgba(0,0,0,0.95)" clip-path="url(#moonClip)" />
+            </svg>
+        </div>
 
         <!-- Lens Flare Container -->
         <div class="lens-flare" id="lens-flare">
@@ -1021,18 +1070,7 @@
     <!-- MAIN DASHBOARD -->
     <main class="dashboard">
 
-        <!-- Search -->
-        <div class="search-panel">
-            <i data-lucide="map-pin" class="search-icon" width="16"></i>
-            <input type="text" class="search-input" data-i18n="sun.search.placeholder" data-i18n-target="placeholder"
-                placeholder="Search city...">
-            <div class="search-results"></div>
 
-            <!-- Stealth Trigger -->
-            <button class="stealth-trigger" id="stealth-trigger" title="Stealth Mode">
-                <i data-lucide="eye" id="stealth-icon-panel" width="16"></i>
-            </button>
-        </div>
 
         <!-- Time Card -->
         <div class="time-display">
@@ -1085,16 +1123,6 @@
 
         </div>
 
-        <script type="module">
-            import { init as initNucleus } from '../src/core/Nucleus.js';
-            import { i18n } from '../src/utils/i18n.js';
-
-            initNucleus();
-            lucide.createIcons();
-
-            // Initial update of static elements
-            i18n.updateStaticElements();
-        </script>
 
         <script>
             let LAT = 52.2297; // Default: Warsaw
@@ -1277,18 +1305,24 @@
                 const dx = cx - sunX;
                 const dy = cy - sunY;
 
-                // Position flares along this vector
+                // Position flares along this vector (with existence checks)
                 // Flare 1: 0.5 distance
-                flareItems[0].style.left = (cx + dx * 0.3) + '%';
-                flareItems[0].style.top = (cy + dy * 0.3) + '%';
+                if (flareItems[0]) {
+                    flareItems[0].style.left = (cx + dx * 0.3) + '%';
+                    flareItems[0].style.top = (cy + dy * 0.3) + '%';
+                }
 
                 // Flare 2: 1.2 distance (past center)
-                flareItems[1].style.left = (cx - dx * 0.4) + '%';
-                flareItems[1].style.top = (cy - dy * 0.4) + '%';
+                if (flareItems[1]) {
+                    flareItems[1].style.left = (cx - dx * 0.4) + '%';
+                    flareItems[1].style.top = (cy - dy * 0.4) + '%';
+                }
 
                 // Flare 3: 2.0 distance
-                flareItems[2].style.left = (cx - dx * 1.5) + '%';
-                flareItems[2].style.top = (cy - dy * 1.5) + '%';
+                if (flareItems[2]) {
+                    flareItems[2].style.left = (cx - dx * 1.5) + '%';
+                    flareItems[2].style.top = (cy - dy * 1.5) + '%';
+                }
             }
 
             // Keyframes for sky gradient based on solar altitude
@@ -1331,6 +1365,91 @@
                     mid: lerpColor(start.colors.mid, end.colors.mid, t),
                     bottom: lerpColor(start.colors.bottom, end.colors.bottom, t)
                 };
+            }
+
+            // === MOON PHASE RENDERING ===
+            // Renders the moon phase as an SVG shadow overlay
+            function updateMoonPhase(date) {
+                const moonPhasePath = document.getElementById('moon-phase-shadow');
+                if (!moonPhasePath) return;
+
+                // Get moon illumination data from SunCalc
+                const illumination = SunCalc.getMoonIllumination(date);
+                const phase = illumination.phase; // 0 = new moon, 0.5 = full moon, 1 = new moon
+
+                // Calculate shadow path based on phase
+                // phase 0-0.25: waxing crescent (shadow on left, moving right)
+                // phase 0.25-0.5: waxing gibbous (shadow on left, shrinking)
+                // phase 0.5: full moon (no shadow)
+                // phase 0.5-0.75: waning gibbous (shadow on right, growing)
+                // phase 0.75-1: waning crescent (shadow on right, moving left)
+
+                const cx = 50, cy = 50, r = 48;
+
+                // No shadow needed for full moon (phase ~0.5)
+                if (phase > 0.48 && phase < 0.52) {
+                    moonPhasePath.setAttribute('d', '');
+                    return;
+                }
+
+                // For new moon (phase ~0 or ~1), cover entire moon
+                if (phase < 0.02 || phase > 0.98) {
+                    moonPhasePath.setAttribute('d', `M ${cx - r},${cy} A ${r},${r} 0 1,1 ${cx + r},${cy} A ${r},${r} 0 1,1 ${cx - r},${cy}`);
+                    return;
+                }
+
+                // Calculate the terminator curve
+                // The terminator is the boundary between light and dark
+                let illuminatedFraction;
+                let shadowFromRight;
+
+                if (phase < 0.5) {
+                    // Waxing: shadow on left (light coming from right)
+                    illuminatedFraction = phase * 2; // 0 to 1 as phase goes 0 to 0.5
+                    shadowFromRight = false;
+                } else {
+                    // Waning: shadow on right (light coming from left)
+                    illuminatedFraction = (1 - phase) * 2; // 1 to 0 as phase goes 0.5 to 1
+                    shadowFromRight = true;
+                }
+
+                // Calculate ellipse width based on illumination
+                // When illuminatedFraction = 0, shadow covers all (full ellipse)
+                // When illuminatedFraction = 0.5, terminator is straight line
+                // When illuminatedFraction = 1, no shadow (full moon)
+
+                const terminatorX = r * (2 * illuminatedFraction - 1); // -r to +r
+
+                let path;
+                if (shadowFromRight) {
+                    // Shadow on right side
+                    if (illuminatedFraction < 0.5) {
+                        // More than half in shadow - use two arcs
+                        path = `M ${cx},${cy - r} 
+                                A ${r},${r} 0 0,0 ${cx},${cy + r} 
+                                A ${Math.abs(terminatorX)},${r} 0 0,${terminatorX < 0 ? 0 : 1} ${cx},${cy - r}`;
+                    } else {
+                        // Less than half in shadow
+                        path = `M ${cx},${cy - r} 
+                                A ${r},${r} 0 0,0 ${cx},${cy + r} 
+                                A ${Math.abs(terminatorX)},${r} 0 0,0 ${cx},${cy - r}`;
+                    }
+                } else {
+                    // Shadow on left side
+                    if (illuminatedFraction < 0.5) {
+                        // More than half in shadow
+                        path = `M ${cx},${cy - r} 
+                                A ${r},${r} 0 0,1 ${cx},${cy + r} 
+                                A ${Math.abs(terminatorX)},${r} 0 0,${terminatorX < 0 ? 1 : 0} ${cx},${cy - r}`;
+                    } else {
+                        // Less than half in shadow
+                        path = `M ${cx},${cy - r} 
+                                A ${r},${r} 0 0,1 ${cx},${cy + r} 
+                                A ${Math.abs(terminatorX)},${r} 0 0,1 ${cx},${cy - r}`;
+                    }
+                }
+
+                moonPhasePath.setAttribute('d', path);
             }
 
             // === UPDATE FUNCTION ===
@@ -1507,6 +1626,9 @@
                     const moonY = horizonY + (moonAlt / 90) * skyRange;
                     moonOrb.style.left = Math.max(5, Math.min(95, moonX)) + '%';
                     moonOrb.style.bottom = Math.max(10, Math.min(85, moonY)) + '%';
+
+                    // Update moon phase visualization
+                    updateMoonPhase(d);
                 } else {
                     moonOrb.style.display = 'none';
                 }
@@ -1549,6 +1671,8 @@
                 });
             }
 
+            let seasonTogglesInitialized = false;
+
             function initSeasonToggles() {
                 const toggles = {
                     spring: { toggle: toggleSpring, path: trajectorySpring, label: document.getElementById('toggle-spring-label') },
@@ -1558,22 +1682,36 @@
                 };
 
                 Object.entries(toggles).forEach(([season, { toggle, path, label }]) => {
-                    // Load from localStorage
+                    // Load from localStorage and sync visual state
                     const saved = localStorage.getItem(`suntrack-${season}`);
                     if (saved === 'true') {
                         toggle.checked = true;
                         path.classList.add('active');
                         label.classList.add('active');
-                    }
-
-                    // Handle toggle
-                    toggle.addEventListener('change', () => {
+                    } else {
                         path.classList.toggle('active', toggle.checked);
                         label.classList.toggle('active', toggle.checked);
-                        localStorage.setItem(`suntrack-${season}`, toggle.checked);
-                        if (toggle.checked) drawSeasonalTrajectories();
-                    });
+                    }
+
+                    // Add event listeners only once
+                    if (!seasonTogglesInitialized) {
+                        toggle.addEventListener('change', () => {
+                            console.log(`SEASON TOGGLE: ${season} -> ${toggle.checked}`);
+                            path.classList.toggle('active', toggle.checked);
+                            label.classList.toggle('active', toggle.checked);
+                            localStorage.setItem(`suntrack-${season}`, toggle.checked);
+                            if (toggle.checked) {
+                                try {
+                                    drawSeasonalTrajectories();
+                                } catch (e) {
+                                    console.error("Error drawing trajectory:", e);
+                                }
+                            }
+                        });
+                    }
                 });
+
+                seasonTogglesInitialized = true;
 
                 // Draw if any active
                 if (Object.values(toggles).some(({ toggle }) => toggle.checked)) {
@@ -1623,116 +1761,129 @@
             }
 
             // === EVENTS ===
-            citySearch.addEventListener('input', (e) => {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => searchCity(e.target.value), 300);
-            });
+            if (citySearch) {
+                citySearch.addEventListener('input', (e) => {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => searchCity(e.target.value), 300);
+                });
+                citySearch.addEventListener('blur', () => {
+                    setTimeout(() => searchResults.classList.remove('active'), 200);
+                });
+            }
 
-            citySearch.addEventListener('blur', () => {
-                setTimeout(() => searchResults.classList.remove('active'), 200);
-            });
+            if (skySlider) {
+                skySlider.addEventListener('input', (e) => {
+                    isLive = false;
+                    update(parseInt(e.target.value));
+                });
+            }
 
-            skySlider.addEventListener('input', (e) => {
-                isLive = false;
-                update(parseInt(e.target.value));
-            });
+            if (skyNowBtn) {
+                skyNowBtn.addEventListener('click', () => {
+                    isLive = true;
+                    const now = new Date();
+                    const mins = now.getHours() * 60 + now.getMinutes();
+                    if (skySlider) skySlider.value = mins;
+                    update(mins);
+                });
+            }
 
-            skyNowBtn.addEventListener('click', () => {
-                isLive = true;
-                const now = new Date();
-                const mins = now.getHours() * 60 + now.getMinutes();
-                skySlider.value = mins;
-                update(mins);
-            });
+            const stealthTrigger = document.getElementById('stealth-trigger');
+            if (stealthTrigger) {
+                stealthTrigger.addEventListener('click', toggleStealthMode);
+            }
 
-            document.getElementById('stealth-trigger').addEventListener('click', toggleStealthMode);
-
-            // Handle resize for dynamic horizon calculation
             window.addEventListener('resize', () => {
-                drawSeasonalTrajectories();
-                update(parseInt(skySlider.value));
+                try {
+                    drawSeasonalTrajectories();
+                    if (skySlider) update(parseInt(skySlider.value));
+                } catch (e) {
+                    console.error('Resize error:', e);
+                }
             });
 
             // === INIT ===
             function init() {
-                // Load saved location
-                const savedLat = localStorage.getItem('suntrack_lat');
-                const savedLng = localStorage.getItem('suntrack_lng');
-                const savedCity = localStorage.getItem('suntrack_city');
+                try {
+                    const savedLat = localStorage.getItem('suntrack_lat');
+                    const savedLng = localStorage.getItem('suntrack_lng');
+                    const savedCity = localStorage.getItem('suntrack_city');
 
-                if (savedLat && savedLng) {
-                    LAT = parseFloat(savedLat);
-                    LNG = parseFloat(savedLng);
-                }
+                    if (savedLat && savedLng) {
+                        LAT = parseFloat(savedLat);
+                        LNG = parseFloat(savedLng);
+                    }
 
-                // Display current location name
-                citySearch.value = savedCity || 'Warszawa';
+                    if (citySearch) citySearch.value = savedCity || 'Warszawa';
 
-                // Initialize Stealth Mode
-                if (stealthMode) {
-                    document.body.classList.add('stealth-mode');
-                    const icon = document.getElementById('stealth-icon-panel');
-                    icon.setAttribute('data-lucide', 'eye-off');
-                    icon.style.color = '#ff6b6b';
-                }
+                    if (stealthMode) {
+                        document.body.classList.add('stealth-mode');
+                        const icon = document.getElementById('stealth-icon-panel');
+                        if (icon) {
+                            icon.setAttribute('data-lucide', 'eye-off');
+                            icon.style.color = '#ff6b6b';
+                        }
+                    }
 
-                // Set current time
-                const now = new Date();
-                const mins = now.getHours() * 60 + now.getMinutes();
-                skySlider.value = mins;
-                update(mins);
+                    const now = new Date();
+                    const mins = now.getHours() * 60 + now.getMinutes();
+                    if (skySlider) skySlider.value = mins;
 
-                // Auto-update if live
-                setInterval(() => {
-                    if (isLive) {
-                        const now = new Date();
-                        const mins = now.getHours() * 60 + now.getMinutes();
-                        skySlider.value = mins;
+                    if (typeof update === 'function') {
                         update(mins);
                     }
-                }, 60000);
 
-                lucide.createIcons();
-                initSeasonToggles();
-            }
-
-            // === GEOLOCATION (always on page load) ===
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    async (pos) => {
-                        LAT = pos.coords.latitude;
-                        LNG = pos.coords.longitude;
-
-                        // Reverse geocoding to get city name
-                        try {
-                            const resp = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${LAT}&lon=${LNG}`);
-                            const data = await resp.json();
-                            const addr = data.address || {};
-                            const cityName = addr.city || addr.town || addr.village || addr.municipality || addr.county || addr.suburb || addr.hamlet || addr.state || 'Polska';
-                            citySearch.value = cityName;
-                            localStorage.setItem('suntrack_city', cityName);
-                        } catch (e) {
-                            citySearch.value = 'Lokalizacja';
+                    setInterval(() => {
+                        if (isLive) {
+                            const now = new Date();
+                            const mins = now.getHours() * 60 + now.getMinutes();
+                            if (skySlider) skySlider.value = mins;
+                            if (typeof update === 'function') update(mins);
                         }
+                    }, 60000);
 
-                        localStorage.setItem('suntrack_lat', LAT);
-                        localStorage.setItem('suntrack_lng', LNG);
-
-                        // Set current time and update
-                        const now = new Date();
-                        const mins = now.getHours() * 60 + now.getMinutes();
-                        skySlider.value = mins;
-                        update(mins);
-
-                        lucide.createIcons();
-                        initSeasonToggles();
-                    },
-                    () => init(), // Fallback if geolocation denied
-                    { timeout: 5000 }
-                );
-            } else {
-                init();
+                    if (window.lucide) lucide.createIcons();
+                    initSeasonToggles();
+                } catch (e) {
+                    console.error('SunTrack init error:', e);
+                }
             }
+
+            // === BOOTSTRAP ===
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(
+                            async (pos) => {
+                                LAT = pos.coords.latitude;
+                                LNG = pos.coords.longitude;
+
+                                try {
+                                    const resp = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${LAT}&lon=${LNG}`);
+                                    const data = await resp.json();
+                                    const addr = data.address || {};
+                                    const cityName = addr.city || addr.town || addr.village || addr.municipality || 'Lokalizacja';
+                                    if (citySearch) citySearch.value = cityName;
+                                    localStorage.setItem('suntrack_city', cityName);
+                                } catch (e) {
+                                    console.warn('Geocoding failed:', e);
+                                }
+
+                                localStorage.setItem('suntrack_lat', LAT);
+                                localStorage.setItem('suntrack_lng', LNG);
+                                init();
+                            },
+                            (err) => {
+                                console.warn('Geolocation denied:', err);
+                                init();
+                            },
+                            { timeout: 5000 }
+                        );
+                    } else {
+                        init();
+                    }
+                }, 100);
+            });
         </script>
 </body>
 

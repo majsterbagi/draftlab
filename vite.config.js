@@ -22,6 +22,7 @@ function getAppEntries() {
 export default defineConfig({
     base: './',
     build: {
+        emptyOutDir: true,
         rollupOptions: {
             input: {
                 main: resolve(__dirname, 'index.html'),

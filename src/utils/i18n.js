@@ -149,6 +149,7 @@ export class I18n {
                 "sys.item.has_details": "Zawiera szczegółową specyfikację",
                 "sys.item.tech_details": "Szczegóły techniczne",
 
+
                 // Shared
                 "shared.loading": "LOADING",
                 "shared.copy": "Kopiuj",
@@ -177,7 +178,51 @@ export class I18n {
 
                 "about.profile.status": "ONLINE",
                 "about.profile.location": "Warszawa, PL",
-                "about.profile.contact": "Nawiąż połączenie"
+                "about.profile.contact": "Nawiąż połączenie",
+
+                // App: RetroVision
+                "rv.overlay.title": "DOSTĘP_DO_TERMINALA",
+                "rv.overlay.desc": "RetroVision wymaga dostępu do sensora optycznego. Przetwarzanie odbywa się lokalnie.",
+                "rv.overlay.btn": "INICJALIZACJA SYSTEMU",
+                "rv.lbl.charset": "ZESTAW ZNAKÓW",
+                "rv.lbl.density": "GĘSTOŚĆ SIATKI",
+                "rv.lbl.color": "KOLOR",
+                "rv.btn.snap": "ZDJĘCIE",
+                "rv.err.access": "ODMOWA DOSTĘPU",
+
+                // App: DraftCalc
+                "calc.title": "DraftCalc",
+                "calc.subtitle": "/ Percent_Calculator_System v0.1",
+                "calc.status.label": "Status",
+                "calc.status.ready": "READY",
+                "calc.operation.add": "Dodaj",
+                "calc.operation.subtract": "Odejmij",
+                "calc.mode.change": "Zmiana wartości",
+                "calc.mode.change.desc": "Oblicza procentową różnicę między dwiema liczbami (wzrost lub spadek).",
+                "calc.mode.percent_of": "% z liczby",
+                "calc.mode.percent_of.desc": "Oblicza konkretną wartość na podstawie podanego procentu i liczby bazowej.",
+                "calc.mode.what_percent": "Jaki to %?",
+                "calc.mode.what_percent.desc": "Sprawdza, jakim procentem jednej liczby jest druga liczba.",
+                "calc.mode.add_sub": "Dodaj/Odejmij %",
+                "calc.mode.add_sub.desc": "Pozwala szybko dodać lub odjąć dany procent od wybranej kwoty/liczby.",
+                "calc.label.old_val": "Stara Wartość",
+                "calc.label.new_val": "Nowa Wartość",
+                "calc.label.percent": "Procent (%)",
+                "calc.label.from_num": "Z liczby",
+                "calc.label.part": "Część (A)",
+                "calc.label.whole": "Całość (B)",
+                "calc.label.num": "Liczba",
+                "calc.history": "Historia",
+                "calc.changelog.title": "Dziennik Zmian",
+                "calc.changelog.features": "Funkcje:",
+                "calc.changelog.v01.desc": "Pierwsza wersja DraftCalc - zaawansowany kalkulator procentowy z czterema trybami działania: Zmiana wartości, % z liczby, Jaki to %, oraz Dodaj/Odejmij %.",
+                "calc.changelog.v01.f1": "→ 4 tryby obliczeń procentowych",
+                "calc.changelog.v01.f2": "→ Dynamiczne opisy wyjaśniające działanie każdego trybu",
+                "calc.changelog.v01.f3": "→ Wizualizacja wyników (wykresy słupkowe i paski postępu)",
+                "calc.changelog.v01.f4": "→ Przełącznik operacji dodawania/odejmowania w trybie ±%",
+                "calc.changelog.v01.f5": "→ Historia obliczeń z możliwością kopiowania wyników",
+                "calc.changelog.v01.f6": "→ Wielojęzyczna obsługa (PL/EN)",
+                "calc.changelog.v01.f7": "→ Industrial Tech Design System"
             },
             en: {
                 // Hero
@@ -298,6 +343,7 @@ export class I18n {
                 "shared.no_data": "NO DATA",
                 "shared.today": "TODAY",
 
+
                 // App: System Log
                 "sys.title": "SYSTEM LOG",
                 "sys.subtitle": "// FULL CHANGE LOG",
@@ -320,6 +366,7 @@ export class I18n {
                 "sys.modal.empty": "No technical details available for this change.",
                 "sys.item.has_details": "Contains detailed specification",
                 "sys.item.tech_details": "Technical details",
+
 
                 // Shared
                 "shared.loading": "LOADING",
@@ -349,7 +396,51 @@ export class I18n {
 
                 "about.profile.status": "ONLINE",
                 "about.profile.location": "Warsaw, PL",
-                "about.profile.contact": "Establish Connection"
+                "about.profile.contact": "Establish Connection",
+
+                // App: RetroVision
+                "rv.overlay.title": "ACCESS_TERMINAL_CAMERA",
+                "rv.overlay.desc": "RetroVision requires optical sensor access to generate the matrix feed. Processing is local.",
+                "rv.overlay.btn": "INITIALIZE SYSTEM",
+                "rv.lbl.charset": "CHARSET",
+                "rv.lbl.density": "DENSITY",
+                "rv.lbl.color": "COLOR",
+                "rv.btn.snap": "SNAP",
+                "rv.err.access": "ACCESS DENIED",
+
+                // App: DraftCalc
+                "calc.title": "DraftCalc",
+                "calc.subtitle": "/ Percent_Calculator_System v0.1",
+                "calc.status.label": "Status",
+                "calc.status.ready": "READY",
+                "calc.operation.add": "Add",
+                "calc.operation.subtract": "Subtract",
+                "calc.mode.change": "Value Change",
+                "calc.mode.change.desc": "Calculates the percentage difference between two numbers (growth or decline).",
+                "calc.mode.percent_of": "% of Number",
+                "calc.mode.percent_of.desc": "Calculates a specific value based on the given percentage and base number.",
+                "calc.mode.what_percent": "What % is it?",
+                "calc.mode.what_percent.desc": "Checks what percentage of one number is another number.",
+                "calc.mode.add_sub": "Add/Subtract %",
+                "calc.mode.add_sub.desc": "Allows you to quickly add or subtract a given percentage from a selected amount/number.",
+                "calc.label.old_val": "Old Value",
+                "calc.label.new_val": "New Value",
+                "calc.label.percent": "Percent (%)",
+                "calc.label.from_num": "From Number",
+                "calc.label.part": "Part (A)",
+                "calc.label.whole": "Whole (B)",
+                "calc.label.num": "Number",
+                "calc.history": "History",
+                "calc.changelog.title": "Changelog",
+                "calc.changelog.features": "Features:",
+                "calc.changelog.v01.desc": "First version of DraftCalc - advanced percentage calculator with four calculation modes: Value Change, % of Number, What %, and Add/Subtract %.",
+                "calc.changelog.v01.f1": "→ 4 percentage calculation modes",
+                "calc.changelog.v01.f2": "→ Dynamic descriptions explaining each mode's operation",
+                "calc.changelog.v01.f3": "→ Results visualization (bar charts and progress bars)",
+                "calc.changelog.v01.f4": "→ Add/subtract operation toggle in ±% mode",
+                "calc.changelog.v01.f5": "→ Calculation history with copy functionality",
+                "calc.changelog.v01.f6": "→ Multilingual support (PL/EN)",
+                "calc.changelog.v01.f7": "→ Industrial Tech Design System"
             }
         };
 

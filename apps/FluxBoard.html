@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FluxBoard | DraftLab</title>
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+    <meta name="theme-color" content="#000000">
+    <link rel="stylesheet" href="../src/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body class="bg-black text-gray-300 font-mono overflow-hidden">
+
+    <!-- Background Pattern -->
+    <div class="fixed inset-0 z-0 pointer-events-none opacity-20"
+        style="background-image: radial-gradient(#06b6d4 1px, transparent 1px); background-size: 24px 24px;">
+    </div>
+
+    <!-- Navigation Header -->
+    <dl-header></dl-header>
+
+    <!-- Main Dashboard Container -->
+    <main class="relative w-full h-[100dvh] pt-16 p-4 md:p-8 overflow-y-auto">
+
+        <!-- Status Bar / Toolbar -->
+        <div class="flex flex-wrap items-center justify-between mb-6 pb-2 border-b border-cyan-900/30">
+            <h1 class="text-xl md:text-2xl font-bold text-cyan-500 tracking-widest flex items-center gap-3">
+                <i data-lucide="layout" class="w-6 h-6"></i>
+                FLUX_BOARD
+                <span class="text-xs text-cyan-900 ml-2 border border-cyan-900/50 px-1 rounded">v0.1</span>
+            </h1>
+
+            <div class="flex gap-4">
+                <button id="btn-theme"
+                    class="flex items-center gap-2 text-xs uppercase tracking-wider text-cyan-700 hover:text-cyan-400 transition-colors"
+                    title="Change System Color">
+                    <i data-lucide="palette" class="w-4 h-4"></i>
+                    <span class="hidden md:inline">Theme</span>
+                </button>
+                <button id="btn-edit-mode"
+                    class="flex items-center gap-2 text-xs uppercase tracking-wider text-cyan-700 hover:text-cyan-400 transition-colors">
+                    <i data-lucide="edit-3" class="w-4 h-4"></i>
+                    <span class="hidden md:inline">Edit Layout</span>
+                </button>
+                <button id="btn-add-widget"
+                    class="flex items-center gap-2 text-xs uppercase tracking-wider text-cyan-700 hover:text-cyan-400 transition-colors">
+                    <i data-lucide="plus-square" class="w-4 h-4"></i>
+                    <span class="hidden md:inline">Add Widget</span>
+                </button>
+            </div>
+        </div>
+
+        <style>
+            /* Color Themes using Hue Rotate */
+            body.theme-green {
+                filter: hue-rotate(-50deg);
+            }
+
+            body.theme-amber {
+                filter: hue-rotate(-140deg);
+            }
+
+            body.theme-purple {
+                filter: hue-rotate(60deg);
+            }
+
+            body.theme-red {
+                filter: hue-rotate(140deg);
+            }
+
+            /* Prevent hue rotate on images if needed, but we don't have many */
+        </style>
+
+        <!-- Grid Area -->
+        <div id="dashboard-grid"
+            class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 auto-rows-[150px] min-h-[80vh]">
+            <!-- Widgets will be injected here via JS -->
+
+            <!-- Placeholder Loader -->
+            <div
+                class="col-span-2 row-span-2 border border-cyan-900/30 bg-cyan-900/5 rounded p-4 flex items-center justify-center animate-pulse">
+                <span class="text-cyan-800 text-xs tracking-widest">LOADING MODULES...</span>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Widget Picker Modal (Hidden) -->
+    <dialog id="widget-modal"
+        class="bg-black/90 backdrop-blur-md border border-cyan-500/50 rounded-lg shadow-[0_0_50px_rgba(6,182,212,0.2)] p-6 text-cyan-50 text-left max-w-md w-full backdrop:bg-black/50">
+        <h3 class="text-lg font-bold text-cyan-400 mb-4 border-b border-cyan-900/50 pb-2">ADD MODULE</h3>
+        <div class="grid grid-cols-2 gap-4">
+            <button
+                class="widget-opt p-4 border border-cyan-900/50 hover:bg-cyan-900/20 hover:border-cyan-500/50 rounded flex flex-col items-center gap-2 transition-all"
+                data-type="clock">
+                <i data-lucide="clock" class="w-8 h-8 text-cyan-600"></i>
+                <span class="text-xs uppercase tracking-wider">Clock</span>
+            </button>
+            <button
+                class="widget-opt p-4 border border-cyan-900/50 hover:bg-cyan-900/20 hover:border-cyan-500/50 rounded flex flex-col items-center gap-2 transition-all"
+                data-type="weather">
+                <i data-lucide="cloud" class="w-8 h-8 text-cyan-600"></i>
+                <span class="text-xs uppercase tracking-wider">Weather</span>
+            </button>
+            <button
+                class="widget-opt p-4 border border-cyan-900/50 hover:bg-cyan-900/20 hover:border-cyan-500/50 rounded flex flex-col items-center gap-2 transition-all"
+                data-type="atmosphere">
+                <i data-lucide="thermometer" class="w-8 h-8 text-cyan-600"></i>
+                <span class="text-xs uppercase tracking-wider">HomePod</span>
+            </button>
+            <button
+                class="widget-opt p-4 border border-cyan-900/50 hover:bg-cyan-900/20 hover:border-cyan-500/50 rounded flex flex-col items-center gap-2 transition-all"
+                data-type="notes">
+                <i data-lucide="sticky-note" class="w-8 h-8 text-cyan-600"></i>
+                <span class="text-xs uppercase tracking-wider">Notes</span>
+            </button>
+            <button
+                class="widget-opt p-4 border border-cyan-900/50 hover:bg-cyan-900/20 hover:border-cyan-500/50 rounded flex flex-col items-center gap-2 transition-all"
+                data-type="system">
+                <i data-lucide="cpu" class="w-8 h-8 text-cyan-600"></i>
+                <span class="text-xs uppercase tracking-wider">System</span>
+            </button>
+        </div>
+        <button id="close-modal"
+            class="mt-6 w-full py-2 bg-cyan-900/20 hover:bg-cyan-900/40 text-cyan-500 text-xs rounded border border-cyan-900/50 uppercase tracking-widest transition-colors">Cancel</button>
+    </dialog>
+
+    <script type="module" src="../src/main.js"></script>
+    <script type="module" src="../src/apps/fluxboard/logic.js"></script>
+</body>
+
+</html>

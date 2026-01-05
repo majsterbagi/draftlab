@@ -1,26 +1,18 @@
 <?php
 /**
- * DraftCargo Stats API
+ * DraftCargo - Stats API
+ * Returns file transfer statistics
  */
 
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 
 $statsFile = __DIR__ . '/stats.json';
 
-if (file_exists($statsFile)) {
-    if (!is_readable($statsFile)) {
-        echo json_encode(['error' => 'FILE_NOT_READABLE', 'count' => 0, 'size' => 0]);
-        exit;
-    }
-    $content = file_get_contents($statsFile);
-    $data = json_decode($content, true);
-    if ($data) {
-        echo $content;
-        exit;
-    } else {
-        echo json_encode(['error' => 'INVALID_JSON', 'count' => 0, 'size' => 0]);
-        exit;
-    }
+if (!file_exists($statsFile)) {
+    echo json_encode(['count' => 0, 'totalSize' => 0]);
+    exit;
 }
-echo json_encode(['error' => 'FILE_NOT_FOUND', 'count' => 0, 'size' => 0]);
+
+$stats = json_decode(file_get_contents($statsFile), true);
+echo json_encode($stats ?: ['count' => 0, 'totalSize' => 0]);

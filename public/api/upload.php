@@ -1,11 +1,10 @@
 <?php
 /**
- * DraftCargo Upload API v5.1 - Base64 Chunked Upload
- * Obsługuje przesyłanie plików w kawałkach zakodowanych Base64
+ * DraftCargo - Chunked File Upload API
+ * Handles large file uploads via Base64 chunks
  */
 
-error_reporting(0);
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
@@ -15,78 +14,102 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-// Konfiguracja
-$uploadDir = __DIR__ . '/uploads/';
-$tempDir = __DIR__ . '/temp/';
-$statsFile = __DIR__ . '/stats.json';
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    echo json_encode(['error' => 'Method not allowed']);
+    exit;
+}
 
-// Sprawdź/utwórz foldery
-if (!is_dir($uploadDir))
+$uploadDir = __DIR__ . '/../uploads/';
+if (!is_dir($uploadDir)) {
     mkdir($uploadDir, 0755, true);
-if (!is_dir($tempDir))
-    mkdir($tempDir, 0755, true);
-
-// Pobierz dane z FormData
-$chunkData = $_POST['chunkData'] ?? null;
-$chunkIndex = intval($_POST['chunkIndex'] ?? 0);
-$totalChunks = intval($_POST['totalChunks'] ?? 1);
-$fileId = $_POST['fileId'] ?? null;
-$fileName = $_POST['fileName'] ?? 'unnamed_file';
-
-if (!$chunkData || !$fileId) {
-    echo json_encode(['success' => false, 'error' => 'Brak danych']);
-    exit;
 }
 
-$binaryData = base64_decode($chunkData);
-if ($binaryData === false) {
-    echo json_encode(['success' => false, 'error' => 'Base64 error']);
-    exit;
-}
-
-$tempFile = $tempDir . $fileId . '.part';
-$mode = ($chunkIndex === 0) ? 'wb' : 'ab';
-$handle = fopen($tempFile, $mode);
-
-if (!$handle) {
-    echo json_encode(['success' => false, 'error' => 'File write error']);
-    exit;
-}
-
-fwrite($handle, $binaryData);
-fclose($handle);
-
-if ($chunkIndex + 1 >= $totalChunks) {
-    $safeFileName = preg_replace('/[^a-zA-Z0-9._-]/', '_', $fileName);
-    $finalPath = $uploadDir . $fileId . '_' . $safeFileName;
-
-    if (rename($tempFile, $finalPath)) {
-        // --- STATS COUNTING ---
-        clearstatcache();
-        $fileSize = filesize($finalPath);
-
-        $stats = ['count' => 0, 'size' => 0];
-        if (file_exists($statsFile)) {
-            $currentData = json_decode(file_get_contents($statsFile), true);
-            if ($currentData)
-                $stats = $currentData;
-        }
-
-        $stats['count']++;
-        $stats['size'] += $fileSize;
-        file_put_contents($statsFile, json_encode($stats, JSON_PRETTY_PRINT), LOCK_EX);
-        // ----------------------
-
-        $downloadUrl = 'api/download.php?id=' . $fileId . '_' . $safeFileName;
-
-        echo json_encode([
-            'success' => true,
-            'fileUrl' => $downloadUrl,
-            'size' => $fileSize
-        ]);
-    } else {
-        echo json_encode(['success' => false, 'error' => 'Rename error']);
-    }
+// Support both FormData (from CargoController) and JSON body
+$input = [];
+if (!empty($_POST)) {
+    // FormData from CargoController.js
+    $input = [
+        'filename' => $_POST['fileName'] ?? '',
+        'chunk' => $_POST['chunkData'] ?? '',
+        'chunkIndex' => $_POST['chunkIndex'] ?? '',
+        'totalChunks' => $_POST['totalChunks'] ?? '',
+        'fileId' => $_POST['fileId'] ?? ''
+    ];
 } else {
-    echo json_encode(['success' => true, 'chunk' => $chunkIndex, 'total' => $totalChunks]);
+    // JSON body (legacy support)
+    $input = json_decode(file_get_contents('php://input'), true) ?? [];
+}
+
+if (empty($input['filename']) || empty($input['chunk']) || !isset($input['chunkIndex']) || !isset($input['totalChunks'])) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Missing required fields']);
+    exit;
+}
+
+$filename = preg_replace('/[^a-zA-Z0-9._-]/', '', $input['filename']);
+$chunkIndex = intval($input['chunkIndex']);
+$totalChunks = intval($input['totalChunks']);
+$chunk = $input['chunk'];
+
+// Validate Base64
+if (!preg_match('/^[A-Za-z0-9+\/=]+$/', $chunk)) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Invalid Base64 data']);
+    exit;
+}
+
+// Generate unique file ID for this upload session
+$fileId = isset($input['fileId']) ? $input['fileId'] : uniqid('cargo_', true);
+$tempDir = $uploadDir . $fileId . '/';
+
+if (!is_dir($tempDir)) {
+    mkdir($tempDir, 0755, true);
+}
+
+// Save chunk
+$chunkFile = $tempDir . 'chunk_' . str_pad($chunkIndex, 5, '0', STR_PAD_LEFT);
+file_put_contents($chunkFile, base64_decode($chunk));
+
+// Check if all chunks received
+$receivedChunks = count(glob($tempDir . 'chunk_*'));
+
+if ($receivedChunks === $totalChunks) {
+    // Combine chunks
+    $finalFile = $uploadDir . $fileId . '_' . $filename;
+    $fp = fopen($finalFile, 'wb');
+
+    for ($i = 0; $i < $totalChunks; $i++) {
+        $chunkPath = $tempDir . 'chunk_' . str_pad($i, 5, '0', STR_PAD_LEFT);
+        if (file_exists($chunkPath)) {
+            fwrite($fp, file_get_contents($chunkPath));
+            unlink($chunkPath);
+        }
+    }
+    fclose($fp);
+    rmdir($tempDir);
+
+    // Update stats
+    $statsFile = __DIR__ . '/stats.json';
+    $stats = file_exists($statsFile) ? json_decode(file_get_contents($statsFile), true) : ['count' => 0, 'totalSize' => 0];
+    $stats['count']++;
+    $stats['totalSize'] += filesize($finalFile);
+    file_put_contents($statsFile, json_encode($stats));
+
+    $downloadUrl = 'https://draftlab.pl/api/download.php?id=' . $fileId . '&name=' . urlencode($filename);
+
+    echo json_encode([
+        'success' => true,
+        'complete' => true,
+        'fileUrl' => $downloadUrl,
+        'fileId' => $fileId
+    ]);
+} else {
+    echo json_encode([
+        'success' => true,
+        'complete' => false,
+        'received' => $receivedChunks,
+        'total' => $totalChunks,
+        'fileId' => $fileId
+    ]);
 }

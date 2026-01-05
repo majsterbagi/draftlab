@@ -25,9 +25,23 @@ if (!is_dir($uploadDir)) {
     mkdir($uploadDir, 0755, true);
 }
 
-$input = json_decode(file_get_contents('php://input'), true);
+// Support both FormData (from CargoController) and JSON body
+$input = [];
+if (!empty($_POST)) {
+    // FormData from CargoController.js
+    $input = [
+        'filename' => $_POST['fileName'] ?? '',
+        'chunk' => $_POST['chunkData'] ?? '',
+        'chunkIndex' => $_POST['chunkIndex'] ?? '',
+        'totalChunks' => $_POST['totalChunks'] ?? '',
+        'fileId' => $_POST['fileId'] ?? ''
+    ];
+} else {
+    // JSON body (legacy support)
+    $input = json_decode(file_get_contents('php://input'), true) ?? [];
+}
 
-if (!isset($input['filename']) || !isset($input['chunk']) || !isset($input['chunkIndex']) || !isset($input['totalChunks'])) {
+if (empty($input['filename']) || empty($input['chunk']) || !isset($input['chunkIndex']) || !isset($input['totalChunks'])) {
     http_response_code(400);
     echo json_encode(['error' => 'Missing required fields']);
     exit;
@@ -87,7 +101,7 @@ if ($receivedChunks === $totalChunks) {
     echo json_encode([
         'success' => true,
         'complete' => true,
-        'url' => $downloadUrl,
+        'fileUrl' => $downloadUrl,
         'fileId' => $fileId
     ]);
 } else {

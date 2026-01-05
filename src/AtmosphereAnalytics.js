@@ -3,11 +3,13 @@
  * Supports Week, Month, Year ranges with dynamic statistics.
  */
 
+import { SITE_DATA } from './data/db.js';
+
 document.addEventListener('DOMContentLoaded', () => {
     initAnalytics();
 });
 
-const API_URL = '../api/atmosphere.php';
+const API_URL = SITE_DATA.config.apiEndpoints.atmosphere;
 let globalData = [];
 let currentRange = 'week'; // 'week', 'month', 'year'
 let chartInstance = null;
@@ -64,29 +66,37 @@ function showEmptyState() {
 }
 
 function updateView() {
-    const now = new Date();
+    let anchorDate = new Date(); // Default to today
+
+    // If we have data, use the last entry's date as the anchor
+    // This ensures meaningful analytics even if the data is historical/old
+    if (globalData.length > 0) {
+        const lastEntry = globalData[globalData.length - 1];
+        anchorDate = new Date(lastEntry.timestamp * 1000);
+    }
+
     let startDate;
 
-    // Calculate start date based on range
+    // Calculate start date based on range relative to anchorDate
     switch (currentRange) {
         case 'week':
-            startDate = new Date(now);
+            startDate = new Date(anchorDate);
             startDate.setDate(startDate.getDate() - 7);
             break;
         case 'month':
-            startDate = new Date(now);
+            startDate = new Date(anchorDate);
             startDate.setMonth(startDate.getMonth() - 1);
             break;
         case 'year':
-            startDate = new Date(now);
+            startDate = new Date(anchorDate);
             startDate.setFullYear(startDate.getFullYear() - 1);
             break;
     }
 
-    // Filter data for the range
+    // Filter data for the range [startDate, anchorDate]
     const rangeData = globalData.filter(entry => {
         const entryDate = new Date(entry.timestamp * 1000);
-        return entryDate >= startDate && entryDate <= now;
+        return entryDate >= startDate && entryDate <= anchorDate;
     });
 
     // Update UI

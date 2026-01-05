@@ -3,6 +3,10 @@ import { i18n } from '../utils/i18n.js';
 class AppFooter extends HTMLElement {
 
     connectedCallback() {
+        // Ensure the custom element itself takes full width
+        this.style.display = 'block';
+        this.style.width = '100%';
+
         this.render();
         i18n.subscribe(() => this.render());
     }

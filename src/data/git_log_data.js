@@ -1,5 +1,13 @@
 export const GIT_LOG_DATA = [
     {
+        "hash": "408af1c",
+        "date": "2025-12-25 11:16",
+        "type": "FIX",
+        "component": "SYS",
+        "desc": "Atmosphere header padding & humidity scale; ADD: API backend scripts",
+        "details": null
+    },
+    {
         "hash": "8fb6faa",
         "date": "2025-12-23 22:02",
         "type": "FEAT",
@@ -389,14 +397,6 @@ export const GIT_LOG_DATA = [
         "type": "STYLE",
         "component": "ATMOSPHERE",
         "desc": "Move scrollbar to body (right edge) and make header sticky",
-        "details": null
-    },
-    {
-        "hash": "1eb4198",
-        "date": "2025-12-19 21:38",
-        "type": "FIX",
-        "component": "ATMOSPHERE",
-        "desc": "Enable scrollbar and downgrade to v0.1.0",
         "details": null
     }
 ];

@@ -168,7 +168,8 @@ const RAW_DATA = {
                     { title: "Wizualizacja Nieba", desc: "Płynne gradienty kolorów zależne od wysokości słońca, efekt lens flare." },
                     { title: "Auto-Geolokalizacja", desc: "Automatyczne wykrywanie pozycji przy każdym uruchomieniu z reverse geocoding." },
                     { title: "Dashboard Danych", desc: "Wschód, zachód, długość dnia, Golden Hour AM/PM, zmiana względem najdłuższego dnia." }
-                ]
+                ],
+                techStack: ["Vanilla JS", "SunCalc Library", "PWA / Service Worker", "CSS3 Variables", "OpenStreetMap API"],
             },
             details_en: {
                 about: "PWA web application for visualizing sun position and tracking day phases. A tool dedicated to photographers and sky enthusiasts, combining physically correct astronomical data with an artistic interface.",
@@ -177,10 +178,17 @@ const RAW_DATA = {
                     { title: "Sky Visualization", desc: "Smooth color gradients depending on sun altitude, lens flare effect." },
                     { title: "Auto-Geolocation", desc: "Automatic position detection on every launch with reverse geocoding." },
                     { title: "Data Dashboard", desc: "Sunrise, sunset, day length, Golden Hour AM/PM, change versus longest day." }
-                ]
+                ],
+                techStack: ["Vanilla JS", "SunCalc Library", "PWA / Service Worker", "CSS3 Variables", "OpenStreetMap API"],
             },
 
             changes: [
+                {
+                    version: "v2.0.1",
+                    date: "2025-12-30",
+                    type: "FIX",
+                    desc: "System Fix: Naprawiono brakującą stopkę w globalnym widoku dziennika zmian (changelog.html)."
+                },
                 {
                     version: "v2.0",
                     date: "2025-12-20 21:00",
@@ -238,30 +246,132 @@ const RAW_DATA = {
 
             changes: []
         },
+
         {
-            id: "slot_05",
-            title: "Slot_05: Empty",
-            title_en: "Slot_05: Empty",
-            desc: "Miejsce na kolejny projekt...",
-            desc_en: "Place for the next project...",
-            tags: [],
-            version: "TBD",
-            url: "#",
-            active: false,
-            color: "gray"
+            id: 'retrovision',
+            title: 'RetroVision',
+            title_en: 'RetroVision',
+            desc: 'Filtr kamery zmieniający obraz w strumień kodu ASCII w czasie rzeczywistym. Matrix w Twojej przeglądarce.',
+            desc_en: 'Camera filter turning video into a real-time ASCII code stream. The Matrix in your browser.',
+            version: 'v1.0.0',
+            active: true,
+            url: 'apps/RetroVision.html',
+            changelogUrl: 'apps/changelog.html?id=retrovision',
+            tags: ['Camera', 'ASCII', 'Canvas'],
+            color: 'green',
+            icon: 'camera',
+
+            details: {
+                about: "Eksperymentalny projekt wizualny przetwarzający obraz z kamery na znaki tekstowe ASCII w czasie rzeczywistym. Nawiązuje do estetyki terminali i filmów Sci-Fi z lat 90.",
+                features: [
+                    { title: "Real-time ASCII", desc: "Konwersja 30 klatek na sekundę z pełną płynnością." },
+                    { title: "Visual Modes", desc: "Tryby: Matrix (Katakana), Binary (0/1), Standard (ASCII)." },
+                    { title: "Snapshot", desc: "Możliwość wykonania i pobrania zdjęcia w formacie PNG." },
+                    { title: "Privacy", desc: "Obraz jest przetwarzany lokalnie w przeglądarce. Nikdzie nie jest wysyłany." }
+                ],
+                techStack: ["Vanilla JS", "Canvas API", "MediaStream API", "Offscreen Processing"],
+                roadmap: [
+                    { done: true, task: "Dostęp do kamery" },
+                    { done: true, task: "Silnik renderujący ASCII" },
+                    { done: true, task: "Filtry i ustawienia" },
+                    { done: false, task: "Nagrywanie wideo (GIF/WebM)" }
+                ]
+            },
+            details_en: {
+                about: "Experimental visual project processing camera feed into ASCII text characters in real-time. References terminal aesthetics and 90s Sci-Fi movies.",
+                features: [
+                    { title: "Real-time ASCII", desc: "30 fps conversion with full smoothness." },
+                    { title: "Visual Modes", desc: "Modes: Matrix (Katakana), Binary (0/1), Standard (ASCII)." },
+                    { title: "Snapshot", desc: "Ability to take and download a photo in PNG format." },
+                    { title: "Privacy", desc: "Image is processed locally in the browser. Sent nowhere." }
+                ],
+                techStack: ["Vanilla JS", "Canvas API", "MediaStream API", "Offscreen Processing"],
+                roadmap: [
+                    { done: true, task: "Camera access" },
+                    { done: true, task: "ASCII rendering engine" },
+                    { done: true, task: "Filters and settings" },
+                    { done: false, task: "Video recording (GIF/WebM)" }
+                ]
+            },
+
+            changes: [
+                {
+                    version: "v1.1.0",
+                    date: "2025-12-30 22:00",
+                    type: "UPDATE",
+                    desc: "UX & i18n: Pełna internacjonalizacja (PL/EN), nowy zwijany panel ustawień, usprawnienia mobilne, stały przycisk migawki oraz dedykowane ustawienia gęstości per zestaw znaków."
+                },
+                {
+                    version: "v1.0.0",
+                    date: "2025-12-30",
+                    type: "INIT",
+                    desc: "Initial Release: Premiera RetroVision - ASCII Camera Filter."
+                }
+            ]
         },
         {
-            id: "slot_06",
-            title: "Slot_06: Empty",
-            title_en: "Slot_06: Empty",
-            desc: "Miejsce na kolejny projekt...",
-            desc_en: "Place for the next project...",
-            tags: [],
-            version: "TBD",
-            url: "#",
-            active: false,
-            color: "gray"
-        }
+            id: 'draftcalc',
+            title: 'DraftCalc',
+            title_en: 'DraftCalc',
+            desc: 'Industrialne obliczenia procentowe. Dashboard v0.1 z wizualizacją i historią.',
+            desc_en: 'Industrial percentage calculations. Dashboard v0.1 with visualization and history.',
+            version: 'v0.1',
+            active: true,
+            url: 'apps/DraftCalc.html',
+            changelogUrl: 'apps/changelog.html?id=draftcalc',
+            tags: ['Calculator', 'Visualizer', 'Productivity'],
+            color: 'green',
+            icon: 'percent',
+
+            details: {
+                about: "Zaawansowany kalkulator procentowy w estetyce Industrial Tech. Oferuje cztery tryby obliczeń, wizualizację wyników oraz historię obliczeń.",
+                features: [
+                    { title: "4 Tryby Obliczeń", desc: "Zmiana wartości, % z liczby, Jaki to %, Dodaj/Odejmij % - wszystkie w jednym dashboardzie." },
+                    { title: "Wizualizacja", desc: "Wykresy słupkowe i paski postępu dla każdego obliczenia." },
+                    { title: "Smart History", desc: "Lokalny zapis ostatnich obliczeń z możliwością kopiowania wyników." },
+                    { title: "Wielojęzyczność", desc: "Pełna obsługa języka polskiego i angielskiego." }
+                ],
+                techStack: ["Vanilla JS", "CSS3 Grid", "LocalStorage", "Dynamic DOM", "i18n System"],
+                roadmap: [
+                    { done: true, task: "Silnik obliczeń procentowych" },
+                    { done: true, task: "Panel wizualizacji" },
+                    { done: true, task: "Moduł historii" },
+                    { done: true, task: "System wielojęzyczności" },
+                    { done: false, task: "Eksport raportów PDF" },
+                    { done: false, task: "Zapisywanie presetów obliczeń" }
+                ]
+            },
+            details_en: {
+                about: "Advanced percentage calculator in Industrial Tech aesthetics. Offers four calculation modes, results visualization, and calculation history.",
+                features: [
+                    { title: "4 Calculation Modes", desc: "Value change, % of number, What %, Add/Subtract % - all in one dashboard." },
+                    { title: "Visualization", desc: "Bar charts and progress bars for each calculation." },
+                    { title: "Smart History", desc: "Local record of recent calculations with copy capability." },
+                    { title: "Multilingual", desc: "Full Polish and English language support." }
+                ],
+                techStack: ["Vanilla JS", "CSS3 Grid", "LocalStorage", "Dynamic DOM", "i18n System"],
+                roadmap: [
+                    { done: true, task: "Percentage calculation engine" },
+                    { done: true, task: "Visualization panel" },
+                    { done: true, task: "History module" },
+                    { done: true, task: "Multilingual system" },
+                    { done: false, task: "PDF report export" },
+                    { done: false, task: "Save calculation presets" }
+                ]
+            },
+
+            changes: [
+                {
+                    version: "v0.1",
+                    date: "2026-01-06",
+                    type: "INIT",
+                    desc: "Pierwsza wersja DraftCalc - zaawansowany kalkulator procentowy z czterema trybami działania: Zmiana wartości, % z liczby, Jaki to %, oraz Dodaj/Odejmij %. Implementacja wizualizacji wyników, historii obliczeń, przełącznika operacji oraz pełnej wielojęzyczności (PL/EN).",
+                    details: "Funkcje:\n→ 4 tryby obliczeń procentowych\n→ Dynamiczne opisy wyjaśniające działanie każdego trybu\n→ Wizualizacja wyników (wykresy słupkowe i paski postępu)\n→ Przełącznik operacji dodawania/odejmowania w trybie ±%\n→ Historia obliczeń z możliwością kopiowania wyników\n→ Wielojęzyczna obsługa (PL/EN)\n→ Industrial Tech Design System"
+                }
+            ]
+        },
+
+
     ],
     news: [
         {

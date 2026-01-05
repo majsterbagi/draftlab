@@ -22,11 +22,14 @@
         <div class="max-w-xl w-full">
 
             <!-- System Header -->
-            <div class="mb-8 flex justify-between items-end border-l-4 border-tech-green pl-4">
-                <div>
-                    <h1 class="text-2xl font-bold tracking-tighter uppercase">/ DraftCargo_v0.1</h1>
-                    <p class="text-tech-dim text-xs mt-1" data-i18n="cargo.status">Status: SECURE_CHANNEL_ACTIVE |
-                        Limit: 1024MB | TTL: 72H</p>
+            <div class="mb-8 flex justify-between items-center border-l-4 border-tech-green pl-4">
+                <div class="flex items-center gap-4">
+                    <i data-lucide="upload-cloud" class="text-tech-green w-10 h-10"></i>
+                    <div>
+                        <h1 class="text-3xl font-bold tracking-tighter uppercase leading-none">DraftCargo</h1>
+                        <p class="text-tech-dim text-[10px] uppercase tracking-[0.2em] mt-1 font-mono">/
+                            Secure_File_Transfer v0.1</p>
+                    </div>
                 </div>
                 <!-- Stats Counter -->
                 <div class="text-right">
@@ -138,14 +141,17 @@
                     debug.classList.replace('text-tech-green', 'text-red-500');
                     return;
                 }
-                if (data && data.count !== undefined) {
-                    document.getElementById('stat-count').innerText = data.count;
+                if (data && (data.count !== undefined || data.files !== undefined)) {
+                    const count = data.count !== undefined ? data.count : (data.files || 0);
+                    const size = data.size !== undefined ? data.size : (data.total_size || 0);
+
+                    document.getElementById('stat-count').innerText = count;
 
                     let sizeText = '0.0 MB';
-                    if (data.size > 1024 * 1024 * 1024) {
-                        sizeText = (data.size / 1024 / 1024 / 1024).toFixed(2) + ' GB';
-                    } else if (data.size > 0) {
-                        sizeText = (data.size / 1024 / 1024).toFixed(1) + ' MB';
+                    if (size > 1024 * 1024 * 1024) {
+                        sizeText = (size / 1024 / 1024 / 1024).toFixed(2) + ' GB';
+                    } else if (size > 0) {
+                        sizeText = (size / 1024 / 1024).toFixed(1) + ' MB';
                     }
 
                     document.getElementById('stat-size').innerText = sizeText;
@@ -155,28 +161,50 @@
             };
 
             const t = Date.now();
+            
+            // 1. Try PHP (Production)
             try {
                 let res = await fetch(`../api/stats.php?t=${t}`);
-                if (res.ok) {
-                    const data = await res.json();
-                    displayStats(data);
-                    return;
-                } else {
-                    debug.innerText = `PHP_ERROR: ${res.status}`;
+                const text = await res.text();
+                // Check if response is valid JSON and not PHP source or HTML
+                if (res.ok && text.trim().startsWith('{')) {
+                    try {
+                        const data = JSON.parse(text);
+                        displayStats(data);
+                        return;
+                    } catch (e) {
+                         // Parse error, likely PHP error output
+                         console.warn('[Cargo] PHP response parse error', e);
+                    }
                 }
+                debug.innerText = `PHP_NOT_REACHABLE`;
             } catch (e) {
                 console.error('[Cargo] PHP stats error:', e);
                 debug.innerText = 'PHP_NOT_REACHABLE';
             }
 
+            // 2. Try JSON (Fallback/Dev)
             try {
+                console.log('[Cargo] Trying JSON fallback...');
                 let res = await fetch(`../api/stats.json?t=${t}`);
-                if (res.ok) {
-                    const data = await res.json();
-                    displayStats(data);
-                    if (debug.innerText === 'PHP_NOT_REACHABLE') debug.innerText = 'USING_STATIC_JSON';
+                const text = await res.text();
+                
+                if (res.ok && text.trim().startsWith('{')) {
+                     try {
+                        const data = JSON.parse(text);
+                        // Map JSON format to expected format if needed
+                        const normalized = {
+                            count: data.count || 0,
+                            size: data.totalSize || data.size || 0
+                        };
+                        displayStats(normalized);
+                        if (debug.innerText === 'PHP_NOT_REACHABLE') debug.innerText = 'USING_STATIC_JSON';
+                    } catch(e) {
+                         console.error('[Cargo] JSON parse error:', e);
+                         debug.innerText += ' | JSON_PARSE_ERROR';
+                    }
                 } else {
-                    debug.innerText += ` | JSON_ERROR: ${res.status}`;
+                    debug.innerText += ` | JSON_INVALID`;
                 }
             } catch (e) {
                 console.error('[Cargo] JSON stats error:', e);

@@ -16,7 +16,8 @@ const SCOPE_TO_PROJECT = {
     'SUNTRACK': 'suntrack',
     'CARGO': 'draftcargo',
     'DRAFTCARGO': 'draftcargo',
-    'NUCLEUS': 'nucleus'
+    'NUCLEUS': 'nucleus',
+    'GLYPHREACTOR': 'glyph-reactor'
 };
 
 // git log format: hash|date|subject|body
