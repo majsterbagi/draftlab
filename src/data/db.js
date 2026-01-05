@@ -208,7 +208,7 @@ const RAW_DATA = {
             url: './apps/Atmosphere.html',
             changelogUrl: "apps/changelog.html?id=atmosphere",
             tags: ['IoT', 'Chart.js', 'PHP'],
-            color: 'green',
+            color: 'teal',
             icon: 'cloud',
 
             details: {
@@ -258,7 +258,7 @@ const RAW_DATA = {
             url: 'apps/RetroVision.html',
             changelogUrl: 'apps/changelog.html?id=retrovision',
             tags: ['Camera', 'ASCII', 'Canvas'],
-            color: 'green',
+            color: 'violet',
             icon: 'camera',
 
             details: {
@@ -320,7 +320,7 @@ const RAW_DATA = {
             url: 'apps/DraftCalc.html',
             changelogUrl: 'apps/changelog.html?id=draftcalc',
             tags: ['Calculator', 'Visualizer', 'Productivity'],
-            color: 'green',
+            color: 'amber',
             icon: 'percent',
 
             details: {

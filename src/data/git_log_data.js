@@ -1,5 +1,13 @@
 export const GIT_LOG_DATA = [
     {
+        "hash": "5aee8a8",
+        "date": "2026-01-06 00:33",
+        "type": "UPDATE",
+        "component": "SYS",
+        "desc": "DraftCalc v0.1: Zaawansowany kalkulator procentowy z wizualizacją i i18n",
+        "details": null
+    },
+    {
         "hash": "408af1c",
         "date": "2025-12-25 11:16",
         "type": "FIX",
@@ -389,14 +397,6 @@ export const GIT_LOG_DATA = [
         "type": "DOCS",
         "component": "ATMOSPHERE",
         "desc": "Update changelog description",
-        "details": null
-    },
-    {
-        "hash": "61ba9db",
-        "date": "2025-12-19 21:40",
-        "type": "STYLE",
-        "component": "ATMOSPHERE",
-        "desc": "Move scrollbar to body (right edge) and make header sticky",
         "details": null
     }
 ];
