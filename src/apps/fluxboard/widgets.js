@@ -6,7 +6,7 @@ import { SITE_DATA } from '../../data/db.js';
 
 export function createWidget(config) {
     const el = document.createElement('div');
-    el.className = 'relative bg-cyan-900/10 border border-cyan-900/30 rounded p-4 flex flex-col group overflow-hidden hover:border-cyan-500/30 transition-colors';
+    el.className = 'relative rounded-xl p-4 flex flex-col group overflow-hidden border border-cyan-500/15 bg-gradient-to-br from-cyan-950/40 via-black/30 to-black/50 backdrop-blur-md hover:border-cyan-400/40 hover:shadow-[0_0_18px_rgba(34,211,238,0.15)] hover:-translate-y-0.5 transition-all duration-300';
     el.dataset.id = config.id;
     el.dataset.type = config.type;
 

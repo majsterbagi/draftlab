@@ -230,8 +230,8 @@
   }
 
   .dl-stat-card {
-    @apply border border-white/10 rounded-2xl p-4 flex flex-col backdrop-blur-md;
-    background-color: rgba(20, 20, 24, 0.6);
+    @apply border border-white/10 rounded-2xl p-4 flex flex-col backdrop-blur-md transition-all duration-300 hover:border-tech-green/30 hover:shadow-glow-sm;
+    background: linear-gradient(160deg, rgba(24, 26, 31, 0.72), rgba(13, 14, 17, 0.6));
   }
 
   .dl-stat-label {
@@ -247,8 +247,33 @@
   }
 
   .dl-chart-container {
-    @apply border border-white/10 rounded-[20px] p-4 backdrop-blur-md flex-grow min-h-[250px] relative flex flex-col;
-    background-color: rgba(20, 20, 24, 0.6);
+    @apply border border-white/10 rounded-[20px] p-4 backdrop-blur-md flex-grow min-h-[250px] relative flex flex-col transition-colors duration-300 hover:border-white/20;
+    background: linear-gradient(160deg, rgba(24, 26, 31, 0.72), rgba(13, 14, 17, 0.6));
+  }
+
+  /* --- App hero strip (shared by app pages) --- */
+  .dl-app-hero {
+    @apply glass rounded-card shadow-card p-5 flex flex-wrap items-center gap-4 relative overflow-hidden mb-6;
+  }
+
+  .dl-app-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse 70% 120% at 0% 0%, rgba(0, 255, 157, 0.08), transparent 60%);
+  }
+
+  .dl-app-icon {
+    @apply w-12 h-12 min-w-[3rem] rounded-xl border border-tech-green/30 bg-tech-green/10 text-tech-green flex items-center justify-center shadow-glow-sm;
+  }
+
+  .dl-app-badge {
+    @apply flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-tech-green/30 bg-tech-green/10 text-tech-green text-[10px] font-mono font-bold uppercase tracking-wider;
+  }
+
+  .dl-app-action {
+    @apply flex items-center gap-1.5 px-4 py-2 rounded-lg border border-white/10 bg-white/5 text-tech-dim text-[11px] font-mono font-bold uppercase tracking-wider hover:text-tech-green hover:border-tech-green/40 hover:shadow-glow-sm transition-all no-underline;
   }
 
   .dl-chart-header {

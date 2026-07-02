@@ -37,22 +37,23 @@
     <div class="scanline"></div>
 
     <div class="dl-dashboard">
-        <!-- App Title Section -->
-        <div class="mb-8 flex items-center gap-4 border-l-4 border-tech-green pl-4">
-            <i data-lucide="cloud" class="text-tech-green w-10 h-10"></i>
-            <div>
-                <h1 class="text-3xl font-bold tracking-tighter uppercase leading-none">Atmosphere</h1>
-                <p class="text-tech-dim text-[10px] uppercase tracking-[0.2em] mt-1 font-mono">/
-                    Climate_Monitoring_System v0.2</p>
+        <!-- App Hero -->
+        <div class="dl-app-hero mt-6" data-reveal>
+            <div class="dl-app-icon"><i data-lucide="cloud" class="w-6 h-6"></i></div>
+            <div class="min-w-0">
+                <h1 class="text-2xl md:text-3xl font-bold tracking-tighter uppercase leading-none font-mono">
+                    Atmosphere</h1>
+                <p class="text-tech-dim text-[10px] uppercase tracking-[0.2em] mt-1.5 font-mono">/
+                    Climate_Monitoring_System</p>
             </div>
-        </div>
-        <!-- Quick Nav -->
-        <div style="display: flex; justify-content: flex-end; margin-bottom: 12px;">
-            <a href="AtmosphereAnalytics.html"
-                style="display: flex; align-items: center; gap: 6px; padding: 8px 16px; background: rgba(0, 255, 157, 0.1); border: 1px solid rgba(0, 255, 157, 0.3); border-radius: 8px; color: #00ff9d; text-decoration: none; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.2s;">
-                <i data-lucide="bar-chart-3" width="14"></i>
-                ANALYTICS
-            </a>
+            <div class="ml-auto flex items-center gap-3">
+                <span class="dl-app-badge"><span
+                        class="w-1.5 h-1.5 rounded-full bg-tech-green animate-pulse"></span>v0.2</span>
+                <a href="AtmosphereAnalytics.html" class="dl-app-action">
+                    <i data-lucide="bar-chart-3" width="14"></i>
+                    <span class="hidden sm:inline">ANALYTICS</span>
+                </a>
+            </div>
         </div>
 
         <!-- Date Control -->

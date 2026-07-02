@@ -1,5 +1,13 @@
 export const GIT_LOG_DATA = [
     {
+        "hash": "c4b1f7d",
+        "date": "2026-07-02 22:29",
+        "type": "FEAT",
+        "component": "SYS",
+        "desc": "FEAT v2.1: Nowa generacja podstron i aplikacji + DraftLab Core (interaktywny terminal)",
+        "details": "- DraftLab Core: terminal z siecią neuronową (canvas) na stronie głównej;\n  komendy help/apps/open/stats/whoami/legacy/lang/matrix/clear, PL/EN,\n  pauza poza viewportem, prefers-reduced-motion\n- Dziennik zmian zredukowany do kompaktowego zwijanego paska (UnifiedLog v2)\n- Nowy układ dolnej sekcji: Manifest+Stack -> Rdzeń Systemu -> dziennik\n- Podstrony: system-log (glass modal, zaokrąglone filtry), changelog\n  (glass sidebar, karty funkcji), view (glass container)\n- Aplikacje: pinned lucide 0.462.0, preconnect fonts, naprawiony favicon\n  FluxBoard, glass/rounded panele w LabyrinthQR i DraftCargo\n- Nowe klucze i18n PL/EN dla terminala i dziennika\n\nCo-Authored-By: Claude Fable 5 <noreply@anthropic.com>"
+    },
+    {
         "hash": "1f7cc11",
         "date": "2026-07-02 22:16",
         "type": "FEAT",
@@ -389,14 +397,6 @@ export const GIT_LOG_DATA = [
         "type": "FEAT",
         "component": "ATMOSPHERE",
         "desc": "Add interactive analytics page with week/month/year ranges",
-        "details": null
-    },
-    {
-        "hash": "024dda2",
-        "date": "2025-12-19 21:50",
-        "type": "FEAT",
-        "component": "ATMOSPHERE",
-        "desc": "Replace dew point with avg humidity, add time-of-day stats",
         "details": null
     }
 ];

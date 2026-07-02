@@ -31,7 +31,7 @@
     <style>
         :root {
             --bg-color: #0b0c0e;
-            --panel-bg: rgba(20, 20, 24, 0.7);
+            --panel-bg: linear-gradient(160deg, rgba(24, 26, 31, 0.75), rgba(13, 14, 17, 0.65));
             --accent-color: #00ff9d;
             --text-color: #e0e0e0;
             --text-dim: rgba(255, 255, 255, 0.4);
@@ -430,6 +430,7 @@
 
         .search-input:focus {
             border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(0, 255, 157, 0.15), 0 0 16px rgba(0, 255, 157, 0.1);
         }
 
         .search-input::-moz-placeholder {
@@ -588,6 +589,12 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .stat-card:hover {
+            border-color: rgba(0, 255, 157, 0.3);
+            box-shadow: 0 0 12px rgba(0, 255, 157, 0.12);
         }
 
         .stat-label {

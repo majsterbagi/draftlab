@@ -217,6 +217,11 @@ function renderChart(dailyData) {
     humGradient.addColorStop(0, 'rgba(0, 168, 255, 0.2)');
     humGradient.addColorStop(1, 'rgba(0, 168, 255, 0)');
 
+    // Gradient for temperature
+    const tempGradient = ctx.createLinearGradient(0, 0, 0, 400);
+    tempGradient.addColorStop(0, 'rgba(0, 255, 157, 0.22)');
+    tempGradient.addColorStop(1, 'rgba(0, 255, 157, 0)');
+
     chartInstance = new Chart(ctx, {
         type: 'line',
         data: {
@@ -226,12 +231,14 @@ function renderChart(dailyData) {
                     label: `${i18n.t('atmo.chart.temp')} (°C)`,
                     data: temps,
                     borderColor: '#00ff9d',
-                    backgroundColor: '#00ff9d',
+                    backgroundColor: tempGradient,
+                    fill: true,
                     borderWidth: 2,
                     tension: 0.4,
                     yAxisID: 'y',
                     pointRadius: 2, // Visible dots for few data points
-                    pointHoverRadius: 6
+                    pointHoverRadius: 6,
+                    pointBackgroundColor: '#00ff9d'
                 },
                 {
                     label: `${i18n.t('atmo.chart.hum')} (%)`,

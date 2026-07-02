@@ -131,11 +131,17 @@
         }
 
         .stat-card {
-            background: var(--panel-bg);
+            background: linear-gradient(160deg, rgba(24, 26, 31, 0.85), rgba(13, 14, 17, 0.75));
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 16px;
             padding: 16px;
             backdrop-filter: blur(10px);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .stat-card:hover {
+            border-color: rgba(0, 255, 157, 0.3);
+            box-shadow: 0 0 12px rgba(0, 255, 157, 0.15);
         }
 
         .stat-label {
