@@ -222,7 +222,7 @@ export class I18n {
                 "calc.changelog.v01.f4": "→ Przełącznik operacji dodawania/odejmowania w trybie ±%",
                 "calc.changelog.v01.f5": "→ Historia obliczeń z możliwością kopiowania wyników",
                 "calc.changelog.v01.f6": "→ Wielojęzyczna obsługa (PL/EN)",
-                "calc.changelog.v01.f7": "→ Industrial Tech Design System"
+                "calc.changelog.v01.f7": "→ Digital Blueprint Design System"
             },
             en: {
                 // Hero
@@ -440,7 +440,7 @@ export class I18n {
                 "calc.changelog.v01.f4": "→ Add/subtract operation toggle in ±% mode",
                 "calc.changelog.v01.f5": "→ Calculation history with copy functionality",
                 "calc.changelog.v01.f6": "→ Multilingual support (PL/EN)",
-                "calc.changelog.v01.f7": "→ Industrial Tech Design System"
+                "calc.changelog.v01.f7": "→ Digital Blueprint Design System"
             }
         };
 

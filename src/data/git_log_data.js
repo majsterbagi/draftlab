@@ -1,5 +1,13 @@
 export const GIT_LOG_DATA = [
     {
+        "hash": "21da97a",
+        "date": "2026-01-06 00:40",
+        "type": "UPDATE",
+        "component": "SYS",
+        "desc": "Dodano kolory teal, violet i amber do ProjectGrid",
+        "details": null
+    },
+    {
         "hash": "5aee8a8",
         "date": "2026-01-06 00:33",
         "type": "UPDATE",
@@ -389,14 +397,6 @@ export const GIT_LOG_DATA = [
         "type": "STYLE",
         "component": "ATMOSPHERE",
         "desc": "Move back button to top-right",
-        "details": null
-    },
-    {
-        "hash": "c94df07",
-        "date": "2025-12-19 21:40",
-        "type": "DOCS",
-        "component": "ATMOSPHERE",
-        "desc": "Update changelog description",
         "details": null
     }
 ];

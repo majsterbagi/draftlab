@@ -265,6 +265,17 @@ function renderChart(data) {
     const temps = aggregatedData.map(entry => entry.temp);
     const humidity = aggregatedData.map(entry => entry.humidity);
 
+    // Calculate stable Y-axis range for temperature
+    const minTemp = Math.min(...temps);
+    const maxTemp = Math.max(...temps);
+    const tempRange = maxTemp - minTemp;
+    const minVisibleRange = 6; // Minimum 6°C visible range to prevent exaggerated waves
+    const padding = Math.max((minVisibleRange - tempRange) / 2, 1);
+    const yMin = Math.floor(minTemp - padding);
+    const yMax = Math.ceil(maxTemp + padding);
+    const actualRange = yMax - yMin;
+    const tempStepSize = actualRange <= 8 ? 1 : (actualRange <= 20 ? 2 : 5);
+
     // Gradient for humidity
     const humGradient = ctx.createLinearGradient(0, 0, 0, 300);
     humGradient.addColorStop(0, 'rgba(0, 168, 255, 0.3)');
@@ -341,11 +352,13 @@ function renderChart(data) {
                     type: 'linear',
                     display: true,
                     position: 'left',
+                    min: yMin,
+                    max: yMax,
                     grid: { color: 'rgba(255,255,255,0.05)', drawBorder: false },
                     ticks: {
                         color: 'rgba(255,255,255,0.3)',
                         font: { size: 10 },
-                        stepSize: 0.5
+                        stepSize: tempStepSize
                     },
                     title: {
                         display: true,

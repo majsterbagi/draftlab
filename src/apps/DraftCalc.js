@@ -255,29 +255,72 @@ class DraftCalc {
         if (mode === 'change' || mode === 'add-sub') {
             const startVal = Math.abs(a);
             const endVal = mode === 'change' ? Math.abs(b) : Math.abs(res);
+            const endDisplayVal = mode === 'change' ? b : res;
 
             const max = Math.max(startVal, endVal) || 100;
-            const hStart = Math.max((startVal / max) * 100, 4);
-            const hEnd = Math.max((endVal / max) * 100, 4);
+            const min = Math.min(startVal, endVal);
+            const percentDiff = max > 0 ? ((max - min) / max) * 100 : 0;
+
+            let hStart, hEnd;
+            let useAmplified = percentDiff <= 20 && percentDiff > 0;
+
+            if (useAmplified) {
+                // Amplified mode: base height + magnified delta
+                const base = 45;
+                const amplifier = Math.max(4, 15 / Math.max(percentDiff, 0.5));
+                const amplifiedDelta = Math.min(percentDiff * amplifier, 50);
+
+                if (startVal >= endVal) {
+                    hStart = base + amplifiedDelta;
+                    hEnd = base;
+                } else {
+                    hStart = base;
+                    hEnd = base + amplifiedDelta;
+                }
+            } else {
+                // Standard linear scaling
+                hStart = Math.max((startVal / max) * 100, 4);
+                hEnd = Math.max((endVal / max) * 100, 4);
+            }
 
             const isGrowth = mode === 'change' ? (b >= a) : (res >= a);
             const endColor = isGrowth ? '#10b981' : '#f43f5e';
             const startColor = '#475569';
 
+            // Delta label between bars
+            const absDiff = Math.abs(startVal - endVal);
+            const deltaSign = isGrowth ? '+' : '-';
+            const deltaColor = isGrowth ? '#10b981' : '#f43f5e';
+            const deltaLabel = useAmplified
+                ? `<div class="flex flex-col items-center justify-center gap-1" style="min-width: 48px;">
+                        <span style="color: ${deltaColor}; text-shadow: 0 0 8px ${deltaColor}66;" class="text-[13px] font-black font-mono">${deltaSign}${this.formatNum(absDiff)}</span>
+                        <span class="text-[8px] text-tech-dim uppercase tracking-wider opacity-60">Δ delta</span>
+                   </div>`
+                : '';
+
+            // Scale indicator for amplified mode
+            const scaleNote = useAmplified
+                ? `<div class="absolute bottom-0 left-1/2 -translate-x-1/2 text-[8px] text-tech-dim opacity-40 font-mono flex items-center gap-1 whitespace-nowrap">
+                        <i data-lucide="zoom-in" width="9"></i> Skala powiększona
+                   </div>`
+                : '';
+
             container.innerHTML = `
                 <div class="vis-label"><i data-lucide="bar-chart-3" width="12"></i> Wizualizacja</div>
-                <div class="flex items-end justify-center gap-12 w-full h-full pb-6 pt-4">
-                     <div class="flex flex-col items-center gap-2 group w-16 h-full justify-end">
-                        <span class="text-[9px] text-tech-dim opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">${this.formatNum(a)}</span>
+                <div class="flex items-end justify-center gap-6 w-full h-full pb-6 pt-4">
+                     <div class="flex flex-col items-center gap-2 w-16 h-full justify-end">
+                        <span class="text-[10px] text-tech-dim font-mono whitespace-nowrap">${this.formatNum(a)}</span>
                         <div style="height: ${hStart}%; background-color: ${startColor};" class="w-full border border-white/10 rounded-t-sm transition-all duration-700"></div>
                         <span class="text-[10px] font-bold text-tech-dim uppercase tracking-tighter">Start</span>
                     </div>
-                    <div class="flex flex-col items-center gap-2 group w-16 h-full justify-end">
-                         <span class="text-[9px] text-tech-dim opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">${mode === 'change' ? this.formatNum(b) : this.formatNum(res)}</span>
+                    ${deltaLabel}
+                    <div class="flex flex-col items-center gap-2 w-16 h-full justify-end">
+                         <span class="text-[10px] font-mono whitespace-nowrap" style="color: ${endColor};">${this.formatNum(endDisplayVal)}</span>
                         <div style="height: ${hEnd}%; background-color: ${endColor}; box-shadow: 0 0 20px ${endColor}44;" class="w-full rounded-t-sm transition-all duration-700"></div>
                         <span class="text-[10px] font-bold text-tech-dim uppercase tracking-tighter">Wynik</span>
                     </div>
                 </div>
+                ${scaleNote}
             `;
         }
         else {

@@ -51,17 +51,21 @@ class ProjectGrid extends HTMLElement {
             const hiddenClass = isHidden ? "empty-slot hidden" : "";
 
             // Dynamic colors based on project
-            const colorMap = {
-                yellow: { gradient: 'from-orange-500 to-yellow-500', icon: 'text-yellow-500 group-hover:text-yellow-400', border: 'group-hover:border-yellow-500/50' },
-                blue: { gradient: 'from-blue-500 to-cyan-500', icon: 'text-blue-500 group-hover:text-blue-400', border: 'group-hover:border-blue-500/50' },
-                green: { gradient: 'from-green-500 to-emerald-500', icon: 'text-green-500 group-hover:text-green-400', border: 'group-hover:border-green-500/50' },
-                teal: { gradient: 'from-teal-500 to-cyan-500', icon: 'text-teal-500 group-hover:text-teal-400', border: 'group-hover:border-teal-500/50' },
-                violet: { gradient: 'from-violet-500 to-purple-500', icon: 'text-violet-500 group-hover:text-violet-400', border: 'group-hover:border-violet-500/50' },
-                amber: { gradient: 'from-amber-500 to-orange-500', icon: 'text-amber-500 group-hover:text-amber-400', border: 'group-hover:border-amber-500/50' },
-                gray: { gradient: 'from-gray-500 to-white', icon: 'text-tech-dim', border: '' }
+            // All apps use green gradient, but keep colorful icons
+            const iconColorMap = {
+                yellow: 'text-yellow-500 group-hover:text-yellow-400',
+                blue: 'text-blue-500 group-hover:text-blue-400',
+                green: 'text-green-500 group-hover:text-green-400',
+                teal: 'text-teal-500 group-hover:text-teal-400',
+                violet: 'text-violet-500 group-hover:text-violet-400',
+                amber: 'text-amber-500 group-hover:text-amber-400',
             };
-            const colors = colorMap[p.color] || colorMap.gray;
-            const iconName = p.icon || 'box';
+
+            const greenGradient = 'from-green-500 to-emerald-500';
+            const greenBorder = 'group-hover:border-green-500/50';
+            const iconColor = iconColorMap[p.color] || 'text-green-500 group-hover:text-green-400';
+
+            const A = p.icon || 'box';
 
             // Translations
             const title = lang === 'pl' ? p.title : (p.title_en || p.title);
@@ -86,13 +90,13 @@ class ProjectGrid extends HTMLElement {
 
             return `
             <article class="${baseClass} ${activeClass} ${hiddenClass} min-h-[300px]">
-                ${isLive ? `<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${colors.gradient} opacity-70"></div>` : ''}
+                ${isLive ? `<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${greenGradient} opacity-70"></div>` : ''}
                 
                 <div class="p-6 flex flex-col h-full">
                     <div class="flex justify-between items-start mb-4">
                         <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 min-w-[3rem] bg-tech-gray/30 rounded flex items-center justify-center ${colors.icon} border border-tech-gray ${colors.border} transition-colors">
-                                <i data-lucide="${iconName}" width="24"></i>
+                            <div class="w-12 h-12 min-w-[3rem] bg-tech-gray/30 rounded flex items-center justify-center ${iconColor} border border-tech-gray ${greenBorder} transition-colors">
+                                <i data-lucide="${A}" width="24"></i>
                             </div>
                             <h3 class="text-xl font-bold ${isLive ? 'group-hover:text-white' : 'text-tech-dim'} transition-colors">${title}</h3>
                         </div>

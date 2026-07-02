@@ -23,8 +23,8 @@ const RAW_DATA = {
             id: "labyrinth-qr",
             title: "LabyrinthQR",
             title_en: "LabyrinthQR",
-            desc: "Industrialny generator kodów QR. Pełna personalizacja: Kształty, Kolory, Logo.",
-            desc_en: "Industrial QR code generator. Full customization: Shapes, Colors, Logo.",
+            desc: "Zaawansowany generator kodów QR. Pełna personalizacja: Kształty, Kolory, Logo.",
+            desc_en: "Advanced QR code generator. Full customization: Shapes, Colors, Logo.",
             tags: ["QR Generator", "Client-Side", "Canvas"],
             version: "v1.0.0",
             url: "apps/LabyrinthQR.html",
@@ -34,7 +34,7 @@ const RAW_DATA = {
             color: "green",
 
             details: {
-                about: "Zaawansowany generator kodów QR w estetyce Industrial Tech. Pozwala na tworzenie unikalnych kodów z własnym logo, gradientami i niestandardowymi kształtami modułów. Generowanie kodów działa lokalnie, z opcją zapisu wiadomości w chmurze (Leave Message).",
+                about: "Zaawansowany generator kodów QR w estetyce Digital Blueprint. Pozwala na tworzenie unikalnych kodów z własnym logo, gradientami i niestandardowymi kształtami modułów. Generowanie kodów działa lokalnie, z opcją zapisu wiadomości w chmurze (Leave Message).",
                 features: [
                     { title: "Advanced Styling", desc: "Zmiana kształtu modułów (Dots, Rounded, Liquid) i narożników." },
                     { title: "Hybrid Core", desc: "Generowanie QR w przeglądarce + opcjonalny hosting wiadomości i zdjęć." },
@@ -50,7 +50,7 @@ const RAW_DATA = {
                 ]
             },
             details_en: {
-                about: "Advanced QR code generator in Industrial Tech aesthetics. Allows creating unique codes with custom logos, gradients, and module shapes. Code generation works locally, with an option to save messages in the cloud (Leave Message).",
+                about: "Advanced QR code generator in Digital Blueprint aesthetics. Allows creating unique codes with custom logos, gradients, and module shapes. Code generation works locally, with an option to save messages in the cloud (Leave Message).",
                 features: [
                     { title: "Advanced Styling", desc: "Change module shapes (Dots, Rounded, Liquid) and corners." },
                     { title: "Hybrid Core", desc: "Browser-based QR generation + optional message and image hosting." },
@@ -313,8 +313,8 @@ const RAW_DATA = {
             id: 'draftcalc',
             title: 'DraftCalc',
             title_en: 'DraftCalc',
-            desc: 'Industrialne obliczenia procentowe. Dashboard v0.1 z wizualizacją i historią.',
-            desc_en: 'Industrial percentage calculations. Dashboard v0.1 with visualization and history.',
+            desc: 'Precyzyjne obliczenia procentowe. Dashboard v0.1 z wizualizacją i historią.',
+            desc_en: 'Advanced percentage calculations. Dashboard v0.1 with visualization and history.',
             version: 'v0.1',
             active: true,
             url: 'apps/DraftCalc.html',
@@ -324,7 +324,7 @@ const RAW_DATA = {
             icon: 'percent',
 
             details: {
-                about: "Zaawansowany kalkulator procentowy w estetyce Industrial Tech. Oferuje cztery tryby obliczeń, wizualizację wyników oraz historię obliczeń.",
+                about: "Zaawansowany kalkulator procentowy w estetyce Tech Lab. Oferuje cztery tryby obliczeń, wizualizację wyników oraz historię obliczeń.",
                 features: [
                     { title: "4 Tryby Obliczeń", desc: "Zmiana wartości, % z liczby, Jaki to %, Dodaj/Odejmij % - wszystkie w jednym dashboardzie." },
                     { title: "Wizualizacja", desc: "Wykresy słupkowe i paski postępu dla każdego obliczenia." },
@@ -342,7 +342,7 @@ const RAW_DATA = {
                 ]
             },
             details_en: {
-                about: "Advanced percentage calculator in Industrial Tech aesthetics. Offers four calculation modes, results visualization, and calculation history.",
+                about: "Advanced percentage calculator in Tech Lab aesthetics. Offers four calculation modes, results visualization, and calculation history.",
                 features: [
                     { title: "4 Calculation Modes", desc: "Value change, % of number, What %, Add/Subtract % - all in one dashboard." },
                     { title: "Visualization", desc: "Bar charts and progress bars for each calculation." },
@@ -366,7 +366,7 @@ const RAW_DATA = {
                     date: "2026-01-06",
                     type: "INIT",
                     desc: "Pierwsza wersja DraftCalc - zaawansowany kalkulator procentowy z czterema trybami działania: Zmiana wartości, % z liczby, Jaki to %, oraz Dodaj/Odejmij %. Implementacja wizualizacji wyników, historii obliczeń, przełącznika operacji oraz pełnej wielojęzyczności (PL/EN).",
-                    details: "Funkcje:\n→ 4 tryby obliczeń procentowych\n→ Dynamiczne opisy wyjaśniające działanie każdego trybu\n→ Wizualizacja wyników (wykresy słupkowe i paski postępu)\n→ Przełącznik operacji dodawania/odejmowania w trybie ±%\n→ Historia obliczeń z możliwością kopiowania wyników\n→ Wielojęzyczna obsługa (PL/EN)\n→ Industrial Tech Design System"
+                    details: "Funkcje:\n→ 4 tryby obliczeń procentowych\n→ Dynamiczne opisy wyjaśniające działanie każdego trybu\n→ Wizualizacja wyników (wykresy słupkowe i paski postępu)\n→ Przełącznik operacji dodawania/odejmowania w trybie ±%\n→ Historia obliczeń z możliwością kopiowania wyników\n→ Wielojęzyczna obsługa (PL/EN)\n→ Digital Blueprint Design System"
                 }
             ]
         },
