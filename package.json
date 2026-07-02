@@ -1,12 +1,13 @@
 {
   "name": "aktualny-projekt",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "main": "index.js",
   "scripts": {
     "dev": "node scripts/generate_git_log.js && vite",
     "prebuild": "node scripts/generate_git_log.js",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "snapshot:legacy": "node scripts/snapshot_legacy.js"
   },
   "keywords": [],
   "author": "",

@@ -1,7 +1,30 @@
 # DraftLab Architecture & Standards
 
 Dokument definiujący standardy techniczne i procesy dla projektu DraftLab.
-**Status:** DRAFT 3.0 (Profesjonalizacja)
+**Status:** DRAFT 4.0 (Modernizacja UI v2.0)
+
+---
+
+## 0. Wersjonowanie & Legacy (v2.0)
+
+Strona ma dwa równoległe "tryby":
+-   **Wersja nowoczesna (v2.0)** — bieżący kod źródłowy (`src/`, `index.html`, ...).
+-   **Wersja klasyczna (v1.0)** — statyczny snapshot starej strony w `public/legacy/`,
+    dostępny pod adresem `/legacy/` (link "Wersja klasyczna" w headerze, stopce i palecie Cmd+K).
+    Stare strony mają pływający przycisk powrotu do nowej wersji.
+
+Mechanizmy powrotu:
+1.  **Dla odwiedzających:** jeden klik — link `/legacy/index.html` ↔ przycisk "wróć do nowej".
+2.  **Dla dewelopera:** `git checkout legacy-v1` (tag z pełnym stanem źródeł sprzed modernizacji).
+
+Snapshot regeneruje się komendą `npm run snapshot:legacy` (kopiuje `dist/` → `public/legacy/`
+i wstrzykuje banner powrotu). Uruchamiaj ją wyłącznie po zbudowaniu starej wersji kodu.
+
+### Nowoczesne rozwiązania w v2.0
+-   MPA View Transitions (`@view-transition`), scroll-reveal (IntersectionObserver),
+    `prefers-reduced-motion`, paleta poleceń (Cmd+K), glassmorphism, spotlight-hover kart,
+    sticky glass header z paskiem postępu scrolla, SVG favicon, `theme-color`/`color-scheme`.
+-   `about.html` korzysta z kompilowanego Tailwinda (usunięto CDN `cdn.tailwindcss.com`).
 
 ---
 

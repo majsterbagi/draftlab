@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pl" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DraftLab.pl | Warsztat Web AI</title>
+
+
+
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="Eksperymentalny warsztat web AI. Kolekcja aplikacji webowych współtworzonych z modelami językowymi. Od promptu do wdrożenia.">
+    <meta name="keywords" content="AI, Web Development, DraftLab, Projekty, Eksperymenty, Kodowanie, JavaScript">
+    <meta name="author" content="Kamil & AI">
+    <link rel="canonical" href="https://draftlab.pl/">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://draftlab.pl/">
+    <meta property="og:title" content="DraftLab.pl | Warsztat Web AI">
+    <meta property="og:description"
+        content="Eksperymentalny warsztat web AI. Kolekcja aplikacji webowych współtworzonych z modelami językowymi.">
+    <meta property="og:image" content="https://draftlab.pl/og-image.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://draftlab.pl/">
+    <meta property="twitter:title" content="DraftLab.pl | Warsztat Web AI">
+    <meta property="twitter:description"
+        content="Eksperymentalny warsztat web AI. Kolekcja aplikacji webowych współtworzonych z modelami językowymi.">
+    <meta property="twitter:image" content="https://draftlab.pl/og-image.png">
+
+
+
+    <!-- I18n Init Script -->
+  <script type="module" crossorigin src="./assets/main-aNl5H_bG.js"></script>
+  <link rel="modulepreload" crossorigin href="./assets/main-BKeL_FdE.js">
+  <link rel="modulepreload" crossorigin href="./assets/git_log_data-Bh3yA43S.js">
+  <link rel="stylesheet" crossorigin href="./assets/style-D5hEec8U.css">
+</head>
+
+<body
+    class="font-mono bg-tech-bg bg-grid-pattern min-h-screen flex flex-col relative overflow-x-hidden selection:bg-tech-green selection:text-black">
+
+    <div class="scanline"></div>
+    <div class="vignette"></div>
+    <dl-header></dl-header>
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 w-full">
+
+        <section class="py-12 md:py-20 border-l border-r border-tech-gray border-dashed px-6 relative">
+
+            <div class="max-w-3xl mx-auto text-center md:text-left relative">
+                <div class="absolute -top-4 -left-4 w-4 h-4 border-t border-l border-tech-green"></div>
+                <div class="absolute -bottom-4 -right-4 w-4 h-4 border-b border-r border-tech-green"></div>
+
+                <p id="hero-init-text" data-i18n="hero.init"
+                    class="text-tech-green mb-3 text-xs tracking-widest uppercase inline-block">> Inicjalizacja
+                    warsztatu...</p>
+                <h1 data-i18n="hero.title" data-i18n-html="true"
+                    class="text-3xl md:text-5xl font-bold mb-4 leading-tight">
+                    Eksperymentalny <br>
+                    Warsztat Web <span class="text-tech-green">AI</span><span class="cursor-blink">_</span>
+                </h1>
+                <p data-i18n="hero.subtitle" data-i18n-html="true" style="text-wrap: balance;"
+                    class="text-tech-dim text-base md:text-lg leading-relaxed mb-6 max-w-2xl mx-auto md:mx-0">
+                    Kolekcja aplikacji webowych współtworzonych z modelami językowymi.
+                    Od promptu do wdrożenia. Testuję granice kodu i wyobraźni.
+                </p>
+                <div class="flex flex-wrap gap-4 justify-center md:justify-start">
+                    <a href="#projekty" data-i18n="hero.cta"
+                        class="group relative px-5 py-2.5 bg-transparent border border-tech-green text-tech-green hover:bg-tech-green hover:text-black transition-all duration-300 font-bold uppercase text-xs tracking-wider">
+                        <span
+                            class="absolute -top-1 -left-1 w-2 h-2 border-t border-l border-tech-green opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                        Przeglądaj Projekty
+                        <span
+                            class="absolute -bottom-1 -right-1 w-2 h-2 border-b border-r border-tech-green opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="projekty" class="pt-20 pb-8 border-t border-tech-gray border-dashed">
+            <div class="flex items-center justify-between mb-12 border-b border-tech-gray pb-4">
+                <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                    <i data-lucide="folder-git-2" class="text-tech-green"></i> <span
+                        data-i18n="section.repo">REPOZYTORIUM</span>
+                </h2>
+                <span class="text-xs text-tech-dim hidden sm:inline-block">/PUBLIC/APPS</span>
+            </div>
+
+            <dl-projects></dl-projects>
+        </section>
+
+        <section class="pt-8 pb-16 border-t border-tech-gray border-dashed mb-12">
+            <!-- Unified Logs -->
+            <div class="mb-16">
+                <dl-unified-log></dl-unified-log>
+            </div>
+
+            <!-- Row 2: Manifest & Tech Stack -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div>
+                    <h3 data-i18n="section.manifest"
+                        class="text-tech-green font-bold mb-4 uppercase tracking-widest text-sm">/ Manifest</h3>
+                    <p data-i18n="manifest.text" class="text-tech-dim leading-relaxed text-sm">
+                        DraftLab.pl to mój cyfrowy brudnopis. Tutaj testuję granice współpracy człowiek-maszyna,
+                        zamieniając prompty w kod.
+                    </p>
+                </div>
+
+                <div>
+                    <h3 data-i18n="section.stack"
+                        class="text-tech-green font-bold mb-4 uppercase tracking-widest text-sm">/ Tech Stack</h3>
+                    <dl-tech-stack></dl-tech-stack>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <dl-footer></dl-footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
+
+    <style>
+        @keyframes subtleFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #hero-init-text {
+            opacity: 0;
+        }
+
+        #hero-init-text.fade-in {
+            animation: subtleFadeIn 1.5s ease-out forwards;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const heroText = document.getElementById('hero-init-text');
+            // Subtle fade-in after a short delay
+            setTimeout(() => {
+                heroText.classList.add('fade-in');
+            }, 200);
+        });
+    </script>
+
+<!-- LEGACY SNAPSHOT BANNER -->
+<a href="../index.html" style="position:fixed;bottom:16px;left:16px;z-index:2147483647;display:flex;align-items:center;gap:8px;padding:10px 16px;background:#0b0c0e;color:#00ff9d;border:1px solid #00ff9d;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:bold;text-decoration:none;box-shadow:0 4px 20px rgba(0,0,0,.6);opacity:.92" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.92">
+  <span style="width:8px;height:8px;border-radius:50%;background:#00ff9d;display:inline-block"></span>
+  WERSJA ARCHIWALNA &mdash; wr&oacute;&cacute; do nowej
+</a>
+</body>
+
+</html>

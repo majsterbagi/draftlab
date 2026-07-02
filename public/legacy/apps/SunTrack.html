@@ -1,0 +1,1896 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>SunTrack | DraftLab.pl</title>
+
+    <meta name="theme-color" content="#0b0c0e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Fonts & Icons -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- SunCalc Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.9.0/suncalc.min.js"></script>
+
+    <!-- Styles & Core -->
+
+    <!-- Styles -->
+
+    <style>
+        :root {
+            --bg-color: #0b0c0e;
+            --panel-bg: rgba(20, 20, 24, 0.7);
+            --accent-color: #00ff9d;
+            --text-color: #e0e0e0;
+            --text-dim: rgba(255, 255, 255, 0.4);
+            --grid-line: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.08);
+            --border-radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            min-height: 100dvh;
+            padding-top: 0;
+            /* Remove gap - header is absolute */
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* === SKY VISUALIZATION === */
+        /* Ensure dl-header is visible above sky-container */
+        dl-header {
+            position: relative;
+            z-index: 1000;
+        }
+
+        .sky-container {
+            position: relative;
+            width: 100%;
+            height: calc(45vh + 50px + env(safe-area-inset-top));
+            /* Include header area */
+            padding-top: calc(50px + env(safe-area-inset-top));
+            /* Push content below header */
+            min-height: 280px;
+            background: linear-gradient(180deg, #0f2027, #203a43, #2c5364);
+            overflow: hidden;
+            flex-shrink: 0;
+            box-sizing: border-box;
+        }
+
+        .sky-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(var(--grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            opacity: 0.4;
+        }
+
+        .trajectory-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+
+        .trajectory-season {
+            fill: none;
+            stroke-width: 1.5;
+            stroke-dasharray: 4 3;
+            opacity: 0.5;
+            display: none;
+        }
+
+        .trajectory-season.active {
+            display: block;
+        }
+
+        .trajectory-spring {
+            stroke: #90ee90;
+        }
+
+        .trajectory-summer {
+            stroke: #ffd700;
+        }
+
+        .trajectory-autumn {
+            stroke: #ff8c00;
+        }
+
+        .trajectory-winter {
+            stroke: #87ceeb;
+        }
+
+        /* === SEASON TOGGLE PANEL === */
+        .season-panel {
+            position: absolute;
+            top: calc(60px + env(safe-area-inset-top));
+            /* Account for safe area */
+            right: 12px;
+            transform: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 1100;
+            /* Above header (z-index: 1000) for clickability */
+        }
+
+        .season-toggle {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            cursor: pointer;
+            padding: 2px 5px;
+            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(5px);
+            transition: all 0.2s;
+        }
+
+        .season-toggle:hover {
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .season-toggle input {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+            pointer-events: none;
+        }
+
+        .season-toggle .icon {
+            opacity: 0.4;
+            font-size: 11px;
+            transition: opacity 0.2s;
+        }
+
+        .season-toggle.active .icon {
+            opacity: 1;
+        }
+
+        .season-toggle .label {
+            font-size: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            color: rgba(255, 255, 255, 0.4);
+            transition: color 0.2s;
+        }
+
+        .season-toggle.active .label {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* === SKY SEARCH === */
+        .sky-search {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            z-index: 30;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sky-search-icon {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .sky-search-input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            width: 120px;
+        }
+
+        .sky-search-input::-moz-placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .sky-search-input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .sky-search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            margin-top: 4px;
+            background: rgba(15, 16, 18, 0.95);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .sky-search-results.active {
+            display: block;
+        }
+
+        .sky-search-result {
+            padding: 10px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.7);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .sky-search-result:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .sky-search-result:last-child {
+            border-bottom: none;
+        }
+
+        .sun-orb {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: #fff;
+            border-radius: 50%;
+            transform: translate(-50%, 50%);
+            box-shadow: 0 0 40px 15px rgba(255, 200, 100, 0.5);
+            z-index: 5;
+            transition: background 0.3s, box-shadow 0.3s, opacity 0.3s;
+            /* Default position - center of sky, hidden until JS positions it */
+            left: 50%;
+            bottom: 50%;
+            display: none;
+        }
+
+        .moon-orb {
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            transform: translate(-50%, 50%);
+            z-index: 4;
+            display: none;
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4));
+        }
+
+        .moon-orb svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .landscape {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 30%;
+            pointer-events: none;
+            z-index: 4;
+            /* Below Sun (5) for smooth rise without clipping */
+        }
+
+        .landscape svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* === LENS FLARE === */
+        .lens-flare {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 20;
+            /* On top of everything */
+            overflow: hidden;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .flare-item {
+            position: absolute;
+            background: rgba(100, 255, 150, 0.4);
+            border-radius: 50%;
+            filter: blur(4px);
+            transform: translate(-50%, -50%);
+            mix-blend-mode: screen;
+        }
+
+        /* === SKY OVERLAY SLIDER === */
+        .sky-slider-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 12px 20px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 30;
+        }
+
+        .sky-slider-container {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .sky-slider {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            flex: 1;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .sky-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 255, 157, 0.5);
+        }
+
+        .sky-now-btn {
+            padding: 6px 12px;
+            background: rgba(0, 255, 157, 0.2);
+            border: 1px solid rgba(0, 255, 157, 0.4);
+            border-radius: 16px;
+            color: var(--accent-color);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+        }
+
+        .sky-now-btn:hover {
+            background: var(--accent-color);
+            color: #000;
+        }
+
+        /* === DASHBOARD === */
+        .dashboard {
+            flex: 1;
+            padding: 20px;
+            padding-bottom: calc(20px + env(safe-area-inset-bottom));
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-width: 700px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* === SEARCH PANEL === */
+        .search-panel {
+            position: relative;
+            margin-bottom: -10px;
+            /* Pull tighter */
+            z-index: 50;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 40px;
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            outline: none;
+            backdrop-filter: blur(10px);
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-color);
+        }
+
+        .search-input::-moz-placeholder {
+            color: var(--text-dim);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-dim);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-dim);
+            pointer-events: none;
+        }
+
+        .stealth-trigger {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: var(--text-dim);
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .stealth-trigger:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .search-results {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            background: rgba(20, 20, 24, 0.95);
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+            backdrop-filter: blur(10px);
+        }
+
+        .search-results.active {
+            display: block;
+        }
+
+        .search-result-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            transition: background 0.2s;
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-item:hover {
+            background: rgba(0, 255, 157, 0.1);
+        }
+
+        /* === TIME DISPLAY === */
+        .time-display {
+            text-align: center;
+            padding: 12px;
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .current-time {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 32px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -1px;
+        }
+
+        .current-date {
+            font-size: 11px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: left;
+            line-height: 1.2;
+        }
+
+        .current-phase {
+            display: inline-block;
+            margin-top: 0;
+            padding: 3px 10px;
+            background: rgba(0, 255, 157, 0.1);
+            border: 1px solid rgba(0, 255, 157, 0.3);
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--accent-color);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* === STATS GRID === */
+        .section-label {
+            display: none;
+            /* Hide label to save space */
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+
+
+        /* === STATS GRID === */
+        .section-label {
+            display: none;
+            /* Hide label to save space */
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .stat-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            padding: 12px;
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .stat-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: var(--text-dim);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stat-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .stat-sub {
+            font-size: 10px;
+            color: var(--text-dim);
+            margin-top: 2px;
+        }
+
+        /* === SLIDER PANEL === */
+        .slider-panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            padding: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .slider-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            letter-spacing: 1px;
+        }
+
+        .now-btn {
+            padding: 6px 14px;
+            background: rgba(0, 255, 157, 0.1);
+            border: 1px solid rgba(0, 255, 157, 0.3);
+            border-radius: 20px;
+            color: var(--accent-color);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+        }
+
+        .now-btn:hover {
+            background: var(--accent-color);
+            color: #000;
+        }
+
+        /* Fix trajectory consistency */
+        /* .stealth-mode .trajectory-season override removed to match standard thickness */
+
+        /* Stealth Mode System */
+        .stealth-mode .season-panel {
+            display: flex !important;
+            position: fixed !important;
+            top: 30% !important;
+            right: 20px !important;
+            bottom: auto !important;
+            z-index: 2005;
+        }
+
+        /* Make season toggles subtle in stealth mode */
+        .stealth-mode .season-toggle:not(#stealth-trigger) {
+            opacity: 0.4;
+            transition: opacity 0.2s;
+        }
+
+        .stealth-mode .season-toggle:not(#stealth-trigger):hover {
+            opacity: 0.9;
+        }
+
+        #stealth-trigger {
+            display: none;
+            /* Disabled - feature needs work */
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+
+        #stealth-trigger:hover {
+            opacity: 1;
+        }
+
+        /* Stealth Mode Dashboard Overlay - Transparent with Glass Effect */
+        .stealth-mode .dashboard {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.95), transparent) !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+            backdrop-filter: none !important;
+            pointer-events: auto;
+            padding-bottom: 40px;
+        }
+
+        /* Restore visibility of all elements */
+        .stealth-mode .stats-grid,
+        .stealth-mode .section-label {
+            display: grid !important;
+        }
+
+        .stealth-mode .section-label {
+            display: block !important;
+            opacity: 0.5;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Glass Cards */
+        .stealth-mode .stat-card,
+        .stealth-mode .time-display {
+            background: rgba(10, 12, 16, 0.4) !important;
+            backdrop-filter: blur(12px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4) !important;
+        }
+
+        .stealth-mode .stat-value,
+        .stealth-mode .current-time {
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Slider visible transparent */
+        .stealth-mode .sky-slider-overlay {
+            display: flex !important;
+            background: transparent !important;
+            border-top: none !important;
+            backdrop-filter: none !important;
+        }
+
+        /* === FOOTER === */
+        .footer-info {
+            text-align: center;
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.2);
+            padding: 16px 0;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* === STEALTH MODE === */
+        body.stealth-mode {
+            padding-top: 0;
+            overflow: hidden;
+        }
+
+        .stealth-mode dl-overlay-header,
+        .stealth-mode .footer-info {
+            display: none !important;
+        }
+
+        /* Stealth mode: expanded view to show sun below horizon */
+        .stealth-mode .sky-container {
+            height: 100dvh;
+        }
+
+        /* Stealth mode landscape: SINGLE HORIZON LINE */
+        .stealth-mode .landscape {
+            bottom: auto;
+            top: calc(var(--std-sky-height) - 1px);
+            height: 1px !important;
+            background: rgba(255, 255, 255, 0.2);
+            pointer-events: none;
+        }
+
+        .stealth-mode .landscape svg {
+            display: none;
+        }
+
+        /* Dashed horizon line removed for cleaner look matching standard mode */
+        .stealth-mode .sky-container::after {
+            display: none;
+        }
+
+        /* Keep sun visible when below horizon */
+        .stealth-mode .sun-orb {
+            z-index: 10;
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 480px) {
+            .current-time {
+                font-size: 40px;
+            }
+
+            .stat-value {
+                font-size: 16px;
+            }
+
+            .stats-grid {
+                gap: 8px;
+            }
+
+            .stat-card {
+                padding: 12px;
+            }
+        }
+
+        /* === STEALTH MODE FINAL OVERRIDES === */
+        /* Force hiding stats and labels */
+        .stealth-mode .stats-grid,
+        .stealth-mode .section-label {
+            display: none !important;
+        }
+
+        /* Dashboard Container - clean */
+        .stealth-mode .dashboard {
+            background: transparent !important;
+            border: none !important;
+            background-image: none !important;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: flex-end !important;
+        }
+
+        /* Time Display - Compact Capsule */
+        .stealth-mode .time-display {
+            position: fixed !important;
+            bottom: 30px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            background: rgba(10, 12, 16, 0.4) !important;
+            backdrop-filter: blur(8px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
+            border-radius: 99px;
+            padding: 8px 24px !important;
+            min-width: unset !important;
+            width: auto !important;
+            max-width: 90vw !important;
+            z-index: 1000;
+            text-align: center;
+            gap: 12px;
+        }
+
+        .stealth-mode .current-time {
+            font-size: 24px !important;
+            /* Smaller font */
+        }
+
+        .stealth-mode .current-phase,
+        .stealth-mode .current-date {
+            font-size: 10px !important;
+            opacity: 0.7;
+        }
+
+        /* Slider - Compact Capsule */
+        .stealth-mode .sky-slider-overlay {
+            position: fixed !important;
+            bottom: 90px !important;
+            /* Closer to time */
+            left: 50% !important;
+            right: auto !important;
+            transform: translateX(-50%) !important;
+            width: 200px !important;
+            /* Much narrower */
+            max-width: 90vw !important;
+            z-index: 999;
+            background: rgba(10, 12, 16, 0.4) !important;
+            backdrop-filter: blur(8px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
+            border-radius: 99px !important;
+            padding: 8px 16px !important;
+        }
+
+        .stealth-mode .sky-slider-container {
+            background: transparent !important;
+            gap: 8px;
+        }
+
+        .stealth-mode .sky-now-btn {
+            font-size: 9px;
+            padding: 4px 8px;
+        }
+
+        /* Fix Landscape Appearance in Stealth Mode - Subtle Line */
+        .stealth-mode .landscape path {
+            fill: none !important;
+            stroke: rgba(255, 255, 255, 0.15);
+            /* Subtle stroke only */
+            stroke-width: 1px;
+            filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.1));
+        }
+
+        /* Remove solid fill override */
+        .stealth-mode .landscape svg path {
+            fill: none !important;
+        }
+
+        /* === CUSTOM SUNTRACK HEADER === */
+        .suntrack-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 6px 16px;
+            padding-top: max(6px, env(safe-area-inset-top));
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            pointer-events: none;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .suntrack-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+            pointer-events: auto;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .suntrack-brand i {
+            color: #FFD700;
+            filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.5));
+        }
+
+        .suntrack-name {
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+        }
+
+        .suntrack-by {
+            font-size: 10px;
+            opacity: 0.3;
+            font-weight: 400;
+            margin-left: 4px;
+        }
+
+        .suntrack-header .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 8px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.2s;
+            pointer-events: auto;
+            backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .suntrack-header .back-btn:hover {
+            background: var(--accent-color);
+            color: #000;
+            border-color: var(--accent-color);
+        }
+
+        /* Hide Nucleus header if it appears */
+        dl-overlay-header {
+            display: none !important;
+        }
+    </style>
+
+  <script type="module" crossorigin src="../assets/main-BKeL_FdE.js"></script>
+  <link rel="stylesheet" crossorigin href="../assets/style-D5hEec8U.css">
+</head>
+
+<body>
+    <dl-header></dl-header>
+
+    <!-- Sky Visualization -->
+    <div class="sky-container" id="sky-container">
+        <div class="sky-grid"></div>
+
+        <!-- Sky Search -->
+        <div class="sky-search">
+            <i data-lucide="map-pin" class="sky-search-icon" width="12"></i>
+            <input type="text" class="sky-search-input" id="city-search" placeholder="Miasto..." autocomplete="off">
+            <div class="sky-search-results" id="search-results"></div>
+        </div>
+
+        <svg class="trajectory-svg" id="trajectory-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path class="trajectory-season trajectory-spring" id="trajectory-spring"></path>
+            <path class="trajectory-season trajectory-summer" id="trajectory-summer"></path>
+            <path class="trajectory-season trajectory-autumn" id="trajectory-autumn"></path>
+            <path class="trajectory-season trajectory-winter" id="trajectory-winter"></path>
+        </svg>
+        <div class="sun-orb" id="sun-orb"></div>
+        <div class="moon-orb" id="moon-orb">
+            <svg viewBox="0 0 100 100" id="moon-svg">
+                <defs>
+                    <radialGradient id="moonGradient" cx="40%" cy="40%" r="60%">
+                        <stop offset="0%" stop-color="#fffff8" />
+                        <stop offset="50%" stop-color="#f0f0e0" />
+                        <stop offset="100%" stop-color="#d0d0c0" />
+                    </radialGradient>
+                    <clipPath id="moonClip">
+                        <circle cx="50" cy="50" r="48" />
+                    </clipPath>
+                </defs>
+                <!-- Moon base -->
+                <circle cx="50" cy="50" r="48" fill="url(#moonGradient)" />
+                <!-- Moon craters (subtle) -->
+                <circle cx="35" cy="40" r="8" fill="rgba(180,180,170,0.3)" />
+                <circle cx="65" cy="55" r="6" fill="rgba(180,180,170,0.25)" />
+                <circle cx="45" cy="65" r="5" fill="rgba(180,180,170,0.2)" />
+                <circle cx="60" cy="35" r="4" fill="rgba(180,180,170,0.15)" />
+                <!-- Shadow overlay for phase -->
+                <path id="moon-phase-shadow" d="" fill="rgba(0,0,0,0.95)" clip-path="url(#moonClip)" />
+            </svg>
+        </div>
+
+        <!-- Lens Flare Container -->
+        <div class="lens-flare" id="lens-flare">
+            <div class="flare-item" style="width: 60px; height: 60px; opacity: 0.1;"></div>
+            <div class="flare-item"
+                style="width: 40px; height: 40px; opacity: 0.15; background: rgba(50, 200, 200, 0.3);"></div>
+        </div>
+
+        <!-- Season Toggle Panel -->
+        <div class="season-panel">
+            <label class="season-toggle" data-season="spring" id="toggle-spring-label">
+                <input type="checkbox" name="season" value="spring">
+                <span class="icon">🌱</span>
+                <span class="label" data-i18n="sun.season.spring.short">WIO</span>
+            </label>
+            <label class="season-toggle" data-season="summer" id="toggle-summer-label">
+                <input type="checkbox" name="season" value="summer">
+                <span class="icon">☀️</span>
+                <span class="label" data-i18n="sun.season.summer.short">LAT</span>
+            </label>
+            <label class="season-toggle" data-season="autumn" id="toggle-autumn-label">
+                <input type="checkbox" name="season" value="autumn">
+                <span class="icon">🍂</span>
+                <span class="label" data-i18n="sun.season.autumn.short">JES</span>
+            </label>
+            <label class="season-toggle" data-season="winter" id="toggle-winter-label">
+                <input type="checkbox" name="season" value="winter">
+                <span class="icon">❄️</span>
+                <span class="label" data-i18n="sun.season.winter.short">ZIM</span>
+            </label>
+        </div>
+
+        <div class="landscape">
+            <svg viewBox="0 0 100 30" preserveAspectRatio="none">
+                <path d="M0,30 L0,25 Q20,20 40,25 T100,20 L100,30 Z" fill="#000" opacity="0.3"></path>
+                <path d="M0,30 L0,28 Q30,22 60,28 T100,25 L100,30 Z" fill="#000" opacity="0.6"></path>
+                <path d="M0,30 L0,29 Q50,25 100,29 L100,30 Z" fill="#000"></path>
+            </svg>
+        </div>
+
+        <!-- Slider Overlay -->
+        <div class="sky-slider-overlay">
+            <div class="sky-slider-container">
+                <div class="now-btn sky-now-btn" id="sky-now-btn" data-i18n="sun.now">NOW</div>
+                <input type="range" class="sky-slider" id="sky-slider" min="0" max="1440" value="720">
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD -->
+    <main class="dashboard">
+
+
+
+        <!-- Time Card -->
+        <div class="time-display">
+            <div class="current-time">12:00</div>
+            <div class="flex flex-col">
+                <div class="current-date">MON, 12 DEC</div>
+                <div class="current-phase">DAY</div>
+            </div>
+        </div>
+
+        <!-- Info Grid -->
+        <div class="section-label" data-i18n="sun.dashboard">DATA DASHBOARD</div>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label"><i data-lucide="sunrise" width="12"></i> <span
+                        data-i18n="sun.stat.sunrise">SUNRISE</span></div>
+                <div class="stat-value" id="val-sunrise">--:--</div>
+                <div class="stat-sub">Azimuth: <span id="val-az-rise">--</span>°</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label"><i data-lucide="sunset" width="12"></i> <span
+                        data-i18n="sun.stat.sunset">SUNSET</span></div>
+                <div class="stat-value" id="val-sunset">--:--</div>
+                <div class="stat-sub">Azimuth: <span id="val-az-set">--</span>°</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label"><i data-lucide="sun" width="12"></i> <span data-i18n="sun.stat.noon">SOLAR
+                        NOON</span></div>
+                <div class="stat-value" id="val-noon">--:--</div>
+                <div class="stat-sub">Max Elev: <span id="val-elev">--</span>°</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label"><i data-lucide="clock" width="12"></i> <span data-i18n="sun.stat.daylen">DAY
+                        LENGTH</span></div>
+                <div class="stat-value" id="val-len">--h --m</div>
+                <div class="stat-sub"><span id="val-diff">--</span> <span id="day-diff-label">od najdłuższego</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label"><i data-lucide="camera" width="12"></i> <span
+                        data-i18n="sun.stat.golden_am">GOLDEN HOUR AM</span></div>
+                <div class="stat-value" id="val-golden-am">--:--</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label"><i data-lucide="camera" width="12"></i> <span
+                        data-i18n="sun.stat.golden_pm">GOLDEN HOUR PM</span></div>
+                <div class="stat-value" id="val-golden-pm">--:--</div>
+            </div>
+        </div>
+
+        </div>
+
+
+        <script>
+            let LAT = 52.2297; // Default: Warsaw
+            let LNG = 21.0122;
+            let isLive = true;
+            let stealthMode = localStorage.getItem('suntrack_stealth') === 'true';
+            let searchTimeout = null;
+
+            let savedToggleStates = null;
+
+            // Expose update function for i18n subscription
+            window.updateApp = () => {
+                const sliderVal = document.getElementById('sky-slider').value;
+                update(parseInt(sliderVal));
+            };
+
+            // Subscribe to language changes
+            window.addEventListener('load', () => {
+                if (window.i18n) {
+                    window.i18n.subscribe(() => {
+                        window.i18n.updateStaticElements();
+                        window.updateApp();
+                    });
+                }
+            });
+
+            function toggleStealthMode() {
+                stealthMode = !stealthMode;
+                document.body.classList.toggle('stealth-mode', stealthMode);
+                localStorage.setItem('suntrack_stealth', stealthMode);
+
+                const icon = document.getElementById('stealth-icon-panel');
+                if (stealthMode) {
+                    icon.setAttribute('data-lucide', 'eye-off');
+                    icon.style.color = '#ff6b6b';
+
+                    // Save current toggle states before enabling all
+                    savedToggleStates = {
+                        spring: toggleSpring.checked,
+                        summer: toggleSummer.checked,
+                        autumn: toggleAutumn.checked,
+                        winter: toggleWinter.checked
+                    };
+
+                    // Enable all trajectories in stealth mode
+                    toggleSpring.checked = true;
+                    toggleSummer.checked = true;
+                    toggleAutumn.checked = true;
+                    toggleAutumn.checked = true;
+                    toggleWinter.checked = true;
+                } else {
+                    icon.setAttribute('data-lucide', 'eye');
+                    icon.style.color = '#00ff9d';
+
+                    // Restore previous toggle states
+                    if (savedToggleStates) {
+                        toggleSpring.checked = savedToggleStates.spring;
+                        toggleSummer.checked = savedToggleStates.summer;
+                        toggleAutumn.checked = savedToggleStates.autumn;
+                        toggleWinter.checked = savedToggleStates.winter;
+                    }
+                }
+                initSeasonToggles();
+
+                // Force redraw and ensure layout is calculated
+                requestAnimationFrame(() => {
+                    drawSeasonalTrajectories();
+                    update(parseInt(skySlider.value));
+                });
+
+                lucide.createIcons();
+            }
+
+            // === DOM REFS ===
+            const skyContainer = document.getElementById('sky-container');
+            const sunOrb = document.getElementById('sun-orb');
+            const moonOrb = document.getElementById('moon-orb');
+            const skySlider = document.getElementById('sky-slider');
+            const skyNowBtn = document.getElementById('sky-now-btn');
+            // const skyTimeDisplay = document.getElementById('sky-time-display'); // Removed?
+            const citySearch = document.getElementById('city-search'); // Removed? Search inputs have classes now
+            // Re-bind correct elements
+            const searchInputs = document.querySelectorAll('.search-input, .sky-search-input');
+            const searchResultsList = document.querySelectorAll('.search-results, .sky-search-results');
+
+            const lensFlare = document.getElementById('lens-flare');
+            const flareItems = document.querySelectorAll('.flare-item');
+            const searchResults = document.getElementById('search-results');
+
+            // Seasonal trajectory refs
+            const trajectorySpring = document.getElementById('trajectory-spring');
+            const trajectorySummer = document.getElementById('trajectory-summer');
+            const trajectoryAutumn = document.getElementById('trajectory-autumn');
+            const trajectoryWinter = document.getElementById('trajectory-winter');
+            const toggleSpring = document.querySelector('label[data-season="spring"] input');
+            const toggleSummer = document.querySelector('label[data-season="summer"] input');
+            const toggleAutumn = document.querySelector('label[data-season="autumn"] input');
+            const toggleWinter = document.querySelector('label[data-season="winter"] input');
+
+            // Configuration - Dynamic calculation to match standard mode pixels
+            const getHorizonConfig = () => {
+                const container = document.getElementById('sky-container');
+                const vh = container ? container.clientHeight : window.innerHeight;
+
+                // Standard height calc
+                const stdHeight = Math.max(window.innerHeight * 0.45, 280);
+
+                // Set CSS variable for Standard Height (used by Landscape in Stealth Mode)
+                if (container) {
+                    container.style.setProperty('--std-sky-height', `${stdHeight}px`);
+                }
+
+                // Standard config
+                const stdHorizonY = 18; // 18% from bottom
+                const stdSkyRange = 70;
+
+                if (!stealthMode) return { horizonY: stdHorizonY, skyRange: stdSkyRange };
+
+                // Stealth mode: dynamic calibration based on REAL container height
+
+                // 1. Calculate Standard Horizon Position (pixels from TOP)
+                const horizonPxFromTop = stdHeight * (1 - (stdHorizonY / 100));
+
+                // 2. Calculate New Horizon Y (pixels from BOTTOM of Stealth Container)
+                const horizonPxFromBottomStealth = vh - horizonPxFromTop;
+                const newHorizonY = (horizonPxFromBottomStealth / vh) * 100;
+
+                // Update CSS variable for the horizon line (if we were using it, but we might repurpose/remove usage)
+                if (container) {
+                    container.style.setProperty('--stealth-horizon-y', `${newHorizonY}%`);
+                }
+
+                // 3. Calculate New Sky Range (Amplitude)
+                const amplitudePx = stdHeight * (stdSkyRange / 100);
+                const newSkyRange = (amplitudePx / vh) * 100;
+
+                return { horizonY: newHorizonY, skyRange: newSkyRange };
+            };
+
+            // === HELPERS ===
+            const fmt = date => (date && !isNaN(date))
+                ? date.getHours().toString().padStart(2, '0') + ':' + date.getMinutes().toString().padStart(2, '0')
+                : '--:--';
+
+            const fmtDateDiff = (ms) => {
+                const h = Math.floor(ms / 3600000);
+                const m = Math.floor((ms % 3600000) / 60000);
+                return `${h}h ${m}m`;
+            };
+
+            const fmtRange = (start, end) => (!start || !end || isNaN(start) || isNaN(end))
+                ? '--:--'
+                : `${fmt(start)} - ${fmt(end)}`;
+
+            // === SKY GRADIENT ===
+            // === SKY GRADIENT (Smooth Interpolation) ===
+            function lerpColor(a, b, amount) {
+                const ah = parseInt(a.replace(/#/g, ''), 16),
+                    ar = ah >> 16, ag = ah >> 8 & 0xff, ab = ah & 0xff,
+                    bh = parseInt(b.replace(/#/g, ''), 16),
+                    br = bh >> 16, bg = bh >> 8 & 0xff, bb = bh & 0xff,
+                    rr = ar + amount * (br - ar),
+                    rg = ag + amount * (bg - ag),
+                    rb = ab + amount * (bb - ab);
+                return '#' + ((1 << 24) + (rr << 16) + (rg << 8) + rb | 0).toString(16).slice(1);
+            }
+
+            function updateFlare(sunX, sunY, sunOpacity) {
+                if (sunOpacity <= 0.1) {
+                    lensFlare.style.opacity = 0;
+                    return;
+                }
+                lensFlare.style.opacity = sunOpacity * 0.8; // Max 0.8 opacity
+
+                // Center of screen
+                const cx = 50;
+                const cy = 50;
+
+                // Vector from sun to center
+                const dx = cx - sunX;
+                const dy = cy - sunY;
+
+                // Position flares along this vector (with existence checks)
+                // Flare 1: 0.5 distance
+                if (flareItems[0]) {
+                    flareItems[0].style.left = (cx + dx * 0.3) + '%';
+                    flareItems[0].style.top = (cy + dy * 0.3) + '%';
+                }
+
+                // Flare 2: 1.2 distance (past center)
+                if (flareItems[1]) {
+                    flareItems[1].style.left = (cx - dx * 0.4) + '%';
+                    flareItems[1].style.top = (cy - dy * 0.4) + '%';
+                }
+
+                // Flare 3: 2.0 distance
+                if (flareItems[2]) {
+                    flareItems[2].style.left = (cx - dx * 1.5) + '%';
+                    flareItems[2].style.top = (cy - dy * 1.5) + '%';
+                }
+            }
+
+            // Keyframes for sky gradient based on solar altitude
+
+
+            const skyKeyframes = [
+                { alt: 90, colors: { top: '#1a3a5c', mid: '#4a90b8', bottom: '#87ceeb' } },  // Noon
+                { alt: 20, colors: { top: '#1a3a5c', mid: '#4a90b8', bottom: '#87ceeb' } },  // Day
+                { alt: 6, colors: { top: '#1a2a3a', mid: '#d4a574', bottom: '#f4c28f' } },   // Golden Hour Start
+                { alt: -2, colors: { top: '#2a3a55', mid: '#d48a6e', bottom: '#f4a27f' } },  // Just below horizon (Pre-sunrise glow)
+                { alt: -6, colors: { top: '#152033', mid: '#506080', bottom: '#90a0c0' } },  // Civil Twilight (Brighter)
+                { alt: -12, colors: { top: '#0a1020', mid: '#253045', bottom: '#405070' } }, // Nautical Twilight (Visible light)
+                { alt: -18, colors: { top: '#020408', mid: '#0a0f1a', bottom: '#151c29' } }  // Night
+            ];
+
+            function getGradient(altDeg) {
+                // Find two keyframes to interpolate between
+                let start = skyKeyframes[0];
+                let end = skyKeyframes[skyKeyframes.length - 1];
+
+                for (let i = 0; i < skyKeyframes.length - 1; i++) {
+                    if (altDeg <= skyKeyframes[i].alt && altDeg >= skyKeyframes[i + 1].alt) {
+                        start = skyKeyframes[i];
+                        end = skyKeyframes[i + 1];
+                        break;
+                    }
+                }
+
+                // If above highest or below lowest, clamp
+                if (altDeg > start.alt) return start.colors;
+                if (altDeg < end.alt) return end.colors;
+
+                // Calculate interpolation factor (0 to 1)
+                const range = start.alt - end.alt;
+                const progress = start.alt - altDeg;
+                const t = progress / range;
+
+                return {
+                    top: lerpColor(start.colors.top, end.colors.top, t),
+                    mid: lerpColor(start.colors.mid, end.colors.mid, t),
+                    bottom: lerpColor(start.colors.bottom, end.colors.bottom, t)
+                };
+            }
+
+            // === MOON PHASE RENDERING ===
+            // Renders the moon phase as an SVG shadow overlay
+            function updateMoonPhase(date) {
+                const moonPhasePath = document.getElementById('moon-phase-shadow');
+                if (!moonPhasePath) return;
+
+                // Get moon illumination data from SunCalc
+                const illumination = SunCalc.getMoonIllumination(date);
+                const phase = illumination.phase; // 0 = new moon, 0.5 = full moon, 1 = new moon
+
+                // Calculate shadow path based on phase
+                // phase 0-0.25: waxing crescent (shadow on left, moving right)
+                // phase 0.25-0.5: waxing gibbous (shadow on left, shrinking)
+                // phase 0.5: full moon (no shadow)
+                // phase 0.5-0.75: waning gibbous (shadow on right, growing)
+                // phase 0.75-1: waning crescent (shadow on right, moving left)
+
+                const cx = 50, cy = 50, r = 48;
+
+                // No shadow needed for full moon (phase ~0.5)
+                if (phase > 0.48 && phase < 0.52) {
+                    moonPhasePath.setAttribute('d', '');
+                    return;
+                }
+
+                // For new moon (phase ~0 or ~1), cover entire moon
+                if (phase < 0.02 || phase > 0.98) {
+                    moonPhasePath.setAttribute('d', `M ${cx - r},${cy} A ${r},${r} 0 1,1 ${cx + r},${cy} A ${r},${r} 0 1,1 ${cx - r},${cy}`);
+                    return;
+                }
+
+                // Calculate the terminator curve
+                // The terminator is the boundary between light and dark
+                let illuminatedFraction;
+                let shadowFromRight;
+
+                if (phase < 0.5) {
+                    // Waxing: shadow on left (light coming from right)
+                    illuminatedFraction = phase * 2; // 0 to 1 as phase goes 0 to 0.5
+                    shadowFromRight = false;
+                } else {
+                    // Waning: shadow on right (light coming from left)
+                    illuminatedFraction = (1 - phase) * 2; // 1 to 0 as phase goes 0.5 to 1
+                    shadowFromRight = true;
+                }
+
+                // Calculate ellipse width based on illumination
+                // When illuminatedFraction = 0, shadow covers all (full ellipse)
+                // When illuminatedFraction = 0.5, terminator is straight line
+                // When illuminatedFraction = 1, no shadow (full moon)
+
+                const terminatorX = r * (2 * illuminatedFraction - 1); // -r to +r
+
+                let path;
+                if (shadowFromRight) {
+                    // Shadow on right side
+                    if (illuminatedFraction < 0.5) {
+                        // More than half in shadow - use two arcs
+                        path = `M ${cx},${cy - r} 
+                                A ${r},${r} 0 0,0 ${cx},${cy + r} 
+                                A ${Math.abs(terminatorX)},${r} 0 0,${terminatorX < 0 ? 0 : 1} ${cx},${cy - r}`;
+                    } else {
+                        // Less than half in shadow
+                        path = `M ${cx},${cy - r} 
+                                A ${r},${r} 0 0,0 ${cx},${cy + r} 
+                                A ${Math.abs(terminatorX)},${r} 0 0,0 ${cx},${cy - r}`;
+                    }
+                } else {
+                    // Shadow on left side
+                    if (illuminatedFraction < 0.5) {
+                        // More than half in shadow
+                        path = `M ${cx},${cy - r} 
+                                A ${r},${r} 0 0,1 ${cx},${cy + r} 
+                                A ${Math.abs(terminatorX)},${r} 0 0,${terminatorX < 0 ? 1 : 0} ${cx},${cy - r}`;
+                    } else {
+                        // Less than half in shadow
+                        path = `M ${cx},${cy - r} 
+                                A ${r},${r} 0 0,1 ${cx},${cy + r} 
+                                A ${Math.abs(terminatorX)},${r} 0 0,1 ${cx},${cy - r}`;
+                    }
+                }
+
+                moonPhasePath.setAttribute('d', path);
+            }
+
+            // === UPDATE FUNCTION ===
+            function update(mins) {
+                const h = Math.floor(mins / 60);
+                const m = Math.floor(mins % 60);
+
+                // Time display
+                const timeStr = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+                document.querySelectorAll('.current-time').forEach(el => el.textContent = timeStr);
+
+                // Date
+                const d = new Date();
+                d.setHours(h, m, 0);
+
+                // i18n Date
+                const lang = (window.i18n && window.i18n.lang) || 'pl';
+                const locale = lang === 'en' ? 'en-US' : 'pl-PL';
+                const dateStr = d.toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long' }).toUpperCase();
+
+                document.querySelectorAll('.current-date').forEach(el => el.textContent = dateStr);
+
+                // Sun calculations
+                const times = SunCalc.getTimes(d, LAT, LNG);
+                const pos = SunCalc.getPosition(d, LAT, LNG);
+                const altDeg = pos.altitude * (180 / Math.PI);
+
+                // Phase
+                let phaseKey = "sun.phase.night"; // Fallback
+                if (altDeg > 6) phaseKey = "sun.phase.day";
+                else if (altDeg > -4) phaseKey = "sun.phase.golden";
+                else if (altDeg > -12) phaseKey = "sun.phase.blue";
+
+                // Translation map for phases (simpler than adding to i18n for now, or use t() if keys existed)
+                // I'll add simple translation logic here or assume i18n keys exist?
+                // I didn't add phase keys to i18n.js. I'll translate inline for now.
+                let phase = "NOC";
+                if (lang === 'en') {
+                    if (altDeg > 6) phase = "DAY";
+                    else if (altDeg > -4) phase = "GOLDEN HOUR";
+                    else if (altDeg > -12) phase = "BLUE HOUR";
+                    else phase = "NIGHT";
+                } else {
+                    if (altDeg > 6) phase = "DZIEŃ";
+                    else if (altDeg > -4) phase = "ZŁOTA GODZINA";
+                    else if (altDeg > -12) phase = "BLUE HOUR";
+                    else phase = "NOC";
+                }
+
+                document.querySelectorAll('.current-phase').forEach(el => el.textContent = phase);
+
+                // Stats
+                document.getElementById('val-sunrise').textContent = fmt(times.sunrise);
+                document.getElementById('val-sunset').textContent = fmt(times.sunset);
+                document.getElementById('val-golden-am').textContent = fmtRange(times.sunrise, times.goldenHourEnd);
+                document.getElementById('val-golden-pm').textContent = fmtRange(times.goldenHour, times.sunset);
+                document.getElementById('val-noon').textContent = fmt(times.solarNoon);
+
+                // Azimuth/Elevation
+                const azDegRise = (SunCalc.getPosition(times.sunrise || d, LAT, LNG).azimuth * 180 / Math.PI + 180) % 360;
+                const azDegSet = (SunCalc.getPosition(times.sunset || d, LAT, LNG).azimuth * 180 / Math.PI + 180) % 360;
+                const noonPos = SunCalc.getPosition(times.solarNoon || d, LAT, LNG);
+                const noonElev = noonPos.altitude * 180 / Math.PI;
+
+                document.getElementById('val-az-rise').textContent = Math.round(azDegRise);
+                document.getElementById('val-az-set').textContent = Math.round(azDegSet);
+                document.getElementById('val-elev').textContent = Math.round(noonElev);
+
+                // Day Length
+                if (times.sunrise && times.sunset) {
+                    const dayLenMs = times.sunset - times.sunrise;
+                    document.getElementById('val-len').textContent = fmtDateDiff(dayLenMs);
+
+                    // Solstice Comparison
+                    const currentYear = d.getFullYear();
+                    const winterSolstice = new Date(currentYear, 11, 21); // Dec 21
+                    const summerSolstice = new Date(currentYear, 5, 21);  // Jun 21
+
+                    // Get times for solstices at current location
+                    const winterTimes = SunCalc.getTimes(winterSolstice, LAT, LNG);
+                    const summerTimes = SunCalc.getTimes(summerSolstice, LAT, LNG);
+
+                    const winterLen = winterTimes.sunset - winterTimes.sunrise;
+                    const summerLen = summerTimes.sunset - summerTimes.sunrise;
+
+                    // Always show difference from longest day
+                    const diffFromLongest = summerLen - dayLenMs;
+                    document.getElementById('val-diff').textContent = '-' + fmtDateDiff(Math.abs(diffFromLongest));
+                    // Check if label exists before setting
+                    const diffLabel = document.getElementById('day-diff-label');
+                    if (diffLabel) diffLabel.textContent = 'od najdłuższego';
+                } else {
+                    document.getElementById('val-len').textContent = '--';
+                    document.getElementById('val-diff').textContent = '--';
+                }
+
+                // Sky gradient
+                const grad = getGradient(altDeg);
+
+                if (stealthMode) {
+                    // In stealth mode, we allow the gradient to extend.
+                    // However, to keep the "horizon" visual, we can mirror or darken the bottom.
+                    // User requested sky color to be BELOW horizon too.
+                    // So we just use the full gradient but maybe stretched or repeated.
+
+                    // Simpler approach: Just use the standard gradient covering the full 100vh area
+                    // but ensuring the "Horizon" color (bottom of grad) sits roughly at the horizon line
+                    // and then perhaps fades out or continues below.
+
+                    const { horizonY } = getHorizonConfig();
+                    const horizonStop = 100 - horizonY;
+
+                    // We stretch the 'mid' and 'bottom' parts to cover the extended area
+                    skyContainer.style.background = `linear-gradient(180deg, 
+                    ${grad.top} 0%, 
+                    ${grad.mid} ${horizonStop * 0.4}%, 
+                    ${grad.bottom} ${horizonStop}%, 
+                    ${grad.bottom} 100%)`;
+                } else {
+                    skyContainer.style.background = `linear-gradient(180deg, ${grad.top}, ${grad.mid}, ${grad.bottom})`;
+                }
+
+                // Sun position
+                const xPercent = (mins / 1440) * 100;
+
+                // Layout Tuning
+                const { horizonY, skyRange } = getHorizonConfig();
+
+                let yPercent = horizonY + (altDeg / 90) * skyRange;
+                // In stealth mode, allow sun to go much further below horizon
+                const minY = stealthMode ? -60 : -20;
+                yPercent = Math.max(minY, Math.min(120, yPercent));
+
+                sunOrb.style.left = xPercent + '%';
+                sunOrb.style.bottom = yPercent + '%';
+
+                // Sun visibility & Opacity
+                const isSunVisible = altDeg > -8 || stealthMode;
+                if (isSunVisible) {
+                    sunOrb.style.display = 'block';
+                    // Opacity logic:
+                    // Below horizon (< 0): faint (0.2 - 0.5)
+                    // Above horizon (>= 0): full (1.0)
+                    let opacity;
+                    if (altDeg < 0) {
+                        // From -18 (night) to 0 (horizon), opacity goes 0.1 -> 0.5
+                        opacity = 0.1 + Math.max(0, (altDeg + 18) / 18) * 0.4;
+                    } else {
+                        opacity = 1;
+                    }
+
+                    sunOrb.style.opacity = opacity;
+
+                    if (altDeg < 4) {
+                        sunOrb.style.background = altDeg < -2 ? '#ff6b6b' : '#ffb347'; // Redder when deep under
+                        sunOrb.style.boxShadow = `0 0 50px 20px rgba(255, 140, 50, ${0.6 * opacity})`;
+                    } else {
+                        sunOrb.style.background = '#fff';
+                        sunOrb.style.boxShadow = `0 0 40px 15px rgba(255, 200, 100, ${0.5 * opacity})`;
+                    }
+
+                    updateFlare(xPercent, 100 - yPercent, altDeg > -2 ? opacity : 0);
+                } else {
+                    sunOrb.style.display = 'none';
+                    lensFlare.style.opacity = 0;
+                }
+
+                // Moon - only visible at night (sun below -6°)
+                const moonPos = SunCalc.getMoonPosition(d, LAT, LNG);
+                const moonAlt = moonPos.altitude * (180 / Math.PI);
+                if (moonAlt > -5 && altDeg < -6) {
+                    moonOrb.style.display = 'block';
+                    const moonX = 50 + (moonPos.azimuth * (180 / Math.PI) / 180) * 40;
+                    const moonY = horizonY + (moonAlt / 90) * skyRange;
+                    moonOrb.style.left = Math.max(5, Math.min(95, moonX)) + '%';
+                    moonOrb.style.bottom = Math.max(10, Math.min(85, moonY)) + '%';
+
+                    // Update moon phase visualization
+                    updateMoonPhase(d);
+                } else {
+                    moonOrb.style.display = 'none';
+                }
+            }
+
+            // === SEASONAL TRAJECTORIES ===
+            function drawSeasonalTrajectories() {
+                const currentYear = new Date().getFullYear();
+                const seasonDates = {
+                    spring: new Date(currentYear, 2, 21),  // Mar 21
+                    summer: new Date(currentYear, 5, 21),  // Jun 21
+                    autumn: new Date(currentYear, 8, 23),  // Sep 23
+                    winter: new Date(currentYear, 11, 21)  // Dec 21
+                };
+
+                const { horizonY: horizonSVG, skyRange: skyRangeSVG } = getHorizonConfig();
+
+                Object.entries(seasonDates).forEach(([season, date]) => {
+                    // Calculate solar noon for this date to center the trajectory
+                    const times = SunCalc.getTimes(date, LAT, LNG);
+                    const solarNoon = times.solarNoon;
+                    const noonMins = solarNoon.getHours() * 60 + solarNoon.getMinutes();
+                    const offset = noonMins - 720; // Offset from 12:00
+
+                    let pathData = '';
+                    for (let i = 0; i <= 24; i++) {
+                        const testDate = new Date(date);
+                        testDate.setHours(i, 0, 0);
+                        const pos = SunCalc.getPosition(testDate, LAT, LNG);
+                        const alt = pos.altitude * (180 / Math.PI);
+
+                        // Center trajectory: solar noon should be at X=50%
+                        const mins = i * 60;
+                        const x = ((mins - offset) / 1440) * 100;
+                        const y = 100 - (horizonSVG + (alt / 90) * skyRangeSVG);
+
+                        pathData += (i === 0 ? 'M' : 'L') + ` ${x} ${y}`;
+                    }
+                    document.getElementById(`trajectory-${season}`).setAttribute('d', pathData);
+                });
+            }
+
+            let seasonTogglesInitialized = false;
+
+            function initSeasonToggles() {
+                const toggles = {
+                    spring: { toggle: toggleSpring, path: trajectorySpring, label: document.getElementById('toggle-spring-label') },
+                    summer: { toggle: toggleSummer, path: trajectorySummer, label: document.getElementById('toggle-summer-label') },
+                    autumn: { toggle: toggleAutumn, path: trajectoryAutumn, label: document.getElementById('toggle-autumn-label') },
+                    winter: { toggle: toggleWinter, path: trajectoryWinter, label: document.getElementById('toggle-winter-label') }
+                };
+
+                Object.entries(toggles).forEach(([season, { toggle, path, label }]) => {
+                    // Load from localStorage and sync visual state
+                    const saved = localStorage.getItem(`suntrack-${season}`);
+                    if (saved === 'true') {
+                        toggle.checked = true;
+                        path.classList.add('active');
+                        label.classList.add('active');
+                    } else {
+                        path.classList.toggle('active', toggle.checked);
+                        label.classList.toggle('active', toggle.checked);
+                    }
+
+                    // Add event listeners only once
+                    if (!seasonTogglesInitialized) {
+                        toggle.addEventListener('change', () => {
+                            console.log(`SEASON TOGGLE: ${season} -> ${toggle.checked}`);
+                            path.classList.toggle('active', toggle.checked);
+                            label.classList.toggle('active', toggle.checked);
+                            localStorage.setItem(`suntrack-${season}`, toggle.checked);
+                            if (toggle.checked) {
+                                try {
+                                    drawSeasonalTrajectories();
+                                } catch (e) {
+                                    console.error("Error drawing trajectory:", e);
+                                }
+                            }
+                        });
+                    }
+                });
+
+                seasonTogglesInitialized = true;
+
+                // Draw if any active
+                if (Object.values(toggles).some(({ toggle }) => toggle.checked)) {
+                    drawSeasonalTrajectories();
+                }
+            }
+
+            // === CITY SEARCH ===
+            async function searchCity(query) {
+                if (query.length < 2) {
+                    searchResults.classList.remove('active');
+                    return;
+                }
+
+                try {
+                    const resp = await fetch(`https://nominatim.openstreetmap.org/search?format=json&countrycodes=pl&q=${encodeURIComponent(query)}&limit=5`);
+                    const data = await resp.json();
+
+                    if (data.length === 0) {
+                        searchResults.classList.remove('active');
+                        return;
+                    }
+
+                    searchResults.innerHTML = data.map(item => `
+                    <div class="sky-search-result" data-lat="${item.lat}" data-lon="${item.lon}">
+                        ${item.display_name}
+                    </div>
+                `).join('');
+                    searchResults.classList.add('active');
+
+                    // Add click handlers
+                    document.querySelectorAll('.sky-search-result').forEach(el => {
+                        el.addEventListener('click', () => {
+                            LAT = parseFloat(el.dataset.lat);
+                            LNG = parseFloat(el.dataset.lon);
+                            citySearch.value = el.textContent.trim().split(',')[0];
+                            searchResults.classList.remove('active');
+                            localStorage.setItem('suntrack_lat', LAT);
+                            localStorage.setItem('suntrack_lng', LNG);
+                            localStorage.setItem('suntrack_city', citySearch.value);
+                            update(parseInt(skySlider.value));
+                        });
+                    });
+                } catch (e) {
+                    console.error('Search error:', e);
+                }
+            }
+
+            // === EVENTS ===
+            if (citySearch) {
+                citySearch.addEventListener('input', (e) => {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => searchCity(e.target.value), 300);
+                });
+                citySearch.addEventListener('blur', () => {
+                    setTimeout(() => searchResults.classList.remove('active'), 200);
+                });
+            }
+
+            if (skySlider) {
+                skySlider.addEventListener('input', (e) => {
+                    isLive = false;
+                    update(parseInt(e.target.value));
+                });
+            }
+
+            if (skyNowBtn) {
+                skyNowBtn.addEventListener('click', () => {
+                    isLive = true;
+                    const now = new Date();
+                    const mins = now.getHours() * 60 + now.getMinutes();
+                    if (skySlider) skySlider.value = mins;
+                    update(mins);
+                });
+            }
+
+            const stealthTrigger = document.getElementById('stealth-trigger');
+            if (stealthTrigger) {
+                stealthTrigger.addEventListener('click', toggleStealthMode);
+            }
+
+            window.addEventListener('resize', () => {
+                try {
+                    drawSeasonalTrajectories();
+                    if (skySlider) update(parseInt(skySlider.value));
+                } catch (e) {
+                    console.error('Resize error:', e);
+                }
+            });
+
+            // === INIT ===
+            function init() {
+                try {
+                    const savedLat = localStorage.getItem('suntrack_lat');
+                    const savedLng = localStorage.getItem('suntrack_lng');
+                    const savedCity = localStorage.getItem('suntrack_city');
+
+                    if (savedLat && savedLng) {
+                        LAT = parseFloat(savedLat);
+                        LNG = parseFloat(savedLng);
+                    }
+
+                    if (citySearch) citySearch.value = savedCity || 'Warszawa';
+
+                    if (stealthMode) {
+                        document.body.classList.add('stealth-mode');
+                        const icon = document.getElementById('stealth-icon-panel');
+                        if (icon) {
+                            icon.setAttribute('data-lucide', 'eye-off');
+                            icon.style.color = '#ff6b6b';
+                        }
+                    }
+
+                    const now = new Date();
+                    const mins = now.getHours() * 60 + now.getMinutes();
+                    if (skySlider) skySlider.value = mins;
+
+                    if (typeof update === 'function') {
+                        update(mins);
+                    }
+
+                    setInterval(() => {
+                        if (isLive) {
+                            const now = new Date();
+                            const mins = now.getHours() * 60 + now.getMinutes();
+                            if (skySlider) skySlider.value = mins;
+                            if (typeof update === 'function') update(mins);
+                        }
+                    }, 60000);
+
+                    if (window.lucide) lucide.createIcons();
+                    initSeasonToggles();
+                } catch (e) {
+                    console.error('SunTrack init error:', e);
+                }
+            }
+
+            // === BOOTSTRAP ===
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(
+                            async (pos) => {
+                                LAT = pos.coords.latitude;
+                                LNG = pos.coords.longitude;
+
+                                try {
+                                    const resp = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${LAT}&lon=${LNG}`);
+                                    const data = await resp.json();
+                                    const addr = data.address || {};
+                                    const cityName = addr.city || addr.town || addr.village || addr.municipality || 'Lokalizacja';
+                                    if (citySearch) citySearch.value = cityName;
+                                    localStorage.setItem('suntrack_city', cityName);
+                                } catch (e) {
+                                    console.warn('Geocoding failed:', e);
+                                }
+
+                                localStorage.setItem('suntrack_lat', LAT);
+                                localStorage.setItem('suntrack_lng', LNG);
+                                init();
+                            },
+                            (err) => {
+                                console.warn('Geolocation denied:', err);
+                                init();
+                            },
+                            { timeout: 5000 }
+                        );
+                    } else {
+                        init();
+                    }
+                }, 100);
+            });
+        </script>
+
+<!-- LEGACY SNAPSHOT BANNER -->
+<a href="../../index.html" style="position:fixed;bottom:16px;left:16px;z-index:2147483647;display:flex;align-items:center;gap:8px;padding:10px 16px;background:#0b0c0e;color:#00ff9d;border:1px solid #00ff9d;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:bold;text-decoration:none;box-shadow:0 4px 20px rgba(0,0,0,.6);opacity:.92" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.92">
+  <span style="width:8px;height:8px;border-radius:50%;background:#00ff9d;display:inline-block"></span>
+  WERSJA ARCHIWALNA &mdash; wr&oacute;&cacute; do nowej
+</a>
+</body>
+
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+    <title>Atmosphere | DraftLab.pl</title>
+
+    <meta name="theme-color" content="#0f1012">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Meta Tags SEO -->
+    <meta name="description"
+        content="Monitoring parametrów powietrza HomePod mini i wizualizacja danych klimatycznych.">
+    <meta property="og:title" content="Atmosphere | DraftLab.pl">
+    <meta property="og:description" content="Dashboard klimatyczny HomePod mini.">
+
+    <!-- Fonts & Icons -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Styles -->
+  <script type="module" crossorigin src="../assets/apps/Atmosphere-F5CNX3mS.js"></script>
+  <link rel="modulepreload" crossorigin href="../assets/main-BKeL_FdE.js">
+  <link rel="modulepreload" crossorigin href="../assets/Nucleus-GSbBhqLp.js">
+  <link rel="stylesheet" crossorigin href="../assets/style-D5hEec8U.css">
+</head>
+
+<body class="bg-tech-bg text-white font-sans bg-grid-pattern selection:bg-tech-green selection:text-black">
+
+    <dl-header></dl-header>
+    <div class="scanline"></div>
+
+    <div class="dl-dashboard">
+        <!-- App Title Section -->
+        <div class="mb-8 flex items-center gap-4 border-l-4 border-tech-green pl-4">
+            <i data-lucide="cloud" class="text-tech-green w-10 h-10"></i>
+            <div>
+                <h1 class="text-3xl font-bold tracking-tighter uppercase leading-none">Atmosphere</h1>
+                <p class="text-tech-dim text-[10px] uppercase tracking-[0.2em] mt-1 font-mono">/
+                    Climate_Monitoring_System v0.2</p>
+            </div>
+        </div>
+        <!-- Quick Nav -->
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 12px;">
+            <a href="AtmosphereAnalytics.html"
+                style="display: flex; align-items: center; gap: 6px; padding: 8px 16px; background: rgba(0, 255, 157, 0.1); border: 1px solid rgba(0, 255, 157, 0.3); border-radius: 8px; color: #00ff9d; text-decoration: none; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.2s;">
+                <i data-lucide="bar-chart-3" width="14"></i>
+                ANALYTICS
+            </a>
+        </div>
+
+        <!-- Date Control -->
+        <div class="dl-stat-card flex-row justify-between items-center !p-3 !mb-5">
+            <button id="prev-date" class="dl-control-btn"><i data-lucide="chevron-left" width="20"></i></button>
+            <div id="selected-date" class="font-mono text-sm font-bold text-white">
+                DZISIAJ</div>
+            <button id="next-date" class="dl-control-btn" disabled><i data-lucide="chevron-right"
+                    width="20"></i></button>
+        </div>
+
+
+        <div class="dl-section-label" data-i18n="atmo.live">LIVE STATUS</div>
+
+        <!-- Live Stats Row -->
+        <div class="dl-stats-grid mb-5">
+            <div class="dl-stat-card">
+                <div class="dl-stat-label">
+                    <span data-i18n="atmo.temp">TEMP</span>
+                    <i data-lucide="thermometer" width="12"></i>
+                </div>
+                <div class="dl-stat-value" id="current-temp">--<span class="dl-stat-unit">°C</span></div>
+            </div>
+            <div class="dl-stat-card">
+                <div class="dl-stat-label">
+                    <span data-i18n="atmo.humidity">WILGOTNOŚĆ</span>
+                    <i data-lucide="droplets" width="12"></i>
+                </div>
+                <div class="dl-stat-value" id="current-humidity">--<span class="dl-stat-unit">%</span></div>
+            </div>
+        </div>
+
+        <!-- Chart Area -->
+        <div class="dl-chart-container">
+            <div class="dl-chart-header">
+                <div class="dl-chart-title" data-i18n="atmo.chart.24h">Wykres 24H</div>
+                <div class="dl-chart-title !text-tech-green/60 font-mono" id="last-update">--:--</div>
+            </div>
+            <div class="dl-chart-wrapper">
+                <div class="dl-loading-overlay active" id="chart-loader">
+                    <div class="dl-loader"></div>
+                </div>
+                <canvas id="atmosphereChart"></canvas>
+            </div>
+        </div>
+
+        <div class="dl-section-label mt-5" data-i18n="atmo.analytics.day">ANALYTICS (DOBA)</div>
+
+        <!-- Analytics Row -->
+        <div class="dl-stats-grid mb-5">
+            <div class="dl-stat-card">
+                <div class="dl-stat-label">
+                    <span data-i18n="atmo.minmax">MIN / MAX</span>
+                    <i data-lucide="bar-chart-2" width="12"></i>
+                </div>
+                <div class="dl-stat-value !text-lg">
+                    <span id="day-min">--</span> / <span id="day-max">--</span><span class="dl-stat-unit">°C</span>
+                </div>
+            </div>
+            <div class="dl-stat-card">
+                <div class="dl-stat-label">
+                    <span data-i18n="atmo.avg_hum">ŚREDNIA / WILG.</span>
+                    <i data-lucide="activity" width="12"></i>
+                </div>
+                <div class="dl-stat-value !text-lg">
+                    <span id="day-avg">--</span><span class="dl-stat-unit">°C</span> <span
+                        class="text-xs text-white/30">|</span> <span id="day-hum-avg">--</span><span
+                        class="dl-stat-unit">%</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="dl-section-label mt-5" data-i18n="atmo.periods">PORY DNIA</div>
+
+        <!-- Time of Day Stats -->
+        <div class="dl-stats-grid mb-5 !grid-cols-4">
+            <div class="dl-stat-card !p-2">
+                <div class="dl-stat-label !text-[9px]">
+                    <span data-i18n="atmo.period.morning">RANO</span>
+                    <i data-lucide="sunrise" width="10"></i>
+                </div>
+                <div class="dl-stat-value !text-sm" id="time-morning">--<span class="dl-stat-unit">°C</span>
+                </div>
+            </div>
+            <div class="dl-stat-card !p-2">
+                <div class="dl-stat-label !text-[9px]">
+                    <span data-i18n="atmo.period.noon">POŁUDNIE</span>
+                    <i data-lucide="sun" width="10"></i>
+                </div>
+                <div class="dl-stat-value !text-sm" id="time-noon">--<span class="dl-stat-unit">°C</span>
+                </div>
+            </div>
+            <div class="dl-stat-card !p-2">
+                <div class="dl-stat-label !text-[9px]">
+                    <span data-i18n="atmo.period.evening">WIECZÓR</span>
+                    <i data-lucide="sunset" width="10"></i>
+                </div>
+                <div class="dl-stat-value !text-sm" id="time-evening">--<span class="dl-stat-unit">°C</span>
+                </div>
+            </div>
+            <div class="dl-stat-card !p-2">
+                <div class="dl-stat-label !text-[9px]">
+                    <span data-i18n="atmo.period.night">NOC</span>
+                    <i data-lucide="moon" width="10"></i>
+                </div>
+                <div class="dl-stat-value !text-sm" id="time-night">--<span class="dl-stat-unit">°C</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center text-[10px] text-white/20 font-mono py-5 pb-[calc(20px+env(safe-area-inset-bottom))]">
+            DATA SOURCE: HOMEPOD MINI • SHORTCUTS API
+        </div>
+    </div>
+
+    <!-- Application Logic -->
+
+<!-- LEGACY SNAPSHOT BANNER -->
+<a href="../../index.html" style="position:fixed;bottom:16px;left:16px;z-index:2147483647;display:flex;align-items:center;gap:8px;padding:10px 16px;background:#0b0c0e;color:#00ff9d;border:1px solid #00ff9d;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:bold;text-decoration:none;box-shadow:0 4px 20px rgba(0,0,0,.6);opacity:.92" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.92">
+  <span style="width:8px;height:8px;border-radius:50%;background:#00ff9d;display:inline-block"></span>
+  WERSJA ARCHIWALNA &mdash; wr&oacute;&cacute; do nowej
+</a>
+</body>
+
+</html>

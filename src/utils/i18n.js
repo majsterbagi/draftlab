@@ -222,7 +222,27 @@ export class I18n {
                 "calc.changelog.v01.f4": "→ Przełącznik operacji dodawania/odejmowania w trybie ±%",
                 "calc.changelog.v01.f5": "→ Historia obliczeń z możliwością kopiowania wyników",
                 "calc.changelog.v01.f6": "→ Wielojęzyczna obsługa (PL/EN)",
-                "calc.changelog.v01.f7": "→ Digital Blueprint Design System"
+                "calc.changelog.v01.f7": "→ Digital Blueprint Design System",
+
+                // Modern UI (v2)
+                "ui.legacy": "Wersja klasyczna",
+                "ui.legacy_title": "Przełącz na archiwalną wersję strony (v1)",
+                "ui.search": "Szukaj",
+                "palette.placeholder": "Wpisz nazwę aplikacji lub strony...",
+                "palette.empty": "Brak wyników.",
+                "palette.pages": "STRONY",
+                "palette.apps": "APLIKACJE",
+                "palette.hint": "nawigacja",
+                "palette.hint_select": "wybierz",
+                "palette.hint_close": "zamknij",
+                "hero.cta2": "Poznaj autora",
+                "hero.stat.apps": "APLIKACJE",
+                "hero.stat.commits": "COMMITY",
+                "hero.stat.mode": "TRYB",
+                "footer.nav": "NAWIGACJA",
+                "footer.system": "SYSTEM",
+                "footer.legacy_note": "Tęsknisz za starym wyglądem?",
+                "footer.back_top": "Do góry"
             },
             en: {
                 // Hero
@@ -440,7 +460,27 @@ export class I18n {
                 "calc.changelog.v01.f4": "→ Add/subtract operation toggle in ±% mode",
                 "calc.changelog.v01.f5": "→ Calculation history with copy functionality",
                 "calc.changelog.v01.f6": "→ Multilingual support (PL/EN)",
-                "calc.changelog.v01.f7": "→ Digital Blueprint Design System"
+                "calc.changelog.v01.f7": "→ Digital Blueprint Design System",
+
+                // Modern UI (v2)
+                "ui.legacy": "Classic version",
+                "ui.legacy_title": "Switch to the archived version of the site (v1)",
+                "ui.search": "Search",
+                "palette.placeholder": "Type an app or page name...",
+                "palette.empty": "No results.",
+                "palette.pages": "PAGES",
+                "palette.apps": "APPS",
+                "palette.hint": "navigate",
+                "palette.hint_select": "select",
+                "palette.hint_close": "close",
+                "hero.cta2": "Meet the author",
+                "hero.stat.apps": "APPS",
+                "hero.stat.commits": "COMMITS",
+                "hero.stat.mode": "MODE",
+                "footer.nav": "NAVIGATION",
+                "footer.system": "SYSTEM",
+                "footer.legacy_note": "Missing the old look?",
+                "footer.back_top": "Back to top"
             }
         };
 

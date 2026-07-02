@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Log | DraftLab</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+  <script type="module" crossorigin src="../assets/apps/system-log-Dpcgpt87.js"></script>
+  <link rel="modulepreload" crossorigin href="../assets/main-BKeL_FdE.js">
+  <link rel="modulepreload" crossorigin href="../assets/git_log_data-Bh3yA43S.js">
+  <link rel="stylesheet" crossorigin href="../assets/style-D5hEec8U.css">
+</head>
+
+<body
+    class="bg-tech-bg bg-grid-pattern min-h-screen flex flex-col pt-0 pb-12 px-0 selection:bg-tech-green selection:text-black font-mono">
+
+    <dl-header></dl-header>
+
+    <div class="w-full max-w-4xl mx-auto relative px-4 mt-12">
+        <!-- Header -->
+        <header class="border-b border-tech-gray pb-8 mb-8 flex flex-col justify-between items-start gap-6">
+            <div>
+                <h1 class="text-3xl md:text-5xl font-bold text-white tracking-tight mb-2 flex items-center gap-4">
+                    <i data-lucide="terminal" class="text-tech-green"></i>
+                    <span data-i18n="sys.title">SYSTEM LOG</span>
+                </h1>
+                <p class="text-tech-dim text-sm font-mono flex items-center gap-2">
+                    <span class="w-2 h-2 bg-tech-green rounded-full animate-pulse"></span>
+                    <span data-i18n="sys.subtitle">// PEŁNY REJESTR ZMIAN</span>
+                </p>
+            </div>
+        </header>
+
+        <!-- Controls: Stats & Filters -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 items-end">
+            <!-- Stats -->
+            <div class="flex gap-8 text-xs text-tech-dim">
+                <div>
+                    <span class="block uppercase tracking-widest opacity-50 mb-1"
+                        data-i18n="sys.stats.commits">Commity</span>
+                    <span class="text-xl text-white font-bold" id="stat-total">--</span>
+                </div>
+                <div>
+                    <span class="block uppercase tracking-widest opacity-50 mb-1"
+                        data-i18n="sys.stats.changes">Zmiany</span>
+                    <span class="text-xl text-white font-bold" id="stat-updates">--</span>
+                </div>
+                <div>
+                    <span class="block uppercase tracking-widest opacity-50 mb-1"
+                        data-i18n="sys.stats.repo">Repozytorium</span>
+                    <span class="text-tech-green font-bold text-sm" data-i18n="sys.stats.main">GŁÓWNE</span>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="flex justify-start md:justify-end gap-2">
+                <button onclick="setFilter('ALL')" id="filter-all" class="filter-btn active"
+                    data-i18n="sys.filter.all">WSZYSTKIE</button>
+                <button onclick="setFilter('APPS')" id="filter-apps" class="filter-btn"
+                    data-i18n="sys.filter.apps">APLIKACJE</button>
+                <button onclick="setFilter('SYS')" id="filter-sys" class="filter-btn"
+                    data-i18n="sys.filter.sys">SYSTEM</button>
+            </div>
+        </div>
+
+        <!-- Timeline Container -->
+        <main class="relative border-l border-tech-gray ml-4 md:ml-8 space-y-0 min-h-[400px]" id="log-container">
+            <!-- Items injected here -->
+        </main>
+
+        <!-- Pagination -->
+        <div class="mt-12 flex justify-between items-center border-t border-tech-gray/30 pt-6">
+            <button id="btn-prev" onclick="changePage(-1)" class="nav-btn" disabled>
+                <i data-lucide="chevron-left" width="16"></i> <span data-i18n="sys.nav.prev">POPRZEDNIA</span>
+            </button>
+
+            <span class="text-xs text-tech-dim font-mono">
+                <span data-i18n="sys.nav.page">STRONA</span> <span id="page-current"
+                    class="text-white font-bold">1</span> / <span id="page-total">1</span>
+            </span>
+
+            <button id="btn-next" onclick="changePage(1)" class="nav-btn">
+                <span data-i18n="sys.nav.next">NASTĘPNA</span> <i data-lucide="chevron-right" width="16"></i>
+            </button>
+        </div>
+
+        <footer class="mt-8 text-center">
+            <p class="text-tech-dim/30 text-[10px] uppercase tracking-widest" data-i18n="sys.footer">
+                End of Log Stream
+            </p>
+        </footer>
+    </div>
+
+    <!-- Detail Modal -->
+    <dialog id="detail-modal"
+        class="bg-transparent p-0 w-full max-w-2xl backdrop:bg-black/80 backdrop:backdrop-blur-sm open:animate-in open:fade-in open:zoom-in-95 closed:animate-out closed:fade-out closed:zoom-out-95">
+        <div class="bg-[#0f0f0f] border border-tech-gray shadow-2xl relative overflow-hidden">
+            <div class="border-b border-tech-gray/50 p-6 flex justify-between items-start bg-white/5">
+                <div>
+                    <div class="flex items-center gap-3 mb-2">
+                        <span id="modal-type" class="text-[10px] font-bold px-2 py-1 rounded border">TYP</span>
+                        <span id="modal-component" class="text-white font-bold text-sm tracking-wide">KOMPONENT</span>
+                    </div>
+                    <div class="font-mono text-[10px] text-tech-dim flex gap-4">
+                        <span id="modal-date">DATA</span>
+                        <span id="modal-hash">HASH</span>
+                    </div>
+                </div>
+                <button onclick="document.getElementById('detail-modal').close()"
+                    class="text-tech-dim hover:text-white transition-colors">
+                    <i data-lucide="x" width="24"></i>
+                </button>
+            </div>
+
+            <div class="p-8">
+                <h3 class="text-lg text-white font-bold mb-4" data-i18n="sys.modal.desc">Opis zmiany</h3>
+                <p id="modal-desc" class="text-tech-dim text-sm leading-relaxed mb-8 border-l-2 border-tech-green pl-4">
+                    ...</p>
+
+                <h3 class="text-tech-green font-bold text-xs uppercase tracking-widest mb-3 flex items-center gap-2">
+                    <i data-lucide="code-2" width="14"></i>
+                    <span data-i18n="sys.modal.tech">Szczegóły Techniczne</span>
+                </h3>
+                <div
+                    class="bg-black/30 border border-tech-gray/30 p-4 rounded font-mono text-xs text-tech-dim/80 leading-relaxed overflow-x-auto">
+                    <p id="modal-details">...</p>
+                </div>
+            </div>
+
+            <div class="bg-white/5 p-4 flex justify-end">
+                <button onclick="document.getElementById('detail-modal').close()"
+                    class="text-xs font-bold text-white uppercase tracking-widest hover:text-tech-green transition-colors px-4 py-2 border border-tech-gray hover:border-tech-green"
+                    data-i18n="sys.modal.close">
+                    Zamknij
+                </button>
+            </div>
+        </div>
+    </dialog>
+
+    <style>
+        .filter-btn {
+
+    cursor: pointer;
+
+    border-width: 1px;
+
+    --tw-border-opacity: 1;
+
+    border-color: rgb(42 42 42 / var(--tw-border-opacity, 1));
+
+    background-color: transparent;
+
+    padding-left: 1rem;
+
+    padding-right: 1rem;
+
+    padding-top: 0.5rem;
+
+    padding-bottom: 0.5rem;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.1em;
+
+    --tw-text-opacity: 1;
+
+    color: rgb(136 136 136 / var(--tw-text-opacity, 1));
+
+    transition-property: all;
+
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+
+    transition-duration: 150ms
+}
+
+.filter-btn:hover {
+
+    --tw-border-opacity: 1;
+
+    border-color: rgb(255 255 255 / var(--tw-border-opacity, 1));
+
+    --tw-text-opacity: 1;
+
+    color: rgb(255 255 255 / var(--tw-text-opacity, 1))
+}
+
+        .filter-btn.active {
+
+    --tw-border-opacity: 1;
+
+    border-color: rgb(0 255 157 / var(--tw-border-opacity, 1));
+
+    --tw-bg-opacity: 1;
+
+    background-color: rgb(0 255 157 / var(--tw-bg-opacity, 1));
+
+    --tw-text-opacity: 1;
+
+    color: rgb(0 0 0 / var(--tw-text-opacity, 1))
+}
+
+        .nav-btn {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 0.5rem;
+
+    border-width: 1px;
+
+    --tw-border-opacity: 1;
+
+    border-color: rgb(42 42 42 / var(--tw-border-opacity, 1));
+
+    background-color: transparent;
+
+    padding-left: 1rem;
+
+    padding-right: 1rem;
+
+    padding-top: 0.5rem;
+
+    padding-bottom: 0.5rem;
+
+    font-size: 0.75rem;
+
+    line-height: 1rem;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.1em;
+
+    --tw-text-opacity: 1;
+
+    color: rgb(136 136 136 / var(--tw-text-opacity, 1));
+
+    transition-property: all;
+
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+
+    transition-duration: 150ms
+}
+
+        .nav-btn:hover {
+
+    --tw-border-opacity: 1;
+
+    border-color: rgb(255 255 255 / var(--tw-border-opacity, 1));
+
+    --tw-text-opacity: 1;
+
+    color: rgb(255 255 255 / var(--tw-text-opacity, 1))
+}
+
+        .nav-btn:disabled {
+
+    pointer-events: none;
+
+    opacity: 0.3
+}
+    </style>
+
+
+<!-- LEGACY SNAPSHOT BANNER -->
+<a href="../../index.html" style="position:fixed;bottom:16px;left:16px;z-index:2147483647;display:flex;align-items:center;gap:8px;padding:10px 16px;background:#0b0c0e;color:#00ff9d;border:1px solid #00ff9d;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:bold;text-decoration:none;box-shadow:0 4px 20px rgba(0,0,0,.6);opacity:.92" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.92">
+  <span style="width:8px;height:8px;border-radius:50%;background:#00ff9d;display:inline-block"></span>
+  WERSJA ARCHIWALNA &mdash; wr&oacute;&cacute; do nowej
+</a>
+</body>
+
+</html>

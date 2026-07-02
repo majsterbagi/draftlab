@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Atmosphere Analytics | DraftLab.pl</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #0b0c0e;
+            --panel-bg: rgba(18, 19, 22, 0.85);
+            --accent-color: #00ff9d;
+            --text-color: #e0e0e0;
+            --grid-line: rgba(255, 255, 255, 0.05);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            min-height: 100dvh;
+            padding-top: 0;
+            overflow-y: auto;
+            background-image:
+                linear-gradient(var(--grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+            background-size: 40px 40px;
+            box-sizing: border-box;
+        }
+
+        .dashboard {
+            padding: 20px 20px 40px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* PAGE HEADER */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .page-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-link {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--accent-color);
+        }
+
+        /* RANGE SELECTOR */
+        .range-selector {
+            display: flex;
+            gap: 8px;
+            background: var(--panel-bg);
+            padding: 8px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .range-btn {
+            flex: 1;
+            padding: 10px 16px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .range-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+        }
+
+        .range-btn.active {
+            background: var(--accent-color);
+            color: #000;
+            border-color: var(--accent-color);
+        }
+
+        /* STATS GRID */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .stats-grid.four-cols {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .stat-card {
+            background: var(--panel-bg);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.4);
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .stat-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -1px;
+        }
+
+        .stat-unit {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 400;
+        }
+
+        /* CHART CONTAINER */
+        .chart-container {
+            background: var(--panel-bg);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            min-height: 300px;
+            position: relative;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .chart-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 280px;
+        }
+
+        .section-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.3);
+            margin-top: 10px;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            padding-left: 4px;
+        }
+
+        /* LOADING */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--panel-bg);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            border-radius: 20px;
+            z-index: 10;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loader {
+            width: 32px;
+            height: 32px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .footer-info {
+            text-align: center;
+            font-size: 9px;
+            color: rgba(255, 255, 255, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 20px 0;
+        }
+    </style>
+  <script type="module" crossorigin src="../assets/apps/AtmosphereAnalytics-Dnqb16XP.js"></script>
+  <link rel="modulepreload" crossorigin href="../assets/main-BKeL_FdE.js">
+  <link rel="modulepreload" crossorigin href="../assets/Nucleus-GSbBhqLp.js">
+  <link rel="stylesheet" crossorigin href="../assets/style-D5hEec8U.css">
+</head>
+
+<body>
+
+    <dl-header></dl-header>
+
+    <div class="dashboard">
+        <!-- Page Header -->
+        <div class="mb-8 flex items-center justify-between border-l-4 border-tech-green pl-4">
+            <div class="flex items-center gap-4">
+                <i data-lucide="bar-chart-3" class="text-tech-green w-10 h-10"></i>
+                <div>
+                    <h1 class="text-3xl font-bold tracking-tighter uppercase leading-none">Analytics</h1>
+                    <p class="text-tech-dim text-[10px] uppercase tracking-[0.2em] mt-1 font-mono">/
+                        Atmosphere_Data_Engine</p>
+                </div>
+            </div>
+            <a href="Atmosphere.html" class="back-link">
+                <i data-lucide="arrow-left" width="14"></i>
+                Wróć do Live
+            </a>
+        </div>
+
+        <!-- Range Selector -->
+        <div class="range-selector">
+            <button class="range-btn active" data-range="week">Tydzień</button>
+            <button class="range-btn" data-range="month">Miesiąc</button>
+            <button class="range-btn" data-range="year">Rok</button>
+        </div>
+
+        <!-- Summary Stats -->
+        <div class="section-label">PODSUMOWANIE OKRESU</div>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">
+                    MIN / MAX TEMP
+                    <i data-lucide="thermometer" width="12"></i>
+                </div>
+                <div class="stat-value" style="font-size: 16px;">
+                    <span id="range-min">--</span> / <span id="range-max">--</span><span class="stat-unit">°C</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">
+                    ŚREDNIA TEMP / WILG.
+                    <i data-lucide="activity" width="12"></i>
+                </div>
+                <div class="stat-value" style="font-size: 16px;">
+                    <span id="range-avg-temp">--</span><span class="stat-unit">°C</span>
+                    <span style="font-size: 12px; color:rgba(255,255,255,0.3)">|</span>
+                    <span id="range-avg-hum">--</span><span class="stat-unit">%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart -->
+        <div class="chart-container">
+            <div class="chart-header">
+                <div class="chart-title" id="chart-title">Wykres - Tydzień</div>
+                <div class="chart-title" style="color: #00ff9d" id="data-count">-- pomiarów</div>
+            </div>
+            <div class="chart-wrapper">
+                <div class="loading-overlay active" id="chart-loader">
+                    <div class="loader"></div>
+                </div>
+                <canvas id="analyticsChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Time of Day Averages -->
+        <div class="section-label">ŚREDNIE WG PORY DNIA</div>
+        <div class="stats-grid four-cols">
+            <div class="stat-card">
+                <div class="stat-label" style="font-size: 9px;">
+                    RANO
+                    <i data-lucide="sunrise" width="10"></i>
+                </div>
+                <div class="stat-value" style="font-size: 14px;" id="avg-morning">--<span class="stat-unit">°C</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label" style="font-size: 9px;">
+                    POŁUDNIE
+                    <i data-lucide="sun" width="10"></i>
+                </div>
+                <div class="stat-value" style="font-size: 14px;" id="avg-noon">--<span class="stat-unit">°C</span></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label" style="font-size: 9px;">
+                    WIECZÓR
+                    <i data-lucide="sunset" width="10"></i>
+                </div>
+                <div class="stat-value" style="font-size: 14px;" id="avg-evening">--<span class="stat-unit">°C</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label" style="font-size: 9px;">
+                    NOC
+                    <i data-lucide="moon" width="10"></i>
+                </div>
+                <div class="stat-value" style="font-size: 14px;" id="avg-night">--<span class="stat-unit">°C</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seasonal Averages -->
+        <div class="section-label">ŚREDNIE WG PORY ROKU</div>
+        <div class="stats-grid four-cols">
+            <div class="stat-card">
+                <div class="stat-label" style="font-size: 9px;">
+                    WIOSNA
+                    <i data-lucide="flower-2" width="10"></i>
+                </div>
+                <div class="stat-value" style="font-size: 14px;" id="avg-spring">--<span class="stat-unit">°C</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label" style="font-size: 9px;">
+                    LATO
+                    <i data-lucide="sun" width="10"></i>
+                </div>
+                <div class="stat-value" style="font-size: 14px;" id="avg-summer">--<span class="stat-unit">°C</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label" style="font-size: 9px;">
+                    JESIEŃ
+                    <i data-lucide="leaf" width="10"></i>
+                </div>
+                <div class="stat-value" style="font-size: 14px;" id="avg-autumn">--<span class="stat-unit">°C</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label" style="font-size: 9px;">
+                    ZIMA
+                    <i data-lucide="snowflake" width="10"></i>
+                </div>
+                <div class="stat-value" style="font-size: 14px;" id="avg-winter">--<span class="stat-unit">°C</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-info">
+            DATA SOURCE: HOMEPOD MINI • SHORTCUTS API
+        </div>
+    </div>
+
+    <!-- Application Logic -->
+
+<!-- LEGACY SNAPSHOT BANNER -->
+<a href="../../index.html" style="position:fixed;bottom:16px;left:16px;z-index:2147483647;display:flex;align-items:center;gap:8px;padding:10px 16px;background:#0b0c0e;color:#00ff9d;border:1px solid #00ff9d;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:bold;text-decoration:none;box-shadow:0 4px 20px rgba(0,0,0,.6);opacity:.92" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.92">
+  <span style="width:8px;height:8px;border-radius:50%;background:#00ff9d;display:inline-block"></span>
+  WERSJA ARCHIWALNA &mdash; wr&oacute;&cacute; do nowej
+</a>
+</body>
+
+</html>

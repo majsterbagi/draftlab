@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="pl" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="about.title">DraftLab.pl | O Mnie</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { mono: ['"JetBrains Mono"', 'monospace'] },
+                    colors: {
+                        'tech-bg': '#0a0a0a',
+                        'tech-green': '#00ff9d',
+                        'tech-gray': '#2a2a2a',
+                        'tech-dim': '#888888',
+                    },
+                    backgroundImage: {
+                        'grid-pattern': "linear-gradient(to right, #1a1a1a 1px, transparent 1px), linear-gradient(to bottom, #1a1a1a 1px, transparent 1px)",
+                        'striped-bar': "repeating-linear-gradient(45deg, #2a2a2a, #2a2a2a 10px, #333 10px, #333 20px)"
+                    },
+                    animation: {
+                        'blink': 'blink 1s step-end infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            background-color: #0a0a0a;
+            color: #e5e5e5;
+            font-family: 'JetBrains Mono', monospace;
+            background-size: 40px 40px;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+
+        .cursor-blink {
+            animation: blink 1s step-end infinite;
+        }
+    </style>
+
+  <script type="module" crossorigin src="./assets/about-8WZfKEwP.js"></script>
+  <link rel="modulepreload" crossorigin href="./assets/main-BKeL_FdE.js">
+  <link rel="stylesheet" crossorigin href="./assets/style-D5hEec8U.css">
+</head>
+
+<body
+    class="font-mono bg-tech-bg bg-grid-pattern min-h-screen flex flex-col relative overflow-x-hidden selection:bg-tech-green selection:text-black">
+
+    <dl-header></dl-header>
+
+    <main class="flex-grow max-w-6xl mx-auto px-4 w-full py-12 md:py-20">
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+
+            <!-- Left Column: Content -->
+            <div class="lg:col-span-8 space-y-12 order-2 lg:order-1">
+
+                <!-- Header -->
+                <div class="border-b border-tech-gray border-dashed pb-8">
+                    <p data-i18n="about.header.prefix"
+                        class="text-tech-green text-xs font-bold tracking-[0.2em] mb-3 uppercase flex items-center gap-2">
+                        <span class="w-2 h-2 bg-tech-green"></span>
+                        SYSTEM LOG_FILE
+                    </p>
+                    <h1 data-i18n="about.header.title" data-i18n-html="true"
+                        class="text-2xl md:text-4xl font-bold text-white tracking-tight leading-tight">
+                        LOG SYSTEMOWY <span class="text-tech-dim">/</span><br>
+                        O MNIE
+                    </h1>
+                </div>
+
+                <!-- Sections -->
+                <div class="space-y-16">
+
+                    <!-- 01 -->
+                    <section class="group relative">
+                        <div
+                            class="absolute -left-8 top-0 text-tech-gray/20 font-black text-6xl -z-10 group-hover:text-tech-green/10 transition-colors select-none">
+                            01</div>
+                        <h2 class="text-xl text-white font-bold mb-6 flex items-center gap-3">
+                            <span class="text-tech-green font-mono text-sm">[01]</span>
+                            <span data-i18n="about.s1.title">Level 33: Geneza</span>
+                        </h2>
+                        <div
+                            class="border-l-2 border-tech-gray pl-6 group-hover:border-tech-green transition-colors duration-500">
+                            <p data-i18n="about.s1.content" data-i18n-html="true"
+                                class="text-gray-400 leading-relaxed text-sm md:text-base text-justify">
+                                Rocznik '92. Dziś na liczniku mam 33 lata, ale mentalnie często wracam do momentu, gdy
+                                technologia miała zapach nagrzanego plastiku i dźwięk łączącego się modemu.
+                                <br><br>
+                                Mój start nie był łatwy - to była walka o zasoby. Pod biurkiem królował beżowy tower:
+                                Intel 233MHz (z fizycznym przyciskiem TURBO, który dawał złudzenie prędkości), dysk 4GB
+                                i zaledwie 32MB RAM. Ta ilość pamięci często uczyła pokory. Brak akceleratora 3D
+                                oznaczał "Game Over" dla nowych tytułów, a brak stałego łącza w małej miejscowości
+                                sprawiał, że Internet był towarem deficytowym, liczonym w impulsach telefonicznych.
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- 02 -->
+                    <section class="group relative">
+                        <div
+                            class="absolute -left-8 top-0 text-tech-gray/20 font-black text-6xl -z-10 group-hover:text-tech-green/10 transition-colors select-none">
+                            02</div>
+                        <h2 class="text-xl text-white font-bold mb-6 flex items-center gap-3">
+                            <span class="text-tech-green font-mono text-sm">[02]</span>
+                            <span data-i18n="about.s2.title">Era "Offline Web"</span>
+                        </h2>
+                        <div
+                            class="border-l-2 border-tech-gray pl-6 group-hover:border-tech-green transition-colors duration-500">
+                            <p data-i18n="about.s2.content" data-i18n-html="true"
+                                class="text-gray-400 leading-relaxed text-sm md:text-base text-justify">
+                                Właśnie te ograniczenia zdefiniowały mnie jako twórcę. Zamiast grać w Heroes III,
+                                pochłaniałem "Internet offline" – ziny na płytach CD-Action (pozdro dla czytelników
+                                Action Maga!). Fascynowało mnie, że po drugiej stronie ekranu jest człowiek, który
+                                wpisał kod i to zadziałało.
+                                <br><br>
+                                Otworzyłem systemowy Notatnik. Bez kolorowania składni, bez IntelliSense, bez YouTube'a.
+                                Metodą prób i błędów, analizując źródła stron ściągniętych u kolegów na dyskietki,
+                                składałem pierwsze tagi HTML. To wtedy zrozumiałem, że wolę tworzyć cyfrowe światy, niż
+                                tylko je konsumować.
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- 03 -->
+                    <section class="group relative">
+                        <div
+                            class="absolute -left-8 top-0 text-tech-gray/20 font-black text-6xl -z-10 group-hover:text-tech-green/10 transition-colors select-none">
+                            03</div>
+                        <h2 class="text-xl text-white font-bold mb-6 flex items-center gap-3">
+                            <span class="text-tech-green font-mono text-sm">[03]</span>
+                            <span data-i18n="about.s3.title">Od Forów do Korporacji (i z powrotem)</span>
+                        </h2>
+                        <div
+                            class="border-l-2 border-tech-gray pl-6 group-hover:border-tech-green transition-colors duration-500">
+                            <p data-i18n="about.s3.content" data-i18n-html="true"
+                                class="text-gray-400 leading-relaxed text-sm md:text-base text-justify">
+                                Lata 2000. to czas rozkwitu mojej pasji. W gimnazjum stworzyłem Grasz.info – forum,
+                                które stworzyło całkiem fajną społeczność i to w czasach przed Facebookiem. To była
+                                czysta zajawka.
+                                <br><br>
+                                Dorosłe życie napisało inny scenariusz. Dziś pracuję jako zakupowiec w korporacji. Choć
+                                szanuję ten świat procesów i tabelek, brakowało mi w nim tej iskry z czasów 32MB RAM-u.
+                                DraftLab.pl to mój powrót do korzeni. To "cyfrowy garaż", w którym po godzinach zrzucam
+                                korporacyjny pancerz i znów jestem tym chłopakiem, który chce zbudować coś fajnego w
+                                sieci.
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- 04 -->
+                    <section class="group relative">
+                        <div
+                            class="absolute -left-8 top-0 text-tech-gray/20 font-black text-6xl -z-10 group-hover:text-tech-green/10 transition-colors select-none">
+                            04</div>
+                        <h2 class="text-xl text-white font-bold mb-6 flex items-center gap-3">
+                            <span class="text-tech-green font-mono text-sm">[04]</span>
+                            <span data-i18n="about.s4.title">Sojusz z Maszyną</span>
+                        </h2>
+                        <div
+                            class="border-l-2 border-tech-gray pl-6 group-hover:border-tech-green transition-colors duration-500">
+                            <p data-i18n="about.s4.content" data-i18n-html="true"
+                                class="text-gray-400 leading-relaxed text-sm md:text-base text-justify">
+                                Technologia zatoczyła koło. Dziś, zamiast walczyć z brakiem pamięci, mam do dyspozycji
+                                nieskończoną moc chmury i AI. Nie uciekam od tego. Traktuję modele językowe jak
+                                potężnego asystenta, który zdejmuje mi z głowy żmudne kodowanie. Dzięki temu mogę
+                                realizować wizje, na które kiedyś brakowało mi "skill pointów".
+                                <br><br>
+                                Mimo fascynacji, zachowuję czujność. Widzę chaos generatywnej rewolucji, spam i problemy
+                                etyczne. Korzystam z AI, ale na własnych zasadach - jako narzędzia, które służy mojej
+                                kreatywności, a nie ją zastępuje.
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- 05 -->
+                    <section class="group relative">
+                        <div
+                            class="absolute -left-8 top-0 text-tech-gray/20 font-black text-6xl -z-10 group-hover:text-tech-green/10 transition-colors select-none">
+                            05</div>
+                        <h2 class="text-xl text-white font-bold mb-6 flex items-center gap-3">
+                            <span class="text-tech-green font-mono text-sm">[05]</span>
+                            <span data-i18n="about.s5.title">System Offline</span>
+                        </h2>
+                        <div
+                            class="border-l-2 border-tech-gray pl-6 group-hover:border-tech-green transition-colors duration-500">
+                            <p data-i18n="about.s5.content" data-i18n-html="true"
+                                class="text-gray-400 leading-relaxed text-sm md:text-base text-justify">
+                                Równowaga to podstawa. Kiedy wygaszam monitory, wracam do analogu. Czas wolny to
+                                rodzina, rower i natura. A gdy chwytam za pada? Nierzadko odpalam gry Nintendo. Bo tam,
+                                tak jak w moich projektach, nie liczą się gigaherce i fotorealizm, ale pomysł i czysta
+                                frajda z rozgrywki.
+                            </p>
+                        </div>
+                    </section>
+
+                </div>
+            </div>
+
+            <!-- Right Column: Profile Card -->
+            <div class="lg:col-span-4 lg:sticky lg:top-32 order-1 lg:order-2">
+                <div class="border border-tech-gray bg-black/50 backdrop-blur-sm p-2 relative group">
+                    <!-- Tech Corners -->
+                    <div class="absolute top-0 left-0 w-2 h-2 border-t border-l border-tech-green"></div>
+                    <div class="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-tech-green"></div>
+                    <div
+                        class="absolute top-0 right-0 w-2 h-2 border-t border-r border-tech-gray transition-colors group-hover:border-tech-green">
+                    </div>
+                    <div
+                        class="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-tech-gray transition-colors group-hover:border-tech-green">
+                    </div>
+
+                    <!-- Image Container -->
+                    <div class="aspect-square w-full overflow-hidden bg-tech-gray/20 relative mb-4">
+                        <img src="assets/kamil_profile.jpg" alt="Kamil Paśnik"
+                            class="w-full h-full object-cover filter contrast-125 hover:grayscale transition-all duration-700">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-80 pointer-events-none">
+                        </div>
+                        <div class="absolute bottom-0 left-0 w-full p-4">
+                            <p class="text-tech-green font-bold text-xl tracking-wide">KAMIL PAŚNIK</p>
+                        </div>
+                    </div>
+
+                    <!-- Stats / Meta -->
+                    <div class="space-y-3 font-mono text-xs text-tech-dim p-2 border-t border-tech-gray/30 pt-4">
+                        <div class="flex justify-between border-b border-tech-gray/10 pb-2">
+                            <span class="text-tech-green/70">UNIT_ID:</span>
+                            <span class="text-white">USER_92</span>
+                        </div>
+                        <div class="flex justify-between border-b border-tech-gray/10 pb-2">
+                            <span class="text-tech-green/70">STATUS:</span>
+                            <span data-i18n="about.profile.status" class="text-tech-green animate-pulse">ONLINE</span>
+                        </div>
+                        <div class="flex justify-between border-b border-tech-gray/10 pb-2">
+                            <span class="text-tech-green/70">LOCATION:</span>
+                            <span data-i18n="about.profile.location" class="text-white">Warszawa, PL</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-tech-green/70">CURRENT_QUEST:</span>
+                            <span class="text-white">DraftLab.pl</span>
+                        </div>
+                    </div>
+
+                    <!-- Action Button -->
+                    <div class="mt-6">
+                        <a href="mailto:pasnik.k@gmail.com" data-i18n="about.profile.contact"
+                            class="block w-full text-center py-3 border border-tech-gray hover:bg-tech-green hover:text-black hover:border-tech-green transition-all uppercase text-xs font-bold tracking-widest">
+                            Nawiąż połączenie
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <dl-footer></dl-footer>
+
+
+<!-- LEGACY SNAPSHOT BANNER -->
+<a href="../index.html" style="position:fixed;bottom:16px;left:16px;z-index:2147483647;display:flex;align-items:center;gap:8px;padding:10px 16px;background:#0b0c0e;color:#00ff9d;border:1px solid #00ff9d;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:bold;text-decoration:none;box-shadow:0 4px 20px rgba(0,0,0,.6);opacity:.92" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.92">
+  <span style="width:8px;height:8px;border-radius:50%;background:#00ff9d;display:inline-block"></span>
+  WERSJA ARCHIWALNA &mdash; wr&oacute;&cacute; do nowej
+</a>
+</body>
+
+</html>

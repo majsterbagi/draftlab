@@ -6,11 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DraftLab.pl | Warsztat Web AI</title>
 
+    <meta name="theme-color" content="#0a0a0a">
+    <meta name="color-scheme" content="dark">
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+
     <link rel="stylesheet" href="./src/style.css">
 
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
 
     <!-- SEO Meta Tags -->
     <meta name="description"
@@ -34,8 +39,6 @@
     <meta property="twitter:description"
         content="Eksperymentalny warsztat web AI. Kolekcja aplikacji webowych współtworzonych z modelami językowymi.">
     <meta property="twitter:image" content="https://draftlab.pl/og-image.png">
-
-
 
     <script type="module" src="./src/main.js"></script>
     <!-- I18n Init Script -->
@@ -65,40 +68,67 @@
 
     <main class="flex-grow max-w-7xl mx-auto px-4 w-full">
 
-        <section class="py-12 md:py-20 border-l border-r border-tech-gray border-dashed px-6 relative">
+        <!-- HERO -->
+        <section
+            class="py-16 md:py-28 border-l border-r border-tech-gray border-dashed px-6 relative overflow-hidden">
+
+            <!-- Aurora background -->
+            <div class="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+                <div class="aurora-blob animate-aurora w-[480px] h-[480px] -top-40 -left-24 bg-tech-green/10"></div>
+                <div class="aurora-blob animate-aurora w-[380px] h-[380px] top-10 right-[-120px] bg-cyan-500/10"
+                    style="animation-delay: -7s;"></div>
+            </div>
 
             <div class="max-w-3xl mx-auto text-center md:text-left relative">
                 <div class="absolute -top-4 -left-4 w-4 h-4 border-t border-l border-tech-green"></div>
                 <div class="absolute -bottom-4 -right-4 w-4 h-4 border-b border-r border-tech-green"></div>
 
                 <p id="hero-init-text" data-i18n="hero.init"
-                    class="text-tech-green mb-3 text-xs tracking-widest uppercase inline-block">> Inicjalizacja
-                    warsztatu...</p>
+                    class="text-tech-green mb-4 text-xs tracking-widest uppercase inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-tech-green/30 bg-tech-green/5">
+                    > Inicjalizacja warsztatu...</p>
                 <h1 data-i18n="hero.title" data-i18n-html="true"
-                    class="text-3xl md:text-5xl font-bold mb-4 leading-tight">
+                    class="text-3xl md:text-6xl font-bold mb-5 leading-tight tracking-tight">
                     Eksperymentalny <br>
-                    Warsztat Web <span class="text-tech-green">AI</span><span class="cursor-blink">_</span>
+                    Warsztat Web <span class="text-gradient-green">AI</span><span
+                        class="cursor-blink text-tech-green">_</span>
                 </h1>
                 <p data-i18n="hero.subtitle" data-i18n-html="true" style="text-wrap: balance;"
-                    class="text-tech-dim text-base md:text-lg leading-relaxed mb-6 max-w-2xl mx-auto md:mx-0">
+                    class="text-tech-dim text-base md:text-lg leading-relaxed mb-8 max-w-2xl mx-auto md:mx-0">
                     Kolekcja aplikacji webowych współtworzonych z modelami językowymi.
                     Od promptu do wdrożenia. Testuję granice kodu i wyobraźni.
                 </p>
-                <div class="flex flex-wrap gap-4 justify-center md:justify-start">
+                <div class="flex flex-wrap gap-4 justify-center md:justify-start mb-12">
                     <a href="#projekty" data-i18n="hero.cta"
-                        class="group relative px-5 py-2.5 bg-transparent border border-tech-green text-tech-green hover:bg-tech-green hover:text-black transition-all duration-300 font-bold uppercase text-xs tracking-wider">
-                        <span
-                            class="absolute -top-1 -left-1 w-2 h-2 border-t border-l border-tech-green opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                        class="group relative px-6 py-3 rounded-lg bg-tech-green text-black hover:shadow-glow transition-all duration-300 font-bold uppercase text-xs tracking-wider">
                         Przeglądaj Projekty
-                        <span
-                            class="absolute -bottom-1 -right-1 w-2 h-2 border-b border-r border-tech-green opacity-0 group-hover:opacity-100 transition-opacity"></span>
                     </a>
+                    <a href="about.html" data-i18n="hero.cta2"
+                        class="px-6 py-3 rounded-lg border border-white/15 text-white hover:border-tech-green hover:text-tech-green transition-all duration-300 font-bold uppercase text-xs tracking-wider">
+                        Poznaj autora
+                    </a>
+                </div>
+
+                <!-- Live stats strip -->
+                <div id="hero-stats"
+                    class="flex flex-wrap gap-6 md:gap-10 justify-center md:justify-start text-left border-t border-white/5 pt-6">
+                    <div>
+                        <p class="text-2xl font-bold text-white" id="stat-apps">—</p>
+                        <p data-i18n="hero.stat.apps" class="text-[10px] tracking-widest text-tech-dim">APLIKACJE</p>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-bold text-white" id="stat-commits">—</p>
+                        <p data-i18n="hero.stat.commits" class="text-[10px] tracking-widest text-tech-dim">COMMITY</p>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-bold text-tech-green">AI+HUMAN</p>
+                        <p data-i18n="hero.stat.mode" class="text-[10px] tracking-widest text-tech-dim">TRYB</p>
+                    </div>
                 </div>
             </div>
         </section>
 
         <section id="projekty" class="pt-20 pb-8 border-t border-tech-gray border-dashed">
-            <div class="flex items-center justify-between mb-12 border-b border-tech-gray pb-4">
+            <div class="flex items-center justify-between mb-12 border-b border-tech-gray pb-4" data-reveal>
                 <h2 class="text-2xl font-bold text-white flex items-center gap-2">
                     <i data-lucide="folder-git-2" class="text-tech-green"></i> <span
                         data-i18n="section.repo">REPOZYTORIUM</span>
@@ -111,13 +141,13 @@
 
         <section class="pt-8 pb-16 border-t border-tech-gray border-dashed mb-12">
             <!-- Unified Logs -->
-            <div class="mb-16">
+            <div class="mb-16" data-reveal>
                 <dl-unified-log></dl-unified-log>
             </div>
 
             <!-- Row 2: Manifest & Tech Stack -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                <div>
+                <div data-reveal>
                     <h3 data-i18n="section.manifest"
                         class="text-tech-green font-bold mb-4 uppercase tracking-widest text-sm">/ Manifest</h3>
                     <p data-i18n="manifest.text" class="text-tech-dim leading-relaxed text-sm">
@@ -126,7 +156,7 @@
                     </p>
                 </div>
 
-                <div>
+                <div data-reveal style="--reveal-delay: 120ms">
                     <h3 data-i18n="section.stack"
                         class="text-tech-green font-bold mb-4 uppercase tracking-widest text-sm">/ Tech Stack</h3>
                     <dl-tech-stack></dl-tech-stack>
@@ -174,6 +204,29 @@
                 heroText.classList.add('fade-in');
             }, 200);
         });
+    </script>
+
+    <!-- Live hero stats (liczby z SST + git log) -->
+    <script type="module">
+        import { SITE_DATA } from './src/data/db.js';
+        import { GIT_LOG_DATA } from './src/data/git_log_data.js';
+
+        const animateCount = (el, target) => {
+            const duration = 900;
+            const start = performance.now();
+            const tick = (now) => {
+                const p = Math.min((now - start) / duration, 1);
+                el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
+                if (p < 1) requestAnimationFrame(tick);
+            };
+            requestAnimationFrame(tick);
+        };
+
+        const appsCount = SITE_DATA.projects.filter(p => p.active && p.url && p.url !== '#').length;
+        const statApps = document.getElementById('stat-apps');
+        const statCommits = document.getElementById('stat-commits');
+        if (statApps) animateCount(statApps, appsCount);
+        if (statCommits) animateCount(statCommits, GIT_LOG_DATA.length);
     </script>
 </body>
 

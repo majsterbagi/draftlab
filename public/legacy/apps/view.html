@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DraftLab View</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" crossorigin href="../assets/style-D5hEec8U.css">
+</head>
+
+<body
+    class="font-mono bg-tech-bg bg-grid-pattern min-h-screen flex flex-col items-center p-4 relative overflow-y-auto overflow-x-hidden text-white selection:bg-tech-green selection:text-black">
+
+    <div class="scanline"></div>
+
+    <!-- Content Container -->
+    <div id="content-area"
+        class="w-full max-w-2xl bg-black/60 backdrop-blur-md border border-tech-gray p-8 relative shadow-[0_0_50px_rgba(0,255,65,0.05)] my-12 mb-20">
+
+        <!-- Decorators -->
+        <div class="absolute -top-1 -left-1 w-3 h-3 border-t border-l border-tech-green"></div>
+        <div class="absolute -bottom-1 -right-1 w-3 h-3 border-b border-r border-tech-green"></div>
+
+        <!-- Header -->
+        <div class="mb-6 flex items-center gap-3 border-b border-tech-gray/50 pb-4">
+            <i data-lucide="eye" class="text-tech-green"></i>
+            <h1 class="text-lg font-bold tracking-wider">DRAFTLAB SECURE VIEW</h1>
+        </div>
+
+        <!-- Dynamic Content -->
+        <div id="dynamic-content" class="min-h-[100px] flex items-center justify-center text-tech-dim">
+            <div class="animate-pulse">Loading data...</div>
+        </div>
+
+        <!-- Footer / Metadata -->
+        <div class="mt-6 pt-4 border-t border-tech-gray/50 text-[10px] text-tech-dim flex justify-between uppercase">
+            <span>Encrypted Transmission</span>
+            <span id="timestamp"></span>
+        </div>
+    </div>
+
+    <!-- Branding Footer -->
+    <div class="mt-auto pb-4 pt-8 text-center w-full">
+        <a href="https://draftlab.pl"
+            class="text-[10px] text-tech-dim hover:text-tech-green transition-colors uppercase tracking-widest">
+            Powered by DraftLab.pl
+        </a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            document.getElementById('timestamp').textContent = new Date().toISOString();
+
+            const params = new URLSearchParams(window.location.search);
+            const container = document.getElementById('dynamic-content');
+
+            const hasText = params.has('text');
+            const hasImg = params.has('img');
+            let contentHtml = '';
+
+            if (hasText) {
+                const text = params.get('text');
+                // Securely display text handling newlines
+                contentHtml += `<div class="text-lg leading-relaxed whitespace-pre-wrap text-left w-full mb-6 font-light">${escapeHtml(text)}</div>`;
+            }
+
+            if (hasImg) {
+                const src = params.get('img');
+
+                // Path logic
+                let validSrc = src;
+                if (!src.startsWith('http') && !src.startsWith('/')) {
+                    // Try to adjust relative path if it looks like api/download
+                    validSrc = '../' + src;
+                }
+
+                contentHtml += `
+                    <div class="relative group w-full ${hasText ? 'border-t border-tech-gray/50 pt-6' : ''}">
+                        <div class="relative cursor-zoom-in overflow-hidden border border-tech-gray/50 bg-black/50 shadow-lg group-hover:border-tech-green/50 transition-colors" onclick="openLightbox('${validSrc}')">
+                            <img src="${validSrc}" alt="Secure Content" class="w-full h-auto object-contain max-h-[60vh]">
+                            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                                <span class="bg-black/80 text-tech-green px-3 py-1 rounded text-xs border border-tech-green flex items-center gap-2 backdrop-blur-sm">
+                                    <i data-lucide="maximize-2" class="w-3 h-3"></i> POWIĘKSZ
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (contentHtml) {
+                container.innerHTML = contentHtml;
+                lucide.createIcons(); // Re-init icons for dynamic content
+            } else {
+                container.innerHTML = `<div class="text-red-500">No content data found in stream.</div>`;
+            }
+        });
+
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, function (m) { return map[m]; });
+        }
+
+        // Lightbox Logic
+        function openLightbox(src) {
+            const lightbox = document.createElement('div');
+            lightbox.id = 'lightbox-modal';
+            lightbox.className = 'fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4 cursor-zoom-out animate-in fade-in duration-200';
+            lightbox.onclick = closeLightbox;
+
+            lightbox.innerHTML = `
+                <div class="relative w-full h-full flex items-center justify-center">
+                    <img src="${src}" class="max-w-[95vw] max-h-[90vh] object-contain shadow-[0_0_50px_rgba(0,255,65,0.2)]">
+                    
+                    <button class="absolute top-4 right-4 text-white hover:text-tech-green transition-colors flex items-center gap-2 text-sm uppercase tracking-wider bg-black/50 px-3 py-2 rounded backdrop-blur-sm border border-tech-gray/30 hover:border-tech-green/70">
+                        <i data-lucide="x" class="w-4 h-4"></i> Zamknij
+                    </button>
+                    
+                    <div class="absolute top-4 left-4 text-tech-dim text-[10px] uppercase tracking-widest bg-black/50 px-3 py-2 rounded backdrop-blur-sm border border-tech-gray/30">
+                        Secure Preview Mode
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(lightbox);
+            lucide.createIcons();
+
+            // Prevent scrolling on body
+            document.body.style.overflow = 'hidden';
+
+            // Close on Escape
+            document.addEventListener('keydown', handleEsc);
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox-modal');
+            if (lightbox) {
+                lightbox.classList.add('animate-out', 'fade-out');
+                setTimeout(() => {
+                    lightbox.remove();
+                    document.body.style.overflow = '';
+                    document.removeEventListener('keydown', handleEsc);
+                }, 200);
+            }
+        }
+
+        function handleEsc(e) {
+            if (e.key === 'Escape') closeLightbox();
+        }
+    </script>
+
+<!-- LEGACY SNAPSHOT BANNER -->
+<a href="../../index.html" style="position:fixed;bottom:16px;left:16px;z-index:2147483647;display:flex;align-items:center;gap:8px;padding:10px 16px;background:#0b0c0e;color:#00ff9d;border:1px solid #00ff9d;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:bold;text-decoration:none;box-shadow:0 4px 20px rgba(0,0,0,.6);opacity:.92" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.92">
+  <span style="width:8px;height:8px;border-radius:50%;background:#00ff9d;display:inline-block"></span>
+  WERSJA ARCHIWALNA &mdash; wr&oacute;&cacute; do nowej
+</a>
+</body>
+
+</html>

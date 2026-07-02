@@ -6,32 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-i18n="about.title">DraftLab.pl | O Mnie</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="theme-color" content="#0a0a0a">
+    <meta name="color-scheme" content="dark">
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+
     <link rel="stylesheet" href="./src/style.css">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { mono: ['"JetBrains Mono"', 'monospace'] },
-                    colors: {
-                        'tech-bg': '#0a0a0a',
-                        'tech-green': '#00ff9d',
-                        'tech-gray': '#2a2a2a',
-                        'tech-dim': '#888888',
-                    },
-                    backgroundImage: {
-                        'grid-pattern': "linear-gradient(to right, #1a1a1a 1px, transparent 1px), linear-gradient(to bottom, #1a1a1a 1px, transparent 1px)",
-                        'striped-bar': "repeating-linear-gradient(45deg, #2a2a2a, #2a2a2a 10px, #333 10px, #333 20px)"
-                    },
-                    animation: {
-                        'blink': 'blink 1s step-end infinite',
-                    }
-                }
-            }
-        }
-    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
 
     <style>
         body {
@@ -91,7 +74,7 @@
                 <div class="space-y-16">
 
                     <!-- 01 -->
-                    <section class="group relative">
+                    <section class="group relative" data-reveal>
                         <div
                             class="absolute -left-8 top-0 text-tech-gray/20 font-black text-6xl -z-10 group-hover:text-tech-green/10 transition-colors select-none">
                             01</div>
@@ -116,7 +99,7 @@
                     </section>
 
                     <!-- 02 -->
-                    <section class="group relative">
+                    <section class="group relative" data-reveal>
                         <div
                             class="absolute -left-8 top-0 text-tech-gray/20 font-black text-6xl -z-10 group-hover:text-tech-green/10 transition-colors select-none">
                             02</div>
@@ -142,7 +125,7 @@
                     </section>
 
                     <!-- 03 -->
-                    <section class="group relative">
+                    <section class="group relative" data-reveal>
                         <div
                             class="absolute -left-8 top-0 text-tech-gray/20 font-black text-6xl -z-10 group-hover:text-tech-green/10 transition-colors select-none">
                             03</div>
@@ -168,7 +151,7 @@
                     </section>
 
                     <!-- 04 -->
-                    <section class="group relative">
+                    <section class="group relative" data-reveal>
                         <div
                             class="absolute -left-8 top-0 text-tech-gray/20 font-black text-6xl -z-10 group-hover:text-tech-green/10 transition-colors select-none">
                             04</div>
@@ -193,7 +176,7 @@
                     </section>
 
                     <!-- 05 -->
-                    <section class="group relative">
+                    <section class="group relative" data-reveal>
                         <div
                             class="absolute -left-8 top-0 text-tech-gray/20 font-black text-6xl -z-10 group-hover:text-tech-green/10 transition-colors select-none">
                             05</div>
@@ -218,7 +201,7 @@
 
             <!-- Right Column: Profile Card -->
             <div class="lg:col-span-4 lg:sticky lg:top-32 order-1 lg:order-2">
-                <div class="border border-tech-gray bg-black/50 backdrop-blur-sm p-2 relative group">
+                <div class="glass rounded-card shadow-card p-2 relative group">
                     <!-- Tech Corners -->
                     <div class="absolute top-0 left-0 w-2 h-2 border-t border-l border-tech-green"></div>
                     <div class="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-tech-green"></div>
@@ -264,7 +247,7 @@
                     <!-- Action Button -->
                     <div class="mt-6">
                         <a href="mailto:pasnik.k@gmail.com" data-i18n="about.profile.contact"
-                            class="block w-full text-center py-3 border border-tech-gray hover:bg-tech-green hover:text-black hover:border-tech-green transition-all uppercase text-xs font-bold tracking-widest">
+                            class="block w-full text-center py-3 rounded-lg border border-tech-gray hover:bg-tech-green hover:text-black hover:border-tech-green hover:shadow-glow-sm transition-all uppercase text-xs font-bold tracking-widest">
                             Nawiąż połączenie
                         </a>
                     </div>

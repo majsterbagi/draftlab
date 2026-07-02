@@ -1,5 +1,13 @@
 export const GIT_LOG_DATA = [
     {
+        "hash": "8d31809",
+        "date": "2026-07-02 22:03",
+        "type": "SNAPSHOT",
+        "component": "SYS",
+        "desc": "Stan strony przed modernizacją (Legacy v1)",
+        "details": "Pełny stan źródeł przed generalną modernizacją UI.\nPowrót do tej wersji: git checkout legacy-v1\n\nCo-Authored-By: Claude Fable 5 <noreply@anthropic.com>"
+    },
+    {
         "hash": "21da97a",
         "date": "2026-01-06 00:40",
         "type": "UPDATE",
@@ -389,14 +397,6 @@ export const GIT_LOG_DATA = [
         "type": "FEAT",
         "component": "ATMOSPHERE",
         "desc": "Use Nucleus header for consistent navigation",
-        "details": null
-    },
-    {
-        "hash": "d30d0f9",
-        "date": "2025-12-19 21:42",
-        "type": "STYLE",
-        "component": "ATMOSPHERE",
-        "desc": "Move back button to top-right",
         "details": null
     }
 ];

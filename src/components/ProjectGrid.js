@@ -2,6 +2,7 @@
 
 import { SITE_DATA } from '../data/db.js';
 import { i18n } from '../utils/i18n.js';
+import { observeReveals } from '../utils/reveal.js';
 
 class ProjectGrid extends HTMLElement {
     constructor() {
@@ -33,21 +34,21 @@ class ProjectGrid extends HTMLElement {
         const wrapper = document.createElement('div');
 
         const grid = document.createElement('div');
-        grid.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8";
+        grid.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6";
         grid.id = "projects-grid";
 
         // Filter active projects
         const activeProjects = SITE_DATA.projects.filter(p => p.active);
         const inactiveProjects = SITE_DATA.projects.filter(p => !p.active);
 
-        const renderProject = (p, isHidden = false) => {
-            const baseClass = "group border transition-all duration-300 relative overflow-hidden flex flex-col h-full";
+        const renderProject = (p, index = 0, isHidden = false) => {
+            const baseClass = "group border rounded-card transition-all duration-300 relative overflow-hidden flex flex-col h-full";
             // Determine visual state: Active ONLY if active=true AND url is not hash
             const isLive = p.active && p.url && p.url !== '#';
 
             const activeClass = isLive
-                ? "border-tech-gray bg-[#0f0f0f] hover:border-tech-green"
-                : "border-tech-gray/30 bg-[#0f0f0f]/50 opacity-60 border-dashed";
+                ? "spotlight-card border-white/10 bg-tech-card shadow-card hover:border-tech-green/50 hover:shadow-glow-sm hover:-translate-y-1"
+                : "border-tech-gray/30 bg-tech-card/50 opacity-60 border-dashed";
             const hiddenClass = isHidden ? "empty-slot hidden" : "";
 
             // Dynamic colors based on project
@@ -73,40 +74,46 @@ class ProjectGrid extends HTMLElement {
             const btnRun = i18n.t('ui.run');
             const txtOffline = i18n.t('ui.offline');
 
-            // LOGIKA PRZYCISKÓW (ZMIANA)
+            const statusBadge = isLive
+                ? `<span class="flex items-center gap-1.5 px-2 py-1 text-[10px] uppercase rounded-full border border-tech-green/30 bg-tech-green/10 text-tech-green">
+                        <span class="w-1.5 h-1.5 rounded-full bg-tech-green animate-pulse"></span>${p.version}
+                   </span>`
+                : `<span class="px-2 py-1 text-[10px] uppercase border border-tech-dim/40 text-tech-dim rounded-full">${p.version}</span>`;
+
+            // Action buttons
             const actionButtons = isLive
                 ? `
-                <div class="mt-auto flex gap-2 pt-2">
-                    <a href="${p.url}" class="flex-grow py-2 bg-tech-gray text-center text-sm font-bold uppercase tracking-wider hover:bg-white hover:text-black transition-colors border border-transparent group-hover:border-white/20">
+                <div class="mt-auto flex gap-2 pt-2 relative z-[2]">
+                    <a href="${p.url}" class="flex-grow py-2.5 rounded-lg bg-tech-green/10 border border-tech-green/30 text-tech-green text-center text-sm font-bold uppercase tracking-wider hover:bg-tech-green hover:text-black hover:shadow-glow-sm transition-all">
                         ${btnRun}
                     </a>
                     ${p.changelogUrl ? `
-                    <a href="${p.changelogUrl}" class="px-3 py-2 border border-tech-gray text-tech-dim hover:text-tech-green hover:border-tech-green transition-colors flex items-center justify-center" title="Historia zmian / Readme">
+                    <a href="${p.changelogUrl}" class="px-3 py-2 rounded-lg border border-white/10 text-tech-dim hover:text-tech-green hover:border-tech-green/40 transition-colors flex items-center justify-center" title="Historia zmian / Readme">
                         <i data-lucide="file-clock" width="18"></i>
                     </a>
                     ` : ''}
                 </div>`
-                : `<div class="text-xs text-tech-dim text-center py-2 border border-tech-gray/30 mt-4 border-dashed mt-auto">${txtOffline}</div>`;
+                : `<div class="text-xs text-tech-dim text-center py-2 rounded-lg border border-tech-gray/30 border-dashed mt-auto">${txtOffline}</div>`;
 
             return `
-            <article class="${baseClass} ${activeClass} ${hiddenClass} min-h-[300px]">
-                ${isLive ? `<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${greenGradient} opacity-70"></div>` : ''}
-                
+            <article class="${baseClass} ${activeClass} ${hiddenClass} min-h-[300px]" data-reveal style="--reveal-delay: ${Math.min(index * 70, 350)}ms">
+                ${isLive ? `<div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r ${greenGradient} opacity-60 group-hover:opacity-100 transition-opacity"></div>` : ''}
+
                 <div class="p-6 flex flex-col h-full">
                     <div class="flex justify-between items-start mb-4">
                         <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 min-w-[3rem] bg-tech-gray/30 rounded flex items-center justify-center ${iconColor} border border-tech-gray ${greenBorder} transition-colors">
+                            <div class="w-12 h-12 min-w-[3rem] bg-white/5 rounded-xl flex items-center justify-center ${iconColor} border border-white/10 ${greenBorder} transition-colors">
                                 <i data-lucide="${A}" width="24"></i>
                             </div>
                             <h3 class="text-xl font-bold ${isLive ? 'group-hover:text-white' : 'text-tech-dim'} transition-colors">${title}</h3>
                         </div>
-                        <span class="px-2 py-1 text-[10px] uppercase border border-tech-dim text-tech-dim rounded">${p.version}</span>
+                        ${statusBadge}
                     </div>
-                    
+
                     <p class="text-tech-dim text-sm mb-2 flex-grow leading-relaxed">${desc}</p>
 
                     <div class="flex flex-wrap gap-2 mb-2">
-                        ${p.tags.map(t => `<span class="text-[10px] text-tech-green bg-tech-green/10 px-2 py-1 rounded border border-tech-green/20">${t}</span>`).join('')}
+                        ${p.tags.map(t => `<span class="text-[10px] text-tech-green bg-tech-green/10 px-2 py-1 rounded-full border border-tech-green/20">${t}</span>`).join('')}
                     </div>
 
                     ${actionButtons}
@@ -116,11 +123,11 @@ class ProjectGrid extends HTMLElement {
         };
 
         // Render active projects first
-        const mappedProjects = activeProjects.map(p => renderProject(p, false));
+        const mappedProjects = activeProjects.map((p, idx) => renderProject(p, idx, false));
 
         // Render inactive projects (hidden by default)
-        inactiveProjects.forEach(p => {
-            mappedProjects.push(renderProject(p, !showEmpty));
+        inactiveProjects.forEach((p, idx) => {
+            mappedProjects.push(renderProject(p, activeProjects.length + idx, !showEmpty));
         });
 
         // Calculate missing phantom slots
@@ -132,30 +139,30 @@ class ProjectGrid extends HTMLElement {
             for (let i = 0; i < missing; i++) {
                 const nextNum = String(totalItems + i + 1).padStart(2, '0');
 
-                const title = lang === 'pl' ? `Slot_${nextNum}: Empty` : `Slot_${nextNum}: Empty`; // No translation needed really, or use map
+                const title = `Slot_${nextNum}: Empty`;
                 const desc = lang === 'pl' ? "Miejsce na kolejny projekt..." : "Place for the next project...";
                 const txtTbd = i18n.t('ui.tbd');
                 const txtOffline = i18n.t('ui.offline');
 
                 const phantomSlot = `
-                <article class="empty-slot ${showEmpty ? 'md:flex' : 'hidden'} group border transition-all duration-300 relative overflow-hidden flex-col h-full border-tech-gray/30 bg-[#0f0f0f]/50 opacity-30 border-dashed min-h-[300px]">
+                <article class="empty-slot ${showEmpty ? 'md:flex' : 'hidden'} group border rounded-card transition-all duration-300 relative overflow-hidden flex-col h-full border-tech-gray/30 bg-tech-card/50 opacity-30 border-dashed min-h-[300px]">
                     <div class="p-6 flex flex-col h-full">
                         <div class="flex justify-between items-start mb-4">
                             <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 min-w-[3rem] bg-tech-gray/30 rounded flex items-center justify-center text-tech-dim border border-tech-gray transition-colors">
+                                <div class="w-12 h-12 min-w-[3rem] bg-white/5 rounded-xl flex items-center justify-center text-tech-dim border border-white/10 transition-colors">
                                     <i data-lucide="box" width="24"></i>
                                 </div>
                                 <h3 class="text-xl font-bold text-tech-dim transition-colors">${title}</h3>
                             </div>
-                            <span class="px-2 py-1 text-[10px] uppercase border border-tech-dim text-tech-dim rounded">${txtTbd}</span>
+                            <span class="px-2 py-1 text-[10px] uppercase border border-tech-dim/40 text-tech-dim rounded-full">${txtTbd}</span>
                         </div>
-                        
+
                         <p class="text-tech-dim text-sm mb-2 flex-grow leading-relaxed">${desc}</p>
-    
+
                         <div class="flex flex-wrap gap-2 mb-6">
                         </div>
-    
-                        <div class="text-xs text-tech-dim text-center py-2 border border-tech-gray/30 mt-4 border-dashed mt-auto">${txtOffline}</div>
+
+                        <div class="text-xs text-tech-dim text-center py-2 rounded-lg border border-tech-gray/30 border-dashed mt-auto">${txtOffline}</div>
                     </div>
                 </article>
                 `;
@@ -167,7 +174,7 @@ class ProjectGrid extends HTMLElement {
 
         // Toggle button
         const toggleBtn = document.createElement('button');
-        toggleBtn.className = "mt-4 mx-auto block text-xs text-tech-dim hover:text-tech-green transition-colors cursor-pointer";
+        toggleBtn.className = "mt-6 mx-auto block text-xs text-tech-dim hover:text-tech-green transition-colors cursor-pointer";
         toggleBtn.id = "toggle-empty-slots";
 
         const txtShow = i18n.t('ui.show_empty');
@@ -178,7 +185,6 @@ class ProjectGrid extends HTMLElement {
             : `<i data-lucide="eye" width="14" class="inline mr-1"></i> ${txtShow}`;
 
         toggleBtn.addEventListener('click', () => {
-            const emptySlots = grid.querySelectorAll('.empty-slot');
             const newState = !showEmpty;
             localStorage.setItem('draftlab_show_empty', newState);
             this.render(); // Re-render with new state
@@ -187,6 +193,18 @@ class ProjectGrid extends HTMLElement {
         wrapper.appendChild(grid);
         wrapper.appendChild(toggleBtn);
         this.appendChild(wrapper);
+
+        // Mouse-tracking spotlight on live cards
+        grid.querySelectorAll('.spotlight-card').forEach(card => {
+            card.addEventListener('pointermove', (e) => {
+                const rect = card.getBoundingClientRect();
+                card.style.setProperty('--mx', `${e.clientX - rect.left}px`);
+                card.style.setProperty('--my', `${e.clientY - rect.top}px`);
+            });
+        });
+
+        // Entrance animations
+        observeReveals(this);
 
         if (window.lucide) window.lucide.createIcons();
     }
