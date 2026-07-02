@@ -1,5 +1,13 @@
 export const GIT_LOG_DATA = [
     {
+        "hash": "1f7cc11",
+        "date": "2026-07-02 22:16",
+        "type": "FEAT",
+        "component": "SYS",
+        "desc": "FEAT v2.0: Generalna modernizacja UI + mechanizm wersji klasycznej (/legacy)",
+        "details": "- Nowy design system: glassmorphism, aurora glow, gradienty, zaokrąglenia, cienie\n- Sticky glass header z paskiem postępu scrolla i linkiem do v1.0\n- Paleta poleceń Cmd+K (nawigacja po stronach i aplikacjach, PL/EN)\n- Karty projektów: spotlight-hover, animacje wejścia, live badge\n- Nowa stopka 3-kolumnowa z linkiem do wersji klasycznej\n- Hero: aurora, animowane statystyki (aplikacje/commity), drugi CTA\n- Scroll-reveal (IntersectionObserver) + prefers-reduced-motion\n- MPA View Transitions, SVG favicon, theme-color, preconnect fonts\n- about.html: usunięto Tailwind CDN (kompilowany CSS)\n- Snapshot starej strony w public/legacy + skrypt snapshot:legacy\n- Powrót do starego kodu: git checkout legacy-v1\n\nCo-Authored-By: Claude Fable 5 <noreply@anthropic.com>"
+    },
+    {
         "hash": "8d31809",
         "date": "2026-07-02 22:03",
         "type": "SNAPSHOT",
@@ -389,14 +397,6 @@ export const GIT_LOG_DATA = [
         "type": "FEAT",
         "component": "ATMOSPHERE",
         "desc": "Replace dew point with avg humidity, add time-of-day stats",
-        "details": null
-    },
-    {
-        "hash": "f97cd21",
-        "date": "2025-12-19 21:45",
-        "type": "FEAT",
-        "component": "ATMOSPHERE",
-        "desc": "Use Nucleus header for consistent navigation",
         "details": null
     }
 ];

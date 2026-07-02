@@ -140,13 +140,9 @@
         </section>
 
         <section class="pt-8 pb-16 border-t border-tech-gray border-dashed mb-12">
-            <!-- Unified Logs -->
-            <div class="mb-16" data-reveal>
-                <dl-unified-log></dl-unified-log>
-            </div>
 
-            <!-- Row 2: Manifest & Tech Stack -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <!-- Row 1: Manifest & Tech Stack -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
                 <div data-reveal>
                     <h3 data-i18n="section.manifest"
                         class="text-tech-green font-bold mb-4 uppercase tracking-widest text-sm">/ Manifest</h3>
@@ -161,6 +157,18 @@
                         class="text-tech-green font-bold mb-4 uppercase tracking-widest text-sm">/ Tech Stack</h3>
                     <dl-tech-stack></dl-tech-stack>
                 </div>
+            </div>
+
+            <!-- Row 2: DraftLab Core — interaktywny terminal -->
+            <div class="mb-10" data-reveal>
+                <h3 data-i18n="term.section_title"
+                    class="text-tech-green font-bold mb-4 uppercase tracking-widest text-sm">/ Rdzeń Systemu</h3>
+                <dl-terminal></dl-terminal>
+            </div>
+
+            <!-- Row 3: kompaktowy dziennik zmian -->
+            <div data-reveal>
+                <dl-unified-log></dl-unified-log>
             </div>
 
         </section>

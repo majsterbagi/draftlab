@@ -8,8 +8,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LabyrinthQR | DraftLab</title>
     <link rel="stylesheet" href="../src/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
     <script type="module" src="../src/main.js"></script>
 </head>
 
@@ -46,7 +48,7 @@
             <div class="lg:col-span-4 space-y-6">
 
                 <!-- 1. Content Type -->
-                <div class="bg-black/40 border border-tech-gray p-4 backdrop-blur-sm relative group">
+                <div class="glass rounded-card p-4 relative group">
                     <div
                         class="absolute -top-1 -left-1 w-2 h-2 border-t border-l border-tech-dim group-hover:border-tech-green transition-colors">
                     </div>
@@ -86,7 +88,7 @@
 
 
                 <!-- 2. Appearance -->
-                <div class="bg-black/40 border border-tech-gray p-4 backdrop-blur-sm relative group">
+                <div class="glass rounded-card p-4 relative group">
                     <h2 class="text-white text-sm font-bold mb-4 uppercase flex items-center gap-2">
                         <i data-lucide="palette" class="w-4 h-4 text-tech-green"></i> <span data-i18n="qr.sect.2">2.
                             Stylizacja</span>
@@ -164,7 +166,7 @@
                 </div>
 
                 <!-- 3. Export -->
-                <div class="bg-black/40 border border-tech-gray p-4 backdrop-blur-sm">
+                <div class="glass rounded-card p-4">
                     <div class="grid grid-cols-2 gap-3">
                         <button id="btn-download"
                             class="bg-tech-green text-black font-bold py-3 uppercase tracking-wider hover:bg-white transition-colors flex items-center justify-center gap-2">

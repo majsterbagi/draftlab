@@ -8,8 +8,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>System Log | DraftLab</title>
     <link rel="stylesheet" href="../src/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
     <script type="module" src="../src/main.js"></script>
 </head>
 
@@ -96,7 +98,7 @@
     <!-- Detail Modal -->
     <dialog id="detail-modal"
         class="bg-transparent p-0 w-full max-w-2xl backdrop:bg-black/80 backdrop:backdrop-blur-sm open:animate-in open:fade-in open:zoom-in-95 closed:animate-out closed:fade-out closed:zoom-out-95">
-        <div class="bg-[#0f0f0f] border border-tech-gray shadow-2xl relative overflow-hidden">
+        <div class="glass rounded-card shadow-card relative overflow-hidden">
             <div class="border-b border-tech-gray/50 p-6 flex justify-between items-start bg-white/5">
                 <div>
                     <div class="flex items-center gap-3 mb-2">
@@ -141,7 +143,7 @@
 
     <style>
         .filter-btn {
-            @apply px-4 py-2 text-[10px] font-bold uppercase tracking-widest border transition-all cursor-pointer bg-transparent text-tech-dim border-tech-gray hover:text-white hover:border-white;
+            @apply px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest border transition-all cursor-pointer bg-transparent text-tech-dim border-tech-gray hover:text-white hover:border-white;
         }
 
         .filter-btn.active {
@@ -149,7 +151,7 @@
         }
 
         .nav-btn {
-            @apply flex items-center gap-2 px-4 py-2 bg-transparent border border-tech-gray text-xs font-bold text-tech-dim uppercase tracking-widest hover:text-white hover:border-white transition-all disabled:opacity-30 disabled:pointer-events-none;
+            @apply flex items-center gap-2 px-4 py-2 rounded-lg bg-transparent border border-tech-gray text-xs font-bold text-tech-dim uppercase tracking-widest hover:text-white hover:border-white transition-all disabled:opacity-30 disabled:pointer-events-none;
         }
     </style>
 

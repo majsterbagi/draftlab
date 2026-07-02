@@ -8,8 +8,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DraftCargo | DraftLab.pl</title>
     <link rel="stylesheet" href="../src/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
     <script type="module" src="../src/main.js"></script>
 </head>
 
@@ -49,7 +51,7 @@
 
             <!-- Drop Zone -->
             <div id="drop-zone"
-                class="border-2 border-dashed border-tech-gray bg-[#0f0f0f]/50 p-12 text-center group hover:border-tech-green transition-all cursor-pointer relative overflow-hidden">
+                class="border-2 border-dashed border-tech-gray rounded-card bg-tech-card/60 backdrop-blur-md p-12 text-center group hover:border-tech-green hover:shadow-glow-sm transition-all cursor-pointer relative overflow-hidden">
                 <div
                     class="absolute top-0 left-0 w-2 h-2 border-t border-l border-tech-gray group-hover:border-tech-green">
                 </div>
@@ -94,7 +96,7 @@
 
             <!-- Result Area -->
             <div id="result-area" class="mt-8 hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div class="bg-tech-green/10 border border-tech-green/30 p-6 space-y-4">
+                <div class="bg-tech-green/10 border border-tech-green/30 rounded-card p-6 space-y-4">
                     <div class="flex items-center gap-2 text-tech-green font-bold text-xs uppercase">
                         <i data-lucide="check-circle" width="14"></i> <span data-i18n="cargo.success">Ładunek
                             zabezpieczony</span>
@@ -104,9 +106,9 @@
 
                     <div class="flex gap-2">
                         <input type="text" id="share-link" readonly
-                            class="flex-grow bg-black/50 border border-tech-gray p-3 text-xs font-mono text-tech-green outline-none">
+                            class="flex-grow bg-black/50 border border-tech-gray rounded-lg p-3 text-xs font-mono text-tech-green outline-none">
                         <button onclick="copyLink()"
-                            class="bg-tech-green text-black px-6 font-bold text-xs uppercase hover:bg-white transition-colors"
+                            class="bg-tech-green text-black px-6 rounded-lg font-bold text-xs uppercase hover:bg-white transition-colors"
                             data-i18n="cargo.btn.copy">Kopiuj</button>
                     </div>
                 </div>

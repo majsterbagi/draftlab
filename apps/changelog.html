@@ -8,8 +8,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Manifest | DraftLab</title>
     <link rel="stylesheet" href="../src/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
     <script type="module" src="../src/main.js"></script>
 </head>
 
@@ -62,7 +64,7 @@
 
             <div class="space-y-10">
 
-                <div class="bg-[#0f0f0f] border border-tech-gray p-6">
+                <div class="glass rounded-card shadow-card p-6">
                     <h3 class="text-tech-dim text-xs font-bold mb-4 uppercase tracking-widest">/ Tech Stack</h3>
                     <div id="p-stack" class="flex flex-wrap gap-2">
                     </div>
@@ -138,7 +140,7 @@
             const featuresEl = document.getElementById('p-features');
             if (details?.features) {
                 featuresEl.innerHTML = details.features.map(f => `
-                    <div class="bg-[#0f0f0f]/50 border border-tech-gray/50 p-4 hover:border-tech-green/30 transition-colors group">
+                    <div class="bg-tech-card/60 border border-white/10 rounded-xl p-4 hover:border-tech-green/40 hover:shadow-glow-sm transition-all group">
                         <h4 class="text-white text-xs font-bold mb-1 group-hover:text-tech-green">${f.title}</h4>
                         <p class="text-tech-dim text-xs leading-relaxed">${f.desc}</p>
                     </div>
@@ -169,7 +171,7 @@
 
                 prototypesSection.classList.remove('hidden');
                 prototypesEl.innerHTML = prototypes.map(p => `
-                    <a href="${p.url}" class="bg-[#0f0f0f]/50 border border-tech-gray/50 p-4 hover:border-yellow-500/50 transition-colors group block no-underline">
+                    <a href="${p.url}" class="bg-tech-card/60 border border-white/10 rounded-xl p-4 hover:border-yellow-500/50 transition-all group block no-underline">
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-yellow-400 text-xs font-bold">PROTOTYP ${p.version}</span>
                             <span class="text-[10px] text-tech-dim font-mono">${p.date}</span>
@@ -186,7 +188,7 @@
             const stackEl = document.getElementById('p-stack');
             if (details?.techStack) {
                 stackEl.innerHTML = details.techStack.map(t => `
-                    <span class="text-[10px] border border-tech-gray text-tech-dim px-2 py-1 bg-black">${t}</span>
+                    <span class="text-[10px] border border-white/10 text-tech-dim px-2 py-1 rounded-full bg-black/40">${t}</span>
                 `).join('');
             }
 

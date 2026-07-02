@@ -5,6 +5,7 @@ import './components/SystemLog.js';
 import './components/TechStack.js';
 import './components/DlReturn.js';
 import './components/CommandPalette.js';
+import './components/NeuralTerminal.js';
 import './utils/reveal.js';
 
 // Automatyczny montaż palety poleceń (Cmd+K) na każdej stronie z main.js

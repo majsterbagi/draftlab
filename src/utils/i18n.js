@@ -242,7 +242,42 @@ export class I18n {
                 "footer.nav": "NAWIGACJA",
                 "footer.system": "SYSTEM",
                 "footer.legacy_note": "Tęsknisz za starym wyglądem?",
-                "footer.back_top": "Do góry"
+                "footer.back_top": "Do góry",
+
+                // Terminal (DraftLab Core)
+                "term.section_title": "/ Rdzeń Systemu",
+                "term.boot1": "> Ładowanie modułów: ui, apps, i18n, neural...",
+                "term.boot2": "> Połączono z siecią neuronową warsztatu.",
+                "term.boot3": "Gotowy. Wpisz 'help' lub kliknij komendę poniżej.",
+                "term.hint": "steruj myszą po tle ↑",
+                "term.cmd.help": "lista komend",
+                "term.cmd.apps": "pokaż wszystkie aplikacje",
+                "term.cmd.open": "uruchom aplikację",
+                "term.cmd.stats": "statystyki warsztatu",
+                "term.cmd.whoami": "kim jest autor",
+                "term.cmd.legacy": "podróż w czasie do v1.0",
+                "term.cmd.lang": "zmień język",
+                "term.cmd.matrix": "tryb Matrix (tło)",
+                "term.cmd.clear": "wyczyść ekran",
+                "term.open_usage": "Użycie: open <nazwa>, np. open suntrack",
+                "term.opening": "Uruchamiam",
+                "term.not_found": "Nie znaleziono aplikacji",
+                "term.last_update": "Ostatnia zmiana",
+                "term.stack": "Stack",
+                "term.whoami_desc": "zakupowiec za dnia, twórca warsztatu web AI po godzinach →",
+                "term.time_travel": "Inicjuję podróż w czasie do roku 2025...",
+                "term.matrix_on": "Witaj w Matrixie. Wpisz 'matrix' ponownie, by wyjść.",
+                "term.matrix_off": "Powrót do sieci neuronowej.",
+                "term.sudo": "Odmowa dostępu. Miła próba ;)",
+                "term.unknown": "Nieznana komenda",
+                "term.try_help": "wpisz 'help'",
+
+                // Compact changelog
+                "log.title": "Dziennik zmian",
+                "log.last": "ostatnia zmiana",
+                "log.show": "Rozwiń",
+                "log.hide": "Zwiń",
+                "log.full": "Pełny rejestr"
             },
             en: {
                 // Hero
@@ -480,7 +515,42 @@ export class I18n {
                 "footer.nav": "NAVIGATION",
                 "footer.system": "SYSTEM",
                 "footer.legacy_note": "Missing the old look?",
-                "footer.back_top": "Back to top"
+                "footer.back_top": "Back to top",
+
+                // Terminal (DraftLab Core)
+                "term.section_title": "/ System Core",
+                "term.boot1": "> Loading modules: ui, apps, i18n, neural...",
+                "term.boot2": "> Connected to the workshop neural network.",
+                "term.boot3": "Ready. Type 'help' or click a command below.",
+                "term.hint": "move your mouse over the background ↑",
+                "term.cmd.help": "list commands",
+                "term.cmd.apps": "show all apps",
+                "term.cmd.open": "launch an app",
+                "term.cmd.stats": "workshop stats",
+                "term.cmd.whoami": "who is the author",
+                "term.cmd.legacy": "time travel to v1.0",
+                "term.cmd.lang": "switch language",
+                "term.cmd.matrix": "Matrix mode (background)",
+                "term.cmd.clear": "clear screen",
+                "term.open_usage": "Usage: open <name>, e.g. open suntrack",
+                "term.opening": "Launching",
+                "term.not_found": "App not found",
+                "term.last_update": "Last change",
+                "term.stack": "Stack",
+                "term.whoami_desc": "procurement by day, web AI workshop builder by night →",
+                "term.time_travel": "Initiating time travel to 2025...",
+                "term.matrix_on": "Welcome to the Matrix. Type 'matrix' again to exit.",
+                "term.matrix_off": "Back to the neural network.",
+                "term.sudo": "Permission denied. Nice try ;)",
+                "term.unknown": "Unknown command",
+                "term.try_help": "type 'help'",
+
+                // Compact changelog
+                "log.title": "Changelog",
+                "log.last": "latest change",
+                "log.show": "Expand",
+                "log.hide": "Collapse",
+                "log.full": "Full registry"
             }
         };
 

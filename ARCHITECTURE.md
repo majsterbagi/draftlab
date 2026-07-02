@@ -25,6 +25,12 @@ i wstrzykuje banner powrotu). Uruchamiaj ją wyłącznie po zbudowaniu starej we
     `prefers-reduced-motion`, paleta poleceń (Cmd+K), glassmorphism, spotlight-hover kart,
     sticky glass header z paskiem postępu scrolla, SVG favicon, `theme-color`/`color-scheme`.
 -   `about.html` korzysta z kompilowanego Tailwinda (usunięto CDN `cdn.tailwindcss.com`).
+-   **DraftLab Core** (`src/components/NeuralTerminal.js`) — interaktywny terminal na stronie
+    głównej z siecią neuronową na canvasie (tryb Matrix jako easter egg). Komendy: help, apps,
+    open <app>, stats, whoami, legacy, lang, matrix, clear. Canvas pauzuje poza viewportem
+    i szanuje `prefers-reduced-motion`.
+-   Dziennik zmian (`UnifiedLog`) zredukowany do kompaktowego, zwijanego paska —
+    pełny rejestr pozostaje w `apps/system-log.html`.
 
 ---
 
