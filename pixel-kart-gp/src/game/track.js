@@ -6,7 +6,7 @@ const CONTROL_POINTS = [
   [406, 208], [304, 228], [244, 168], [186, 226], [82, 210], [38, 135],
 ];
 
-const TRACK_WIDTH = 30; // pełna szerokość asfaltu
+const TRACK_WIDTH = 42; // pełna szerokość asfaltu
 const CHECKPOINTS = 12;
 const SAMPLES_PER_SEGMENT = 12;
 

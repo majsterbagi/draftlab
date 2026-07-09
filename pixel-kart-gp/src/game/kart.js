@@ -2,19 +2,19 @@
 // wzdłużną (napęd, opór) i boczną (przyczepność / poślizg przy drifcie).
 
 export const KART_PHYSICS = {
-  accel: 150,        // przyspieszenie px/s^2
+  accel: 140,        // przyspieszenie px/s^2
   brake: 300,
   reverseMax: 55,
-  maxSpeed: 155,     // px/s
-  boostMax: 215,
-  boostAccel: 320,
-  turnRate: 3.0,     // rad/s przy pełnym skręcie
+  maxSpeed: 125,     // px/s
+  boostMax: 180,
+  boostAccel: 300,
+  turnRate: 3.6,     // rad/s przy pełnym skręcie
   grip: 9.0,         // tłumienie prędkości bocznej (1/s)
   driftGrip: 2.4,
   drag: 0.55,        // opór toczenia (1/s)
   grassDrag: 2.6,
   grassMaxFactor: 0.45,
-  driftMinSpeed: 70,     // poniżej tej prędkości drift się nie włącza
+  driftMinSpeed: 60,     // poniżej tej prędkości drift się nie włącza
   driftBoostAfter: 0.7,  // sekundy driftu potrzebne na mini-boost
   boostDuration: 0.9,
 };
@@ -43,7 +43,7 @@ export function stepKart(kart, input, dt) {
 
   // Skręt skaluje się z prędkością (stojąc nie da się obracać),
   // przy cofaniu kierunek skrętu naturalnie się odwraca przez znak vFwd.
-  const turnScale = Math.max(-1, Math.min(1, vFwd / 55));
+  const turnScale = Math.max(-1, Math.min(1, vFwd / 40));
   const driftSteerBonus = kart.drifting ? 1.35 : 1;
   kart.angle += input.steer * P.turnRate * turnScale * driftSteerBonus * dt;
 

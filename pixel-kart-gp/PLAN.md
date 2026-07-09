@@ -102,6 +102,9 @@ Ułatwi to też ewentualne wydzielenie projektu w przyszłości.
       checkpointy z blokadą skrótów przez trawę, okrążenia, pozycje, meta)
 - [x] Placeholder grafika (proceduralne sprite'y, ślady driftu, płomień boostu)
 - [x] Bonus: 2 graczy lokalnie (strzałki+spacja / WASD+Shift), ustawienia okrążeń, restart
+- [x] Tuning po testach (feedback 2026-07-09: "ciężko się steruje, za szybko, za wąsko"):
+      droga 30→42 px, prędkość max 155→125, szybszy skręt (3.0→3.6 rad/s, pełny już
+      od 40 px/s). Feeling jazdy nadal do obserwacji w v0.2 na prawdziwych padach.
 
 **Cel:** samą jazdą po torze ma być przyjemnie sterować. To tu rozstrzyga się "fajna fizyka".
 
