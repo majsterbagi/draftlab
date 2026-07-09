@@ -74,6 +74,9 @@ class ProjectGrid extends HTMLElement {
             const desc = lang === 'pl' ? p.desc : (p.desc_en || p.desc);
             const btnRun = i18n.t('ui.run');
             const txtOffline = i18n.t('ui.offline');
+            const titleClass = p.id === 'pixel-kart'
+                ? 'text-lg sm:text-xl whitespace-nowrap'
+                : 'text-xl';
 
             const statusBadge = isLive
                 ? `<span class="flex items-center gap-1.5 px-2 py-1 text-[10px] uppercase rounded-full border border-tech-green/30 bg-tech-green/10 text-tech-green">
@@ -101,14 +104,16 @@ class ProjectGrid extends HTMLElement {
                 ${isLive ? `<div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r ${greenGradient} opacity-60 group-hover:opacity-100 transition-opacity"></div>` : ''}
 
                 <div class="p-6 flex flex-col h-full">
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="flex items-center gap-4">
+                    <div class="mb-3">
+                        <div class="flex items-center justify-between gap-2">
+                            <div class="flex min-w-0 items-center gap-3 sm:gap-4">
                             <div class="w-12 h-12 min-w-[3rem] bg-white/5 rounded-xl flex items-center justify-center ${iconColor} border border-white/10 ${greenBorder} transition-colors">
                                 <i data-lucide="${A}" width="24"></i>
                             </div>
-                            <h3 class="text-xl font-bold ${isLive ? 'group-hover:text-white' : 'text-tech-dim'} transition-colors">${title}</h3>
+                            <h3 class="${titleClass} font-bold ${isLive ? 'group-hover:text-white' : 'text-tech-dim'} transition-colors">${title}</h3>
+                            </div>
+                            ${statusBadge}
                         </div>
-                        ${statusBadge}
                     </div>
 
                     <p class="text-tech-dim text-sm mb-2 flex-grow leading-relaxed">${desc}</p>
