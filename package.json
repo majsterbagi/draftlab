@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "node scripts/generate_git_log.js && vite",
-    "prebuild": "node scripts/generate_git_log.js",
+    "prebuild": "node scripts/generate_git_log.js && cd bobolog && npm run build && cd .. && rm -rf public/bobolog && cp -r bobolog/dist public/bobolog && cd neon-quiz-86 && npm run build && cd .. && rm -rf public/neonquiz && cp -r neon-quiz-86/dist public/neonquiz",
     "build": "vite build",
     "preview": "vite preview",
     "snapshot:legacy": "node scripts/snapshot_legacy.js"

@@ -1,0 +1,125 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+  @apply bg-crt-bg text-white font-body;
+  overscroll-behavior: none;
+  /* zabezpieczenie przed przypadkowym poziomym scrollem (np. przez -50%
+     szerokości pseudo-elementu siatki synthwave), który na telefonach
+     wyglądał jak "ucinanie" treści po bokach */
+  overflow-x: hidden;
+}
+
+/* Bezpieczne marginesy na wcięcia ekranu (notch, wyspa dynamiczna, zaokrąglone
+   rogi) — dzięki viewport-fit=cover w index.html te wartości nie są zerowe.
+   Bez tego treść na telefonie realnie chowała się pod górną krawędzią ekranu. */
+.safe-area-shell {
+  padding-top: max(1rem, env(safe-area-inset-top));
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  padding-left: max(1rem, env(safe-area-inset-left));
+  padding-right: max(1rem, env(safe-area-inset-right));
+}
+
+/* --- Siatka synthwave w perspektywie --- */
+.synthwave-grid {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(to bottom, transparent 0%, transparent 55%, rgba(255, 47, 179, 0.06) 100%);
+}
+.synthwave-grid::after {
+  content: '';
+  position: absolute;
+  left: -50%;
+  right: -50%;
+  bottom: -10%;
+  height: 55%;
+  background-image:
+    linear-gradient(rgba(255, 47, 179, 0.35) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34, 224, 255, 0.3) 1px, transparent 1px);
+  background-size: 60px 40px;
+  transform: perspective(320px) rotateX(62deg);
+  transform-origin: center top;
+  animation: grid-scroll 2.4s linear infinite;
+  mask-image: linear-gradient(to bottom, transparent, black 25%);
+}
+@keyframes grid-scroll {
+  from { background-position-y: 0; }
+  to { background-position-y: 40px; }
+}
+
+/* --- Efekt CRT (skanlinie) na ekranie hosta --- */
+.crt::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0px,
+    rgba(0, 0, 0, 0) 2px,
+    rgba(0, 0, 0, 0.14) 3px
+  );
+}
+.crt::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 51;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 60%, rgba(5, 0, 20, 0.55) 100%);
+}
+
+/* --- Neonowy tekst --- */
+.neon-text-pink { color: #ff9ad8; text-shadow: 0 0 4px #ff2fb3, 0 0 14px #ff2fb3, 0 0 40px rgba(255,47,179,.6); }
+.neon-text-cyan { color: #aef4ff; text-shadow: 0 0 4px #22e0ff, 0 0 14px #22e0ff, 0 0 40px rgba(34,224,255,.6); }
+.neon-text-amber { color: #ffe49a; text-shadow: 0 0 4px #ffc832, 0 0 14px #ffc832, 0 0 40px rgba(255,200,50,.6); }
+.neon-text-green { color: #b8ffd6; text-shadow: 0 0 4px #39ff88, 0 0 14px #39ff88; }
+
+/* --- Neonowa ramka / panel --- */
+.neon-panel {
+  @apply bg-crt-panel/80 border rounded-xl backdrop-blur-sm;
+  border-color: rgba(168, 85, 247, 0.5);
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.25), inset 0 0 24px rgba(168, 85, 247, 0.08);
+}
+
+.neon-btn {
+  @apply font-display text-xs sm:text-sm uppercase tracking-wider px-5 py-3 rounded-lg border-2 transition-transform active:scale-95 select-none;
+}
+.neon-btn-pink { @apply neon-btn border-neon-pink text-neon-pink shadow-neon-pink bg-neon-pink/10; }
+.neon-btn-cyan { @apply neon-btn border-neon-cyan text-neon-cyan shadow-neon-cyan bg-neon-cyan/10; }
+
+/* --- Migotanie neonu --- */
+@keyframes neon-flicker {
+  0%, 100% { opacity: 1; }
+  92% { opacity: 1; }
+  93% { opacity: 0.6; }
+  94% { opacity: 1; }
+  97% { opacity: 0.8; }
+}
+.neon-flicker { animation: neon-flicker 4s infinite; }
+
+/* --- Zakłócenia sygnału (efekt na telefonie ofiary) --- */
+@keyframes tv-shake {
+  0%, 100% { transform: translate(0, 0); }
+  20% { transform: translate(-3px, 2px); }
+  40% { transform: translate(4px, -2px); }
+  60% { transform: translate(-2px, -3px); }
+  80% { transform: translate(3px, 3px); }
+}
+.tv-glitch { animation: tv-shake 0.35s infinite; }
+
+/* Suwak zakładów */
+input[type='range'].bet-slider {
+  @apply w-full h-3 rounded-full appearance-none;
+  background: linear-gradient(90deg, #22e0ff, #a855f7, #ff2fb3);
+}
+input[type='range'].bet-slider::-webkit-slider-thumb {
+  @apply appearance-none w-9 h-9 rounded-full cursor-pointer;
+  background: radial-gradient(circle at 35% 35%, #fff, #ffc832 60%);
+  box-shadow: 0 0 12px #ffc832, 0 0 30px rgba(255, 200, 50, 0.6);
+}

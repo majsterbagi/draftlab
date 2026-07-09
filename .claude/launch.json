@@ -6,6 +6,19 @@
       "runtimeExecutable": "npx",
       "runtimeArgs": ["vite", "--port", "5199", "--strictPort"],
       "port": 5199
+    },
+    {
+      "name": "bobolog",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "bobolog"],
+      "port": 5180,
+      "autoPort": true
+    },
+    {
+      "name": "neon-quiz-86",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "neon-quiz-86"],
+      "port": 5186
     }
   ]
 }

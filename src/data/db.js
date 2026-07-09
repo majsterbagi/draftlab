@@ -20,6 +20,180 @@ const RAW_DATA = {
     ],
     projects: [
         {
+            id: 'bobolog',
+            title: 'BoboLab',
+            title_en: 'BoboLab',
+            desc: 'Pastelowy dziennik rodzica — karmienia, sen, pieluchy, waga i szczepienia Twojego dziecka w jednym miejscu.',
+            desc_en: 'Pastel baby tracker — feeding, sleep, diapers, weight and vaccinations in one place.',
+            tags: ['React', 'Supabase', 'Baby Tracker', 'PWA'],
+            version: 'v0.6',
+            url: 'bobolog/',
+            changelogUrl: 'apps/changelog.html?id=bobolog',
+            icon: 'baby',
+            active: true,
+            color: 'pink',
+
+            details: {
+                about: "BoboLab to pastelowy portal dla rodziców do rejestrowania parametrów małego dziecka. Szybkie wpisy jednym tapnięciem, timer snu, siatki centylowe WHO, interaktywny kalendarz szczepień i zaawansowane statystyki. Dostępny dla całej rodziny — każdy opiekun ma własne konto, dane synchronizują się w czasie rzeczywistym.",
+                features: [
+                    { title: "Szybki wpis", desc: "Trzy duże kafle: karmienie (pierś/butelka/stałe), sen (timer lub ręczny), pielucha — z notatkami." },
+                    { title: "Motywy + tryb nocny", desc: "Pastelowy miętowy, różany i błękitny. Tryb nocny przy karmieniach o 3:00." },
+                    { title: "Dashboard dnia", desc: "Przegląd ostatnich zdarzeń, statystyki, historia pogrupowana po dniach." },
+                    { title: "Konta rodzinne", desc: "Każdy opiekun ma własne konto. Dane synchronizują się między urządzeniami przez Supabase." }
+                ],
+                techStack: ["React 19", "Vite", "Tailwind CSS", "Supabase", "PostgreSQL"],
+                roadmap: [
+                    { done: true, task: "Szybki wpis — karmienie, sen, pielucha" },
+                    { done: true, task: "Timer snu + wpis ręczny" },
+                    { done: true, task: "Motywy pastelowe + tryb nocny" },
+                    { done: true, task: "Konta użytkowników i rodziny (Supabase)" },
+                    { done: true, task: "Zaproszenia do rodziny + role (admin/opiekun)" },
+                    { done: true, task: "Siatki centylowe WHO" },
+                    { done: true, task: "Kalendarz szczepień PSO + przypomnienia" },
+                    { done: true, task: "Eksport PDF/CSV dla pediatry" },
+                    { done: true, task: "Analityka: rytm dnia, przewidywania, korelacje" },
+                    { done: true, task: "Wspomnienia — zdjęcia i miesięcznice" },
+                    { done: true, task: "PWA offline + powiadomienia push" },
+                    { done: true, task: "Tryb ciążowy z odliczaniem" },
+                    { done: false, task: "Wielojęzyczność (EN)" },
+                    { done: false, task: "Leki i temperatura" }
+                ]
+            },
+            details_en: {
+                about: "BoboLab is a pastel parent portal for tracking baby parameters. Quick one-tap entries, sleep timer, WHO growth charts, interactive vaccination calendar and advanced statistics. Available to the whole family — each caregiver has their own account, data syncs in real time.",
+                features: [
+                    { title: "Quick entry", desc: "Three big tiles: feeding (breast/bottle/solids), sleep (timer or manual), diaper — with notes." },
+                    { title: "Themes + night mode", desc: "Pastel mint, blush and sky. Night mode for 3 AM feeds." },
+                    { title: "Day dashboard", desc: "Overview of recent events, statistics, history grouped by day." },
+                    { title: "Family accounts", desc: "Each caregiver has their own account. Data syncs between devices via Supabase." }
+                ],
+                techStack: ["React 19", "Vite", "Tailwind CSS", "Supabase", "PostgreSQL"],
+                roadmap: [
+                    { done: true, task: "Quick entry — feeding, sleep, diaper" },
+                    { done: true, task: "Sleep timer + manual entry" },
+                    { done: true, task: "Pastel themes + night mode" },
+                    { done: true, task: "User accounts and families (Supabase)" },
+                    { done: true, task: "Family invitations + roles (admin/caregiver)" },
+                    { done: true, task: "WHO growth charts" },
+                    { done: true, task: "Polish vaccination calendar + reminders" },
+                    { done: true, task: "PDF/CSV export for pediatrician" },
+                    { done: true, task: "Insights: day rhythm, predictions, correlations" },
+                    { done: true, task: "Memories — photos and month-versaries" },
+                    { done: true, task: "PWA offline + push notifications" },
+                    { done: true, task: "Pregnancy mode with countdown" },
+                    { done: false, task: "Internationalization (EN)" },
+                    { done: false, task: "Medication and temperature tracking" }
+                ]
+            },
+
+            changes: [
+                {
+                    version: "v0.6",
+                    date: "2026-07-04",
+                    type: "FEAT",
+                    desc: "Duży przeskok! Lokalna analityka na dashboardzie: przewidywanie następnego karmienia i drzemki, rytm dnia godzina po godzinie, podsumowanie tygodnia z trendami i wykrywanie zależności karmienie↔sen — wszystko liczone w przeglądarce. Nowa zakładka Chwile: zdjęcia z automatyczną kompresją, oś czasu wspomnień, miesięcznice i sekcja „rok temu / miesiąc temu\". BoboLab jest teraz PWA: instalacja na ekranie głównym, praca offline z kolejką wpisów i automatyczną synchronizacją. Powiadomienia push o szczepieniach i miesięcznicach. Pełny tryb ciążowy: tydzień ciąży, pasek postępu, ciekawostki o rozwoju maluszka i start dziennika jednym tapnięciem po narodzinach. Statystyki do personalizacji: dowolny zakres dni (2–365) oraz panel „Dostosuj\" — każdy użytkownik ustawia kolejność i widoczność sekcji wykresów po swojemu."
+                },
+                {
+                    version: "v0.5",
+                    date: "2026-07-03",
+                    type: "FEAT",
+                    desc: "Eksport danych dla pediatry: CSV oraz PDF z wybranym zakresem dat (podsumowanie, lista wpisów, pomiary). Kamienie milowe rozwoju wg WHO — 26 kroków w kategoriach z paskiem postępu i filtrem „← teraz\". Edycja profilu dziecka w ustawieniach. Import historii z aplikacji Baby Tracker (CSV) z pomijaniem duplikatów."
+                },
+                {
+                    version: "v0.4",
+                    date: "2026-07-03",
+                    type: "FEAT",
+                    desc: "Interaktywny kalendarz szczepień wg polskiego Programu Szczepień Ochronnych: harmonogram generowany automatycznie z daty urodzenia, sekcje nadchodzące/zaległe/wykonane, widok kalendarza miesięcznego, oznaczanie wykonania z numerem serii i notatką, własne szczepienia. Przypomnienia e-mail 7 dni przed terminem (cron)."
+                },
+                {
+                    version: "v0.3",
+                    date: "2026-07-03",
+                    type: "FEAT",
+                    desc: "Pomiar wagi i wzrostu z siatkami centylowymi WHO — nowy typ wpisu (waga + wzrost), interaktywny wykres Recharts z krzywymi percentylowymi (3, 15, 50, 85, 97). Ekran statystyk z podsumowaniem tygodnia: heatmapa snu, analiza karmień, historia pieluch. Ekran dołączania do rodziny (JoinFamilyScreen) i zaproszenia (InviteScreen) z linkiem aktywacyjnym."
+                },
+                {
+                    version: "v0.2",
+                    date: "2026-07-03",
+                    type: "FEAT",
+                    desc: "Konta i rodziny — BoboLab przechodzi na Supabase. Rejestracja i logowanie e-mailem, tworzenie rodziny z konfiguratorem (nazwa, dziecko, płeć, data urodzenia lub tryb ciążowy). Zaproszenia przez link ważny 7 dni — każda osoba z linkiem dołącza jako opiekun. System ról: admin (rodzic) może usuwać wpisy i zarządzać członkami, opiekunowie mogą dodawać. Motyw kolorystyczny ustawiany automatycznie wg płci dziecka. Dane synchronizują się między urządzeniami w czasie rzeczywistym."
+                },
+                {
+                    version: "v0.1",
+                    date: "2026-07-03",
+                    type: "INIT",
+                    desc: "Premiera BoboLab — pastelowy dziennik rodzica w stylistyce Bąbelków. Szybki wpis karmienia (pierś L/P z czasem karmienia, butelka z ml, posiłek stały), pieluchy (mokra/kupa/pełny serwis) i snu (timer start/stop + wpis ręczny od–do). Dashboard dnia z ostatnimi zdarzeniami, historia pogrupowana po dniach, ekran statystyk i ustawienia z trzema motywami pastelowymi (miętowy/różany/błękitny) oraz trybem nocnym."
+                }
+            ]
+        },
+        {
+            id: 'neon-quiz',
+            title: "NEON QUIZ",
+            title_en: "NEON QUIZ",
+            desc: 'Imprezowy live quiz w klimacie teleturnieju lat 80. Host na TV, gracze na telefonach — tajne zakłady, wydarzenia specjalne i finał na buzzery.',
+            desc_en: "Party live quiz in 80s game-show style. Host on TV, players on phones — secret bets, special events and a buzzer duel finale.",
+            tags: ['React', 'Firebase', 'Party Game', 'Realtime'],
+            version: 'v1.1',
+            url: 'neonquiz/',
+            changelogUrl: 'apps/changelog.html?id=neon-quiz',
+            icon: 'tv',
+            active: true,
+            color: 'violet',
+
+            details: {
+                about: "NEON QUIZ to gra imprezowa dla 2–8 osób: host wyświetla neonową planszę na dużym ekranie, a gracze dołączają telefonami przez kod lub QR. Rdzeniem gry są TAJNE ZAKŁADY punktowe — przed każdym pytaniem widzisz tylko kategorię i trudność, a stawkę obstawiasz suwakiem po kryjomu. Grę prowadzi wirtualny prezenter w stylu kiczowatego showmana, który ogłasza wydarzenia specjalne, a całość wieńczy pojedynek 1 na 1 na buzzery. Wszystko w czasie rzeczywistym przez Firebase — bez żadnego serwera po stronie hostingu.",
+                features: [
+                    { title: "Tajne zakłady", desc: "Obstawiasz punkty suwakiem widząc tylko kategorię i gwiazdki trudności. Bonus za szybkość odpowiedzi ×2.0 → ×1.5." },
+                    { title: "Chwila z Prezenterem", desc: "5 wydarzeń specjalnych: runda w ciemno, podwójna stawka, zakłócenia sygnału, telefon naopak i licytacja pytania." },
+                    { title: "Pojedynek pod Neonami", desc: "Finał 1 na 1 na buzzery (rozstrzyganie po czasie serwera), a publiczność obstawia zwycięzcę o punkty prestiżu." },
+                    { title: "Retro oprawa", desc: "Synthwave grid, efekt CRT, neonowa typografia i dźwięki syntezowane Web Audio API — zero plików audio." }
+                ],
+                techStack: ["React 18", "Vite", "Tailwind CSS", "framer-motion", "Firebase Realtime Database"],
+                roadmap: [
+                    { done: true, task: "Pokoje, kody QR i lobby z awatarami" },
+                    { done: true, task: "Pętla pytań: głosowanie, zakłady, odsłonięcie stawek" },
+                    { done: true, task: "Prezenter + 5 wydarzeń specjalnych" },
+                    { done: true, task: "Finałowy pojedynek na buzzery + zakłady publiczności" },
+                    { done: true, task: "Edytor zestawów pytań z eksportem/importem JSON" },
+                    { done: false, task: "Statystyki po grze (najcelniejszy, hazardzista wieczoru)" },
+                    { done: true, task: "Więcej gotowych zestawów pytań" }
+                ]
+            },
+            details_en: {
+                about: "NEON QUIZ is a party game for 2–8 players: the host displays a neon board on the big screen while players join from their phones via code or QR. The core is SECRET point betting — before each question you only see the category and difficulty, and you stake points with a hidden slider. A kitschy virtual showman runs the show, announcing special events, and it all ends with a 1v1 buzzer duel. Everything runs in realtime through Firebase — no server needed on the hosting side.",
+                features: [
+                    { title: "Secret bets", desc: "Stake points with a slider seeing only the category and difficulty stars. Speed bonus ×2.0 → ×1.5." },
+                    { title: "A Moment with the Host", desc: "5 special events: blind round, double stakes, signal interference, reverse phone-a-friend and question auction." },
+                    { title: "Duel under the Neons", desc: "1v1 buzzer finale (server-timestamp fair) while the audience bets on the winner for prestige points." },
+                    { title: "Retro vibes", desc: "Synthwave grid, CRT effect, neon typography and Web Audio API synthesized sounds — zero audio files." }
+                ],
+                techStack: ["React 18", "Vite", "Tailwind CSS", "framer-motion", "Firebase Realtime Database"],
+                roadmap: [
+                    { done: true, task: "Rooms, QR codes and avatar lobby" },
+                    { done: true, task: "Question loop: voting, bets, stake reveal" },
+                    { done: true, task: "Virtual host + 5 special events" },
+                    { done: true, task: "Buzzer duel finale + audience bets" },
+                    { done: true, task: "Question set editor with JSON export/import" },
+                    { done: false, task: "Post-game stats (sharpshooter, gambler of the night)" },
+                    { done: true, task: "More ready-made question sets" }
+                ]
+            },
+
+            changes: [
+                {
+                    version: "v1.1",
+                    date: "2026-07-08",
+                    type: "FEAT",
+                    desc: "Zmiana nazwy na NEON QUIZ (bez dopisku '86) — neonowy szyld z osobno kolorowanym NEON (róż) i QUIZ (błękit). Doszły 4 nowe zestawy pytań: Wiedza Ogólna – Express, Sport i Rekreacja, Kino/Muzyka i Pop-kultura oraz Polska w Pigułce (każdy z 4 kategoriami i pulą pojedynkową). Gracze mają teraz własny przycisk „Dalej\" na telefonie po odsłonięciu odpowiedzi i na tablicy wyników — gdy wszyscy klikną, gra sama przechodzi do kolejnego pytania bez ręcznej interwencji hosta. Poprawiono też układ na telefonie (bezpieczne marginesy na wcięcia ekranu, koniec z ucinaniem treści na górze i po bokach) oraz dodano możliwość zakończenia gry w dowolnym momencie z ekranu hosta."
+                },
+                {
+                    version: "v1.0",
+                    date: "2026-07-07",
+                    type: "INIT",
+                    desc: "Premiera NEON QUIZ '86 — imprezowego live quizu w klimacie teleturnieju lat 80. Host otwiera studio na TV/laptopie (kod pokoju + QR), gracze dołączają telefonami z neonowymi awatarami. 3 rundy po 3 pytania z głosowaniem na kategorię i tajnymi zakładami suwakiem (min 50 pkt, max 50% konta, mnożnik za szybkość ×2.0→×1.5) oraz dramatycznym odsłanianiem stawek. Wirtualny prezenter komentuje grę i ogłasza wydarzenia specjalne: rundę w ciemno, podwójną stawkę, zakłócenia sygnału (śnieżenie do przetarcia palcem!), telefon naopak i licytację pytania. Finał: pojedynek 1 na 1 na buzzery do 4 punktów z zakładami publiczności. Edytor zestawów pytań z eksportem/importem JSON i przykładowym polskim zestawem. Retro-dźwięki syntezowane Web Audio, efekt CRT i synthwave grid. Całość statyczna — jedynym backendem jest Firebase Realtime Database."
+                }
+            ]
+        },
+        {
             id: "labyrinth-qr",
             title: "LabyrinthQR",
             title_en: "LabyrinthQR",

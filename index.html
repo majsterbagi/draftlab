@@ -41,22 +41,6 @@
     <meta property="twitter:image" content="https://draftlab.pl/og-image.png">
 
     <script type="module" src="./src/main.js"></script>
-    <!-- I18n Init Script -->
-    <script type="module">
-        import { i18n } from './src/utils/i18n.js';
-
-        // Initial static update
-        document.addEventListener('DOMContentLoaded', () => {
-            i18n.updateStaticElements();
-
-            // Subscribe to future updates
-            i18n.subscribe(() => {
-                i18n.updateStaticElements();
-                // Update html lang attr
-                document.documentElement.lang = i18n.lang;
-            });
-        });
-    </script>
 </head>
 
 <body
@@ -177,7 +161,6 @@
 
     <dl-footer></dl-footer>
 
-    <script type="module" src="./src/components/UnifiedLog.js"></script>
     <script>
         lucide.createIcons();
     </script>
@@ -203,39 +186,6 @@
             animation: subtleFadeIn 1.5s ease-out forwards;
         }
     </style>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const heroText = document.getElementById('hero-init-text');
-            // Subtle fade-in after a short delay
-            setTimeout(() => {
-                heroText.classList.add('fade-in');
-            }, 200);
-        });
-    </script>
-
-    <!-- Live hero stats (liczby z SST + git log) -->
-    <script type="module">
-        import { SITE_DATA } from './src/data/db.js';
-        import { GIT_LOG_DATA } from './src/data/git_log_data.js';
-
-        const animateCount = (el, target) => {
-            const duration = 900;
-            const start = performance.now();
-            const tick = (now) => {
-                const p = Math.min((now - start) / duration, 1);
-                el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
-                if (p < 1) requestAnimationFrame(tick);
-            };
-            requestAnimationFrame(tick);
-        };
-
-        const appsCount = SITE_DATA.projects.filter(p => p.active && p.url && p.url !== '#').length;
-        const statApps = document.getElementById('stat-apps');
-        const statCommits = document.getElementById('stat-commits');
-        if (statApps) animateCount(statApps, appsCount);
-        if (statCommits) animateCount(statCommits, GIT_LOG_DATA.length);
-    </script>
 </body>
 
 </html>

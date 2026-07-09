@@ -1,0 +1,104 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --bb-bg: #F4FAF6;
+    --bb-card: #FFFFFF;
+    --bb-primary: #C9EBDB;
+    --bb-soft: #E7F6EE;
+    --bb-accent: #E4DBF5;
+    --bb-accent2: #F7D9E4;
+    --bb-text: #2E4A3C;
+    --bb-muted: #7A9488;
+    --bb-border: #DCEDE3;
+}
+
+[data-theme='blush'] {
+    --bb-bg: #FBF5F7;
+    --bb-primary: #F7D9E4;
+    --bb-soft: #FBEAF0;
+    --bb-accent: #E4DBF5;
+    --bb-accent2: #C9EBDB;
+    --bb-text: #543341;
+    --bb-muted: #A2818E;
+    --bb-border: #F1DFE6;
+}
+
+[data-theme='sky'] {
+    --bb-bg: #F4F8FC;
+    --bb-primary: #C6DFF5;
+    --bb-soft: #E4EFFA;
+    --bb-accent: #E4DBF5;
+    --bb-accent2: #C9EBDB;
+    --bb-text: #2E4257;
+    --bb-muted: #7C91A5;
+    --bb-border: #DBE8F3;
+}
+
+[data-mode='night'] {
+    --bb-bg: #1B2420;
+    --bb-card: #243029;
+    --bb-primary: #3A5A4B;
+    --bb-soft: #2C3B33;
+    --bb-accent: #453C5C;
+    --bb-accent2: #56404B;
+    --bb-text: #DBEAE1;
+    --bb-muted: #8FA79A;
+    --bb-border: #33443B;
+}
+
+[data-mode='night'][data-theme='blush'] {
+    --bb-bg: #251C21;
+    --bb-card: #322830;
+    --bb-primary: #5C3F4C;
+    --bb-soft: #3C2E36;
+    --bb-accent: #453C5C;
+    --bb-accent2: #3A5A4B;
+    --bb-text: #EFDFE6;
+    --bb-muted: #A98D99;
+    --bb-border: #453740;
+}
+
+[data-mode='night'][data-theme='sky'] {
+    --bb-bg: #1A2129;
+    --bb-card: #242E38;
+    --bb-primary: #3A4F63;
+    --bb-soft: #2B3844;
+    --bb-accent: #453C5C;
+    --bb-accent2: #3A5A4B;
+    --bb-text: #DDE8F1;
+    --bb-muted: #8DA0B2;
+    --bb-border: #33414E;
+}
+
+body {
+    @apply bg-bb-bg text-bb-text font-body antialiased;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ── Logo animation ─────────────────────────────── */
+@keyframes bb-shake {
+    0%   { transform: rotate(0deg); }
+    18%  { transform: rotate(-13deg); }
+    38%  { transform: rotate(11deg); }
+    56%  { transform: rotate(-7deg); }
+    72%  { transform: rotate(4deg); }
+    86%  { transform: rotate(-2deg); }
+    100% { transform: rotate(0deg); }
+}
+.bb-logo-wrap {
+    display: inline-block;
+    cursor: pointer;
+}
+.bb-logo-wrap svg {
+    display: block;
+    transform-origin: 50% 80%;
+}
+.bb-logo-wrap:hover svg,
+.bb-logo-wrap:active svg {
+    animation: bb-shake 0.65s ease-in-out;
+}
+.bb-logo-onload svg {
+    animation: bb-shake 0.65s ease-in-out 0.35s both;
+}

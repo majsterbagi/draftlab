@@ -1,5 +1,13 @@
 export const GIT_LOG_DATA = [
     {
+        "hash": "85d690e",
+        "date": "2026-07-02 22:41",
+        "type": "FEAT",
+        "component": "SYS",
+        "desc": "FEAT v2.2: Redesign wnętrz aplikacji — DraftCalc, Atmosphere, SunTrack, FluxBoard, RetroVision",
+        "details": "- Wspólny system hero-stripów aplikacji (dl-app-hero/icon/badge/action w style.css)\n- Atmosphere: hero-strip, karty dl-* z gradientem i hover-glow, wykres temp z wypełnieniem gradientowym\n- AtmosphereAnalytics: gradientowe stat-cardy z hover-glow\n- FluxBoard: szklany toolbar z badge, widgety glass z cyan-glow i hover-lift, modal rounded-2xl\n- RetroVision: nowy badge tytułowy, panel ustawień rounded-2xl, glass karta uprawnień kamery\n- DraftCalc: hero-strip, szklany dashboard-card z blur, glow focus inputów, szklany sidebar\n- SunTrack: gradientowe panele (--panel-bg), hover-glow stat-cardów, glow focus wyszukiwarki\n\nWersja klasyczna wszystkich aplikacji nadal dostępna pod /legacy/\n\nCo-Authored-By: Claude Fable 5 <noreply@anthropic.com>"
+    },
+    {
         "hash": "c4b1f7d",
         "date": "2026-07-02 22:29",
         "type": "FEAT",
@@ -389,14 +397,6 @@ export const GIT_LOG_DATA = [
         "type": "FEAT",
         "component": "ANALYTICS",
         "desc": "Add seasonal averages section",
-        "details": null
-    },
-    {
-        "hash": "7dcc74d",
-        "date": "2025-12-19 21:56",
-        "type": "FEAT",
-        "component": "ATMOSPHERE",
-        "desc": "Add interactive analytics page with week/month/year ranges",
         "details": null
     }
 ];

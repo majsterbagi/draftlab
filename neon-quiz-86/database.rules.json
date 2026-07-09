@@ -1,0 +1,22 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+
+    "rooms": {
+      "$roomCode": {
+        ".read": true,
+        ".write": true,
+        ".validate": "$roomCode.length === 4"
+      }
+    },
+
+    "quizzes": {
+      ".read": true,
+      "$quizId": {
+        ".write": true,
+        ".validate": "newData.hasChildren(['name', 'categories', 'duel']) || newData.val() === null"
+      }
+    }
+  }
+}

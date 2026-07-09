@@ -60,6 +60,7 @@ class ProjectGrid extends HTMLElement {
                 teal: 'text-teal-500 group-hover:text-teal-400',
                 violet: 'text-violet-500 group-hover:text-violet-400',
                 amber: 'text-amber-500 group-hover:text-amber-400',
+                pink: 'text-pink-400 group-hover:text-pink-300',
             };
 
             const greenGradient = 'from-green-500 to-emerald-500';
@@ -84,7 +85,7 @@ class ProjectGrid extends HTMLElement {
             const actionButtons = isLive
                 ? `
                 <div class="mt-auto flex gap-2 pt-2 relative z-[2]">
-                    <a href="${p.url}" class="flex-grow py-2.5 rounded-lg bg-tech-green/10 border border-tech-green/30 text-tech-green text-center text-sm font-bold uppercase tracking-wider hover:bg-tech-green hover:text-black hover:shadow-glow-sm transition-all">
+                    <a href="${p.url}"${p.external ? ' target="_blank" rel="noopener noreferrer"' : ''} class="flex-grow py-2.5 rounded-lg bg-tech-green/10 border border-tech-green/30 text-tech-green text-center text-sm font-bold uppercase tracking-wider hover:bg-tech-green hover:text-black hover:shadow-glow-sm transition-all">
                         ${btnRun}
                     </a>
                     ${p.changelogUrl ? `
