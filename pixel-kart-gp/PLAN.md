@@ -95,11 +95,13 @@ Ułatwi to też ewentualne wydzielenie projektu w przyszłości.
 
 ## 6. Road mapa
 
-### v0.1 — Prototyp jazdy (fundament)
-- [ ] Scaffold projektu (Vite + React + Tailwind + canvas)
-- [ ] Pętla gry + fizyka karta (jazda klawiaturą na jednym ekranie, bez sieci)
-- [ ] Pierwsza trasa (tilemapa, kolizje, checkpointy, okrążenia, pozycje)
-- [ ] Placeholder grafika (proste sprite'y — ładny pixel art przyjdzie później)
+### v0.1 — Prototyp jazdy (fundament) ✅
+- [x] Scaffold projektu (Vite + React + Tailwind + canvas)
+- [x] Pętla gry + fizyka karta (jazda klawiaturą, drift z mini-boostem, trawa spowalnia)
+- [x] Pierwsza trasa (oś toru Catmull-Rom zamiast tilemapy — prostsze i wystarczające;
+      checkpointy z blokadą skrótów przez trawę, okrążenia, pozycje, meta)
+- [x] Placeholder grafika (proceduralne sprite'y, ślady driftu, płomień boostu)
+- [x] Bonus: 2 graczy lokalnie (strzałki+spacja / WASD+Shift), ustawienia okrążeń, restart
 
 **Cel:** samą jazdą po torze ma być przyjemnie sterować. To tu rozstrzyga się "fajna fizyka".
 
