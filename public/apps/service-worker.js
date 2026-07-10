@@ -1,11 +1,11 @@
-const CACHE_NAME = 'suntrack-v2';
+const CACHE_NAME = 'suntrack-v3';
 const APP_SHELL = [
     './SunTrack.html',
     './suntrack.webmanifest',
     '../favicon.svg'
 ];
 const EXTERNAL_ASSETS = [
-    'https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.9.0/suncalc.min.js',
+    'https://cdn.jsdelivr.net/npm/suncalc@2.0.0/+esm',
     'https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js'
 ];
 

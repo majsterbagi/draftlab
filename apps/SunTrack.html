@@ -1388,6 +1388,13 @@
                 return ((position.azimuth % 360) + 360) % 360;
             };
 
+            const getSkySideGutter = () => {
+                const width = skyContainer?.clientWidth || window.innerWidth || 320;
+                // Keep the complete 40px solar disc inside the panorama without
+                // clamping its position (which would make it appear to stick).
+                return Math.min(7, Math.max(2, (22 / width) * 100));
+            };
+
             // SunCalc 2 returns degrees clockwise from north.
             // Render the whole horizon as a 360° panorama: N | E | S | W | N.
             const projectSkyPosition = (position, { horizonY, skyRange }) => {
@@ -1395,11 +1402,14 @@
                 const altitude = position && Number.isFinite(position.altitude)
                     ? position.altitude
                     : null;
+                const sideGutter = getSkySideGutter();
 
                 return {
                     azimuth,
                     altitude,
-                    x: azimuth === null ? 50 : (azimuth / 360) * 100,
+                    x: azimuth === null
+                        ? 50
+                        : sideGutter + (azimuth / 360) * (100 - sideGutter * 2),
                     bottom: altitude === null ? horizonY : horizonY + (altitude / 90) * skyRange
                 };
             };
@@ -1442,6 +1452,7 @@
             const getHorizonConfig = () => {
                 const container = document.getElementById('sky-container');
                 const vh = container ? container.clientHeight : window.innerHeight;
+                const sliderOverlay = container?.querySelector('.sky-slider-overlay');
 
                 // Standard height calc
                 const stdHeight = Math.max(window.innerHeight * 0.45, 280);
@@ -1451,9 +1462,19 @@
                     container.style.setProperty('--std-sky-height', `${stdHeight}px`);
                 }
 
-                // Standard config
-                const stdHorizonY = 18; // 18% from bottom
-                const stdSkyRange = 70;
+                // The visible horizon is the upper edge of the timeline overlay.
+                // Measuring it prevents the celestial path from stopping above the UI edge.
+                let stdHorizonY = 18;
+                if (container && sliderOverlay && container.clientHeight > 0) {
+                    const measuredHorizon = (sliderOverlay.offsetHeight / container.clientHeight) * 100;
+                    if (Number.isFinite(measuredHorizon)) {
+                        stdHorizonY = Math.max(10, Math.min(24, measuredHorizon));
+                    }
+                }
+
+                // Preserve the previous zenith height while moving the horizon to
+                // the actual visual boundary.
+                const stdSkyRange = 88 - stdHorizonY;
 
                 if (!stealthMode) return { horizonY: stdHorizonY, skyRange: stdSkyRange };
 
@@ -1800,9 +1821,18 @@
                 sunOrb.dataset.altitude = sunProjection.altitude?.toFixed(4) ?? '';
 
                 // Sun visibility & Opacity
-                // -0.833° is the standard sunrise/sunset altitude used by SunCalc
-                // (the upper edge of the solar disc touches the horizon).
-                const isSunVisible = altDeg >= -0.833 || stealthMode;
+                // The graphic is intentionally much larger than the real solar disc.
+                // Clip it using the Sun's real angular radius so it sinks smoothly
+                // instead of resting on the viewport edge and disappearing at once.
+                const solarAngularRadius = 0.2666;
+                const discVisibility = Math.max(0, Math.min(1,
+                    (altDeg + solarAngularRadius) / (solarAngularRadius * 2)
+                ));
+                const isSunVisible = discVisibility > 0 || stealthMode;
+                sunOrb.style.clipPath = stealthMode
+                    ? 'none'
+                    : `inset(0 0 ${(1 - discVisibility) * 100}% 0)`;
+
                 if (isSunVisible) {
                     sunOrb.style.display = 'block';
                     // Opacity logic:
@@ -1826,7 +1856,7 @@
                         sunOrb.style.boxShadow = `0 0 40px 15px rgba(255, 200, 100, ${0.5 * opacity})`;
                     }
 
-                    updateFlare(xPercent, 100 - yPercent, altDeg > -2 ? opacity : 0);
+                    updateFlare(xPercent, 100 - yPercent, altDeg > -2 ? opacity * discVisibility : 0);
                 } else {
                     sunOrb.style.display = 'none';
                     lensFlare.style.opacity = 0;
@@ -2059,7 +2089,10 @@
                         saveLocation({ lat, lng, city: provisionalCity, source: 'geolocation' });
                         setSearchVisibility(false);
                         if (!initialized) init();
-                        else if (skySlider) update(parseInt(skySlider.value, 10));
+                        else if (skySlider) {
+                            drawSeasonalTrajectories();
+                            update(parseInt(skySlider.value, 10));
+                        }
 
                         try {
                             const city = await reverseGeocode(lat, lng);
@@ -2114,7 +2147,10 @@
                         source: 'manual'
                     });
                     setSearchVisibility(false);
-                    if (skySlider) update(parseInt(skySlider.value, 10));
+                    if (skySlider) {
+                        drawSeasonalTrajectories();
+                        update(parseInt(skySlider.value, 10));
+                    }
                 });
             }
 
@@ -2128,7 +2164,10 @@
                     if (!nextDate) return;
                     selectedDateKey = getDateKey(nextDate);
                     isLive = false;
-                    if (skySlider) update(parseInt(skySlider.value, 10), selectedDateKey);
+                    if (skySlider) {
+                        drawSeasonalTrajectories();
+                        update(parseInt(skySlider.value, 10), selectedDateKey);
+                    }
                 });
             }
 
@@ -2140,6 +2179,7 @@
                     if (dateInput) dateInput.value = selectedDateKey;
                     if (skySlider) {
                         skySlider.value = now.getHours() * 60 + now.getMinutes();
+                        drawSeasonalTrajectories();
                         update(parseInt(skySlider.value, 10), selectedDateKey);
                     }
                 });
@@ -2160,6 +2200,7 @@
                     selectedDateKey = getDateKey(now);
                     if (dateInput) dateInput.value = selectedDateKey;
                     if (skySlider) skySlider.value = mins;
+                    drawSeasonalTrajectories();
                     update(mins, selectedDateKey);
                 });
             }
@@ -2224,6 +2265,10 @@
 
                         if (window.lucide) lucide.createIcons();
                         initSeasonToggles();
+                        requestAnimationFrame(() => {
+                            drawSeasonalTrajectories();
+                            if (skySlider) update(parseInt(skySlider.value, 10), selectedDateKey);
+                        });
                     }
                 } catch (e) {
                     console.error('SunTrack init error:', e);
