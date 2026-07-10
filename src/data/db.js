@@ -12,7 +12,14 @@ const RAW_DATA = {
         ],
         apiEndpoints: {
             atmosphere: '../api/atmosphere.php'
-        }
+        },
+        categories: [
+            { id: 'tools', name: 'Narzędzia', name_en: 'Tools', icon: 'wrench' },
+            { id: 'games', name: 'Gry', name_en: 'Games', icon: 'gamepad-2' },
+            { id: 'data', name: 'Dane & IoT', name_en: 'Data & IoT', icon: 'activity' },
+            { id: 'experiments', name: 'Eksperymenty', name_en: 'Experiments', icon: 'flask-conical' },
+            { id: 'family', name: 'Rodzina', name_en: 'Family', icon: 'heart' }
+        ]
     },
     menu: [
         { name: "WARSZTAT", name_en: "WORKSHOP", url: "index.html" },
@@ -21,6 +28,7 @@ const RAW_DATA = {
     projects: [
         {
             id: 'bobolog',
+            category: 'family',
             title: 'BoboLab',
             title_en: 'BoboLab',
             desc: 'Pastelowy dziennik rodzica — karmienia, sen, pieluchy, waga i szczepienia Twojego dziecka w jednym miejscu.',
@@ -127,6 +135,7 @@ const RAW_DATA = {
         },
         {
             id: 'neon-quiz',
+            category: 'games',
             title: "NEON QUIZ",
             title_en: "NEON QUIZ",
             desc: 'Imprezowy live quiz w klimacie teleturnieju lat 80. Host na TV, gracze na telefonach — tajne zakłady, wydarzenia specjalne i finał na buzzery.',
@@ -194,7 +203,132 @@ const RAW_DATA = {
             ]
         },
         {
+            id: 'pixel-kart',
+            category: 'games',
+            title: "Pixel Kart GP",
+            title_en: "Pixel Kart GP",
+            desc: 'Wyścigi w duchu Mario Kart w pixel arcie. Host na TV, telefony jako pady — drift z mini-boostem, power-upy w drodze.',
+            desc_en: "Mario Kart-style racing in pixel art. Host on TV, phones as gamepads — drift mini-boosts, power-ups on the way.",
+            tags: ['React', 'Canvas', 'Party Game', 'Racing'],
+            version: 'v0.2',
+            url: 'pixelkart/',
+            changelogUrl: 'apps/changelog.html?id=pixel-kart',
+            icon: 'flag',
+            active: true,
+            color: 'amber',
+
+            details: {
+                about: "Pixel Kart GP to imprezowa gra wyścigowa inspirowana Mario Kart: komputer lub TV wyświetla cały tor z widoku z góry, a gracze (docelowo do 4 osób) sterują kartami telefonami dołączając przez kod QR. Arcade'owa fizyka z driftem nagradzanym mini-boostem, trawa spowalnia, a checkpointy pilnują uczciwego liczenia okrążeń. Sterowanie z telefonu leci przez WebRTC prosto do hosta (kilka ms po Wi-Fi), z automatycznym trybem awaryjnym przez chmurę. Do wyboru przyciski albo żyroskop — a bez telefonów zostaje tryb lokalny na klawiaturze.",
+                features: [
+                    { title: "Fizyka driftu", desc: "Poślizg z luzowaniem przyczepności — utrzymany drift ≥0,7 s daje mini-boost z płomieniem, jak u hydraulika." },
+                    { title: "Cały tor na ekranie", desc: "Widok z góry w pixel arcie 480×270, ślady opon po drifcie i checkpointy blokujące skróty przez trawę." },
+                    { title: "Wyścig kompletny", desc: "Odliczanie 3-2-1, okrążenia (1–5), ranking na żywo, czasy na mecie i szybki restart." },
+                    { title: "Gotowe pod pady", desc: "Logika gry oddzielona od Reacta i sieci — telefony jako kontrolery (WebRTC) wpinają się bez przebudowy." }
+                ],
+                techStack: ["React 18", "Vite", "Tailwind CSS", "Canvas 2D"],
+                roadmap: [
+                    { done: true, task: "Prototyp jazdy: fizyka, drift, trasa, okrążenia (v0.1)" },
+                    { done: true, task: "Lobby z QR i telefony jako pady (WebRTC) (v0.2)" },
+                    { done: false, task: "Power-upy + mini-wyzwania na telefonie (MVP)" },
+                    { done: false, task: "Docelowy pixel art, tryb Grand Prix, audio" },
+                    { done: false, task: "Kolejne trasy i wybór auta" }
+                ]
+            },
+            details_en: {
+                about: "Pixel Kart GP is a party racing game inspired by Mario Kart: a computer or TV shows the whole top-down track while players (up to 4) steer their karts with phones joined via QR code. Arcade physics with drift rewarded by a mini-boost, grass slows you down, and checkpoints keep lap counting honest. Phone input travels over WebRTC straight to the host (a few ms over Wi-Fi) with an automatic cloud fallback. Choose buttons or gyroscope — or play the local keyboard mode without phones.",
+                features: [
+                    { title: "Drift physics", desc: "Slides with loosened grip — holding a drift ≥0.7s grants a flaming mini-boost, plumber style." },
+                    { title: "Whole track on screen", desc: "Top-down 480×270 pixel art view, tyre marks from drifting and checkpoints that block grass shortcuts." },
+                    { title: "Complete race", desc: "3-2-1 countdown, laps (1–5), live ranking, finish times and quick restart." },
+                    { title: "Gamepad-ready", desc: "Game logic separated from React and networking — phone controllers (WebRTC) plug in without a rewrite." }
+                ],
+                techStack: ["React 18", "Vite", "Tailwind CSS", "Canvas 2D"],
+                roadmap: [
+                    { done: true, task: "Driving prototype: physics, drift, track, laps (v0.1)" },
+                    { done: true, task: "QR lobby and phones as gamepads (WebRTC) (v0.2)" },
+                    { done: false, task: "Power-ups + phone mini-challenges (MVP)" },
+                    { done: false, task: "Final pixel art, Grand Prix mode, audio" },
+                    { done: false, task: "More tracks and kart selection" }
+                ]
+            },
+
+            changes: [
+                {
+                    version: "v0.2",
+                    date: "2026-07-10",
+                    type: "FEAT",
+                    desc: "Telefony jako pady! Host otwiera pokój (kod + QR jak w NEON QUIZ), gracze dołączają telefonem z nickiem i awatarem — do 4 osób. Sterowanie leci bezpośrednio telefon→komputer przez WebRTC DataChannel (sygnalizacja przez Firebase, potem czyste P2P po Wi-Fi — kilka ms opóźnienia), a gdy router blokuje P2P, pad sam przełącza się na tryb awaryjny przez chmurę. Na telefonie: przyciski ◀ ▶ / GAZ / DRIFT albo eksperymentalny tryb żyroskopu (przechylasz telefon jak kierownicę), pasek z pozycją i okrążeniem na żywo oraz blokada wygaszania ekranu. Dotychczasowa jazda na klawiaturze została jako tryb lokalny. Po wyścigu host wraca do lobby jednym kliknięciem — skład graczy zostaje."
+                },
+                {
+                    version: "v0.1",
+                    date: "2026-07-09",
+                    type: "INIT",
+                    desc: "Prototyp jazdy Pixel Kart GP — wyścigów w duchu Mario Kart z widokiem całego toru z góry. Arcade'owa fizyka: prędkość rozkładana na składową wzdłużną i boczną, drift luzujący przyczepność z mini-boostem za ślizg ≥0,7 s, trawa mocno spowalnia. Trasa wygładzona krzywą Catmull-Rom z 12 checkpointami pilnującymi uczciwych okrążeń (skróty przez trawę nie liczą postępu). Pełny wyścig: odliczanie 3-2-1, okrążenia 1–5 do wyboru, ranking na żywo, czasy na mecie. 1–2 graczy na jednej klawiaturze (strzałki+spacja / WASD+Shift), ślady opon po drifcie i płomień boostu. Logika gry w czystych modułach bez Reacta — gotowa pod telefony-pady w kolejnej wersji."
+                }
+            ]
+        },
+        {
+            id: 'gamerlab',
+            category: 'tools',
+            title: "GamerLab",
+            title_en: "GamerLab",
+            desc: 'Menedżer kupki wstydu gier. Wpisz co masz, ile grasz tygodniowo — a apka policzy, kiedy naprawdę to przejdziesz.',
+            desc_en: "Gaming backlog manager. List your games, set weekly play time — the app calculates when you'll actually beat them.",
+            tags: ['React', 'Backlog', 'Tracker', 'LocalStorage'],
+            version: 'v0.1',
+            url: 'gamerlab/',
+            changelogUrl: 'apps/changelog.html?id=gamerlab',
+            icon: 'hourglass',
+            active: true,
+            color: 'blue',
+
+            details: {
+                about: "GamerLab to poważne narzędzie do zarządzania kupką wstydu: biblioteka posiadanych gier z czasem przejścia i statusami (kupka / gram / ukończona / porzucona). Deklarujesz tygodniowy budżet grania, a apka liczy kaskadową prognozę — datę ukończenia każdej gry po kolei i dzień, w którym kupka znika. W kolejnych wersjach dojdą czasy przejścia z IGDB, konta z synchronizacją i statystyki spalania backlogu.",
+                features: [
+                    { title: "Prognoza kaskadowa", desc: "Gry liczone po kolei — widzisz datę ukończenia każdej z osobna i całej kupki." },
+                    { title: "Budżet tygodniowy", desc: "Deklarujesz ile godzin grasz w tygodniu; przy grze w toku odliczasz już przegrane godziny." },
+                    { title: "Statusy i filtry", desc: "Kupka, gram, ukończona, porzucona — z licznikami i filtrowaniem listy." },
+                    { title: "Dane lokalne", desc: "Wszystko w localStorage przeglądarki — zero kont i serwera (na razie)." }
+                ],
+                techStack: ["React 18", "Vite", "Tailwind CSS", "localStorage"],
+                roadmap: [
+                    { done: true, task: "Biblioteka gier + prognoza ukończenia (v0.1)" },
+                    { done: false, task: "Czasy przejścia z IGDB (autouzupełnianie)" },
+                    { done: false, task: "Konta i synchronizacja (Supabase)" },
+                    { done: false, task: "Gry-usługi z podatkiem czasowym + kolejka grania" },
+                    { done: false, task: "Statystyki: wykres spalania backlogu" }
+                ]
+            },
+            details_en: {
+                about: "GamerLab is a serious tool for managing your pile of shame: a library of owned games with completion times and statuses (backlog / playing / done / dropped). Declare a weekly play budget and the app computes a cascading forecast — a finish date for each game in turn and the day your backlog hits zero. Future versions add IGDB completion times, synced accounts and backlog burn-down stats.",
+                features: [
+                    { title: "Cascading forecast", desc: "Games are counted in order — see a finish date for each one and for the whole pile." },
+                    { title: "Weekly budget", desc: "Declare weekly play hours; for a game in progress, subtract hours already played." },
+                    { title: "Statuses & filters", desc: "Backlog, playing, done, dropped — with counters and list filtering." },
+                    { title: "Local data", desc: "Everything lives in browser localStorage — no accounts, no server (for now)." }
+                ],
+                techStack: ["React 18", "Vite", "Tailwind CSS", "localStorage"],
+                roadmap: [
+                    { done: true, task: "Game library + completion forecast (v0.1)" },
+                    { done: false, task: "IGDB completion times (autocomplete)" },
+                    { done: false, task: "Accounts and sync (Supabase)" },
+                    { done: false, task: "Endless games with a weekly time tax + play queue" },
+                    { done: false, task: "Stats: backlog burn-down chart" }
+                ]
+            },
+
+            changes: [
+                {
+                    version: "v0.1",
+                    date: "2026-07-10",
+                    type: "INIT",
+                    desc: "Start GamerLab — menedżera kupki wstydu gier. Dodajesz posiadane gry (tytuł, platforma, czas przejścia), ustawiasz tygodniowy budżet grania, a apka liczy kaskadową prognozę: datę ukończenia każdej gry po kolei i dzień wyzerowania całej kupki. Statusy (kupka / gram / ukończona / porzucona) z filtrami, odliczanie już przegranych godzin przy grze w toku i uczciwe traktowanie gier bez znanego czasu (nie psują prognozy, ale są wykazane). Dane w localStorage, silnik prognozy jako czysty moduł z testami — gotowy pod IGDB i konta w kolejnych wersjach."
+                }
+            ]
+        },
+        {
             id: "labyrinth-qr",
+            category: 'tools',
             title: "LabyrinthQR",
             title_en: "LabyrinthQR",
             desc: "Zaawansowany generator kodów QR. Pełna personalizacja: Kształty, Kolory, Logo.",
@@ -257,6 +391,7 @@ const RAW_DATA = {
         },
         {
             id: "draftcargo",
+            category: 'tools',
             title: "DraftCargo",
             title_en: "DraftCargo",
             desc: "Prywatny transfer plików do 1GB. Automatyczne czyszczenie po 72h.",
@@ -323,6 +458,7 @@ const RAW_DATA = {
         },
         {
             id: "suntrack",
+            category: 'data',
             title: "SunTrack",
             title_en: "SunTrack",
             desc: "Wizualizacja pozycji słońca z trajektoriami sezonowymi i automatyczną geolokalizacją.",
@@ -373,6 +509,7 @@ const RAW_DATA = {
         },
         {
             id: 'atmosphere',
+            category: 'data',
             title: 'Atmosphere',
             title_en: 'Atmosphere',
             desc: 'Dziennik klimatyczny HomePod mini. Wizualizacja temperatury i wilgotności w cyklu dobowym (4 pomiary na dzień).',
@@ -423,6 +560,7 @@ const RAW_DATA = {
 
         {
             id: 'retrovision',
+            category: 'experiments',
             title: 'RetroVision',
             title_en: 'RetroVision',
             desc: 'Filtr kamery zmieniający obraz w strumień kodu ASCII w czasie rzeczywistym. Matrix w Twojej przeglądarce.',
@@ -485,6 +623,7 @@ const RAW_DATA = {
         },
         {
             id: 'draftcalc',
+            category: 'tools',
             title: 'DraftCalc',
             title_en: 'DraftCalc',
             desc: 'Precyzyjne obliczenia procentowe. Dashboard v0.1 z wizualizacją i historią.',
@@ -547,29 +686,24 @@ const RAW_DATA = {
 
 
     ],
-    news: [
-        {
-            date: "2025-12-17",
-            title: "Tutaj będzie panel z newsami",
-            title_en: "News panel coming soon",
-            content: "Bedzie działać ale potrzeba czasu :)",
-            content_en: "It will work but needs time :)"
-        },
-        {
-            date: "2025-12-17",
-            title: "System Update",
-            title_en: "System Update",
-            content: "Refaktoryzacja struktury DraftLab. Przejście na Web Components i architekturę modułową.",
-            content_en: "DraftLab structure refactoring. Transition to Web Components and modular architecture."
-        },
-        {
-            date: "2025-12-16",
-            title: "Inicjalizacja",
-            title_en: "Initialization",
-            content: "Pierwszy commit projektu. Uruchomienie środowiska developerskiego.",
-            content_en: "First project commit. launching development environment."
-        }
-    ]
+    news: [],
+    // Wpis dla komendy `now` w terminalu (strona główna).
+    // Zasady aktualizacji: AGENTS.md, sekcja „Status warsztatu — komenda `now`".
+    // Krótko, pierwsza osoba, bez marketingu.
+    now: {
+        updated: "2026-07-10",
+        project: "GamerLab",
+        lines: [
+            "nowa apka: GamerLab liczy, kiedy skończę kupkę wstydu gier.",
+            "wpisałem swoje gry i data wyszła bliżej emerytury niż bym chciał.",
+            "w kolejce: czasy przejścia z IGDB, żeby nie wpisywać ich ręcznie."
+        ],
+        lines_en: [
+            "new app: GamerLab calculates when I'll finish my gaming pile of shame.",
+            "entered my games and the date landed closer to retirement than I'd like.",
+            "up next: completion times from IGDB so I stop typing them by hand."
+        ]
+    }
 };
 
 // --- DATA MERGE LOGIC ---

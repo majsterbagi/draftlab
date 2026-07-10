@@ -4,8 +4,9 @@
     {
       "name": "draftlab-dev",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["vite", "--port", "5199", "--strictPort"],
-      "port": 5199
+      "runtimeArgs": ["vite"],
+      "port": 5199,
+      "autoPort": true
     },
     {
       "name": "bobolog",
@@ -25,6 +26,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev", "--prefix", "pixel-kart-gp", "--", "--port", "5187", "--strictPort"],
       "port": 5187
+    },
+    {
+      "name": "gamerlab",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "gamerlab", "--", "--port", "5188", "--strictPort"],
+      "port": 5188
     }
   ]
 }
