@@ -1,5 +1,29 @@
 export const GIT_LOG_DATA = [
     {
+        "hash": "b03f824",
+        "date": "2026-07-10 18:44",
+        "type": "FEAT",
+        "component": "GAMERLAB",
+        "projects": [
+            "gamerlab"
+        ],
+        "desc": "GamerLab v0.1 — menedżer kupki wstydu gier",
+        "details": "Nowy podprojekt React (gamerlab/): biblioteka posiadanych gier z czasem\nprzejścia i statusami (kupka / gram / ukończona / porzucona), tygodniowy\nbudżet grania i kaskadowa prognoza — data ukończenia każdej gry po kolei\noraz dzień wyzerowania całej kupki. Odliczanie już przegranych godzin przy\ngrze w toku, gry bez znanego czasu wykazane osobno. Dane w localStorage,\nsilnik prognozy jako czysty moduł z testami node --test. Wpięcie w główny\nbuild (public/gamerlab), wpis w db.js z changelogiem i aktualizacja wpisu\nnow w terminalu.\n\nCo-Authored-By: Claude Fable 5 <noreply@anthropic.com>"
+    },
+    {
+        "hash": "a3e7c08",
+        "date": "2026-07-10 18:44",
+        "type": "SYS",
+        "component": "LABYRINTH-QR",
+        "projects": [
+            "labyrinth-qr",
+            "pixel-kart",
+            "suntrack"
+        ],
+        "desc": "Pipeline builda FTP, dokumentacja agentów i porządki warsztatu",
+        "details": "Nowy skrypt builda (scripts/build.js) publikujący podprojekty do public/\nz weryfikacją paczki FTP (verify_dist.js) i automatyczną aktualizacją\ninwentarza projektów (update_agent_context.js + AGENTS.md/CLAUDE.md/GEMINI.md).\nPorządki po refaktorze strony głównej: usunięte nieużywane komponenty\n(GitLog, NewsFeed, SystemLog, DlReturn), pliki .bak i lokalna kopia\nqr-code-styling. Dokumentacja: README, SECURITY, aktualizacja ARCHITECTURE\ni GITHUB_GUIDE. Publikacja builda Pixel Kart GP w public/pixelkart.\n\nCo-Authored-By: Claude Fable 5 <noreply@anthropic.com>"
+    },
+    {
         "hash": "632b470",
         "date": "2026-07-10 15:31",
         "type": "FIX",
@@ -512,24 +536,6 @@ export const GIT_LOG_DATA = [
             "atmosphere"
         ],
         "desc": "Dismiss chart tooltip on outside click/touch",
-        "details": null
-    },
-    {
-        "hash": "daf0f42",
-        "date": "2025-12-19 22:34",
-        "type": "STYLE",
-        "component": "SYSTEM-LOG",
-        "projects": [],
-        "desc": "Compact layout with expanding text",
-        "details": null
-    },
-    {
-        "hash": "20fd7ca",
-        "date": "2025-12-19 22:31",
-        "type": "FEAT",
-        "component": "SYSTEM-LOG",
-        "projects": [],
-        "desc": "Dynamic changelog aggregator",
         "details": null
     }
 ];
