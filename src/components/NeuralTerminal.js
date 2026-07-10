@@ -65,7 +65,7 @@ class NeuralTerminal extends HTMLElement {
 
                         <!-- Quick commands -->
                         <div class="flex flex-wrap gap-2 px-4 py-3 border-t border-white/5 bg-black/20">
-                            ${['help', 'apps', 'stats', 'matrix', 'legacy'].map(c =>
+                            ${['help', 'now', 'apps', 'stats', 'matrix', 'legacy'].map(c =>
                                 `<button data-cmd="${c}" class="term-chip px-2.5 py-1 rounded-md border border-tech-green/25 bg-tech-green/5 text-tech-green text-[10px] tracking-wider hover:bg-tech-green hover:text-black transition-colors">${c}</button>`
                             ).join('')}
                             <span id="term-hint" class="ml-auto self-center text-[10px] text-tech-dim/60 hidden sm:inline">${i18n.t('term.hint')}</span>
@@ -168,6 +168,7 @@ class NeuralTerminal extends HTMLElement {
             case 'help':
                 this.echo([
                     `<span class="text-tech-green">help</span>      — ${i18n.t('term.cmd.help')}`,
+                    `<span class="text-tech-green">now</span>       — ${i18n.t('term.cmd.now')}`,
                     `<span class="text-tech-green">apps</span>      — ${i18n.t('term.cmd.apps')}`,
                     `<span class="text-tech-green">open</span> &lt;app&gt; — ${i18n.t('term.cmd.open')}`,
                     `<span class="text-tech-green">stats</span>     — ${i18n.t('term.cmd.stats')}`,
@@ -178,6 +179,23 @@ class NeuralTerminal extends HTMLElement {
                     `<span class="text-tech-green">clear</span>     — ${i18n.t('term.cmd.clear')}`,
                 ].join('<br>'));
                 break;
+
+            case 'now':
+            case 'news': {
+                const now = SITE_DATA.now;
+                if (!now) {
+                    this.echo(`<span class="text-tech-dim">${i18n.t('term.now_empty')}</span>`);
+                    break;
+                }
+                const lines = i18n.lang === 'pl' ? now.lines : (now.lines_en || now.lines);
+                this.echo(`<span class="text-tech-green font-bold">${i18n.t('term.now_title')}: ${now.project}</span> <span class="text-tech-dim">(${i18n.t('term.now_updated')}: ${now.updated})</span>`);
+                (async () => {
+                    for (const line of lines) {
+                        await this.typeLine(`  ${line}`, 'text-white/80', 8);
+                    }
+                })();
+                break;
+            }
 
             case 'apps': {
                 const lang = i18n.lang;

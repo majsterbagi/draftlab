@@ -1,109 +1,92 @@
-# DraftLab Architecture & Standards
+# Architektura DraftLab.pl
 
-Dokument definiujący standardy techniczne i procesy dla projektu DraftLab.
-**Status:** DRAFT 4.0 (Modernizacja UI v2.0)
+Status: aktualna mapa projektu.
 
----
+DraftLab.pl jest monorepo złożonym z głównego serwisu vanilla JS oraz dwóch niezależnych aplikacji React. Wspólnym punktem jest produkcyjny build głównego Vite, który publikuje podprojekty w katalogu `public/`.
 
-## 0. Wersjonowanie & Legacy (v2.0)
-
-Strona ma dwa równoległe "tryby":
--   **Wersja nowoczesna (v2.0)** — bieżący kod źródłowy (`src/`, `index.html`, ...).
--   **Wersja klasyczna (v1.0)** — statyczny snapshot starej strony w `public/legacy/`,
-    dostępny pod adresem `/legacy/` (link "Wersja klasyczna" w headerze, stopce i palecie Cmd+K).
-    Stare strony mają pływający przycisk powrotu do nowej wersji.
-
-Mechanizmy powrotu:
-1.  **Dla odwiedzających:** jeden klik — link `/legacy/index.html` ↔ przycisk "wróć do nowej".
-2.  **Dla dewelopera:** `git checkout legacy-v1` (tag z pełnym stanem źródeł sprzed modernizacji).
-
-Snapshot regeneruje się komendą `npm run snapshot:legacy` (kopiuje `dist/` → `public/legacy/`
-i wstrzykuje banner powrotu). Uruchamiaj ją wyłącznie po zbudowaniu starej wersji kodu.
-
-### Nowoczesne rozwiązania w v2.0
--   MPA View Transitions (`@view-transition`), scroll-reveal (IntersectionObserver),
-    `prefers-reduced-motion`, paleta poleceń (Cmd+K), glassmorphism, spotlight-hover kart,
-    sticky glass header z paskiem postępu scrolla, SVG favicon, `theme-color`/`color-scheme`.
--   `about.html` korzysta z kompilowanego Tailwinda (usunięto CDN `cdn.tailwindcss.com`).
--   **DraftLab Core** (`src/components/NeuralTerminal.js`) — interaktywny terminal na stronie
-    głównej z siecią neuronową na canvasie (tryb Matrix jako easter egg). Komendy: help, apps,
-    open <app>, stats, whoami, legacy, lang, matrix, clear. Canvas pauzuje poza viewportem
-    i szanuje `prefers-reduced-motion`.
--   Dziennik zmian (`UnifiedLog`) zredukowany do kompaktowego, zwijanego paska —
-    pełny rejestr pozostaje w `apps/system-log.html`.
-
----
-
-## 1. Tech Stack
--   **Core:** Vanilla JavaScript (ES Modules). Brak frameworków JS (React/Vue/Angular).
--   **Styling:** Tailwind CSS 3.x (via PostCSS). Brak zewnętrznych arkuszy stylów innych niż Google Fonts.
--   **Build Tool:** Vite (Tryb MPA - Multi-Page Application).
--   **Icons:** Lucide Icons (ładowane dynamicznie).
-
-## 2. Zasady Architektury (Core Rules)
-
-### A. Web Components
-Wszystkie powtarzalne elementy UI muszą być natywnymi Web Komponentami.
--   **Wymagane:** Dziedziczenie po `HTMLElement`, definicja w `customElements.define`.
--   **Styl:** Style komponentu powinny pochodzić z globalnego CSS (Tailwind) lub `src/style.css`. Unikamy Shadow DOM, chyba że jest absolutnie konieczny do izolacji.
-
-### B. Single Source of Truth (SST)
-Dane konfiguracyjne i treści (menu, opisy projektów, changelog) znajdują się **wyłącznie** w `src/data/db.js`.
--   HTML nie powinien zawierać treści "na sztywno" (hardcoded), jeśli mogą one ulec zmianie.
--   Komponenty pobierają dane z `db.js` w metodzie `connectedCallback`.
-
-### C. No-Build (Development) vs Build (Production)
--   **Kod źródłowy** (`src/`) piszemy w standardzie, który jest czytelny dla nowoczesnych przeglądarek bez transpilacji.
--   **Vite** służy głównie do:
-    1.  Obsługi importów (HMR).
-    2.  Kompilacji PostCSS (Tailwind) "w locie".
-    3.  Optymalizacji (minifikacja) do folderu `dist/`.
-
-## 3. Struktura Projektu
+## 1. Mapa systemu
 
 ```text
-/
-├── apps/               # Podstrony aplikacji (np. SunTrack.html)
-├── public/             # Zasoby statyczne (favicon, images)
-├── src/
-│   ├── components/     # Web Components (np. OverlayHeader.js)
-│   ├── core/           # Logika systemowa (Nucleus.js)
-│   ├── data/           # Dane (db.js - SST)
-│   └── style.css       # Główny punkt wejścia CSS (@tailwind)
-├── dist/               # ARTYFAKT PRODUKCYJNY (Generowany)
-├── index.html          # Strona główna
-├── package.json        # Zależności (Dev)
-├── tailwind.config.js  # Design System
-└── vite.config.js      # Konfiguracja buildera
+                    npm run build
+                           │
+        ┌──────────────────┼──────────────────┐
+        │                  │                  │
+  generate_git_log    build bobolog       build neon-quiz
+        │                  │                  │
+  src/data/*.js      public/bobolog/     public/neonquiz/
+        └──────────────────┴──────────────────┘
+                           │
+                       Vite MPA
+                           │
+                          dist/
 ```
 
-## 4. Deployment Protocol
+### Główna strona
 
-### KROK 1: Build
+- wejścia HTML: `index.html`, `about.html`, `apps/*.html` i `apps/prototypes/**/*.html`;
+- runtime: `src/main.js`;
+- UI: Web Components w `src/components/`;
+- dane treści: `src/data/db.js`;
+- style: `src/style.css` oraz Tailwind przez PostCSS;
+- logika aplikacji: `src/apps/`;
+- wspólny kod: `src/core/` i `src/utils/`.
+
+Główna strona nie używa Reacta. Nie dodawaj zależności React do głównego `package.json`.
+
+### BoboLog
+
+`bobolog/` jest niezależnym projektem React. Ma własny `package.json`, lockfile, konfigurację Vite, PWA i zmienne środowiskowe. Jego źródła są w `bobolog/src/`, a wynik builda jest kopiowany do `public/bobolog/`.
+
+### Neon Quiz
+
+`neon-quiz-86/` jest niezależnym projektem React korzystającym z Firebase Realtime Database. Jego źródła są w `neon-quiz-86/src/`, reguły bazy w `database.rules.json`, a wynik builda jest kopiowany do `public/neonquiz/`.
+
+## 2. Zasady źródeł danych
+
+- `src/data/db.js` jest źródłem treści głównej strony.
+- `src/data/git_log_data.js` i `src/data/auto_changelogs.js` są generowane przez `scripts/generate_git_log.js` na podstawie commitów i zmienionych ścieżek plików.
+- Jeden commit może zostać przypisany do wielu projektów. Nowe top-level projekty są rozpoznawane po nazwie katalogu.
+- `api/` zawiera źródłowe endpointy PHP.
+- `public/api/` jest generowane podczas buildu z plików PHP w `api/`.
+- `public/bobolog/`, `public/neonquiz/` i `public/legacy/` są zasobami publikowanymi. Nie edytuje się ich ręcznie.
+
+## 3. Build i wdrożenie
+
 ```bash
 npm run build
 ```
 
-### KROK 2: Deploy
-Na serwer produkcyjny (hosting) wysyłamy **WYŁĄCZNIE** zawartość folderu `dist/` utworzonego w kroku 1.
--   ⛔️ **ZABRONIONE:** Wysyłanie folderu `node_modules`.
--   ⛔️ **ZABRONIONE:** Wysyłanie plików `.js` konfiguracyjnych (vite/tailwind config).
+Skrypt `scripts/build.js` generuje changelogi, buduje oba podprojekty i publikuje ich wyniki w `public/`. Następnie Vite buduje główny serwis do `dist/`.
 
----
----
-## 5. Backup Strategy
+`scripts/update_agent_context.js` aktualizuje oznaczoną sekcję `AGENTS.md` na podstawie katalogów, pakietów Node, stron HTML i rejestru projektów w `src/data/db.js`. `scripts/verify_dist.js` działa po buildzie i sprawdza, czy wymagane aplikacje rzeczywiście znalazły się w paczce FTP.
 
-Najważniejszą zasadą jest backupowanie **źródeł**, a nie plików generowanych.
+Do wdrożenia używamy wyłącznie zawartości `dist/`. Nie wysyłamy `node_modules/`, źródeł aplikacji ani plików konfiguracyjnych Vite/Tailwind.
 
-### Co backupować (Kopiować):
-- `index.html`, `about.html`
-- Folder `apps/`
-- Folder `src/` (to jest serce Twojej pracy)
-- Pliki konfiguracyjne: `package.json`, `package-lock.json`, `tailwind.config.js`, `vite.config.js`, `postcss.config.js`, `ARCHITECTURE.md`, `.gitignore`.
+Katalogi `bobolog/dist/`, `neon-quiz-86/dist/` i `public/api/` są tymczasowe. Są ignorowane przez Git i pojawiają się ponownie podczas builda.
 
-### Czego NIE backupować (Omijać):
-- ⛔️ `node_modules/` (zajmuje 40MB+, można to odtworzyć komendą `npm install`).
-- ⛔️ `dist/` (to jest wynik builda, zawsze możesz go wygenerować z kodu źródłowego).
+## 4. Legacy i prototypy
 
-*Generated by Antigravity Agent*
+`public/legacy/` to świadomie utrzymywany snapshot starej wersji strony. Służy jako archiwum dostępne pod `/legacy/` i nie powinien być usuwany podczas zwykłego sprzątania.
 
+`apps/prototypes/` zawiera stare wersje SunTrack. Są budowane jako osobne wejścia HTML, ponieważ `apps/changelog.html` udostępnia do nich linki.
+
+## 5. API i stan serwera
+
+PHP API jest oddzielone od kodu frontendu:
+
+- `api/atmosphere.php` — odczyt i zapis pomiarów;
+- `api/upload.php` — upload chunków dla DraftCargo;
+- `api/download.php` — pobieranie plików;
+- `api/stats.php` — statystyki DraftCargo;
+- `public/bobolog-api/` — cron i Web Push dla BoboLoga.
+
+Pliki JSON używane przez API są stanem serwera. Nie powinny być traktowane jak baza danych ani bezkrytycznie kopiowane między środowiskami. Szczegółowa lista kontroli znajduje się w `SECURITY.md`.
+
+## 6. Zasady dla nowych zmian
+
+1. Najpierw określ, którego z trzech projektów dotyczy zmiana.
+2. Nie mieszaj zmian głównego serwisu z refaktorem BoboLoga lub Neon Quizu bez wyraźnej potrzeby.
+3. Zmieniaj źródła, nie wygenerowane buildy.
+4. Zachowuj istniejące ścieżki URL, chyba że zmiana migracyjna jest opisana.
+5. Po zmianie uruchom odpowiedni build oraz główny `npm run build`.
+6. Przeczytaj `AGENTS.md`, jeśli pracujesz jako agent.

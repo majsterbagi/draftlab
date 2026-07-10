@@ -6,15 +6,25 @@ node_modules/
 # Testing
 /coverage
 
-# Production
-/dist
+# Production/build output
+/dist/
+bobolog/dist/
+neon-quiz-86/dist/
+pixel-kart-gp/dist/
+gamerlab/dist/
+public/api/
 
 # Misc
 .DS_Store
 *.pem
 
 # Local env files
-.env*.local
+.env
+.env.*
+!.env.example
+
+# Local agent worktrees
+.claude/worktrees/
 
 # Vite
 .vite/
