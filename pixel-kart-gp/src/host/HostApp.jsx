@@ -3,19 +3,24 @@
 import { useEffect, useRef, useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import RaceScreen from './RaceScreen.jsx';
+import MenuScreen from './MenuScreen.jsx';
+import TrackPicker from './TrackPicker.jsx';
 import { isConfigMissing } from '../net/firebase.js';
 import {
   createRoom, closeRoom, watchRoom, updateRoom, playerList, MAX_PLAYERS,
 } from '../net/lobby.js';
 import { createHostRtc } from '../net/webrtc.js';
 import { KART_STYLES } from '../game/race.js';
+import { DEFAULT_TRACK_ID } from '../game/tracks.js';
 
 const NEUTRAL_INPUT = { steer: 0, throttle: 0, drift: false };
 
 export default function HostApp() {
+  const [screen, setScreen] = useState('menu'); // menu | lobby (pokój tworzy się w tle od startu)
   const [code, setCode] = useState(null);
   const [room, setRoom] = useState(null);
   const [laps, setLaps] = useState(3);
+  const [trackId, setTrackId] = useState(DEFAULT_TRACK_ID);
   const [runId, setRunId] = useState(0);
   const [racePlayers, setRacePlayers] = useState(null); // skład zamrożony na czas wyścigu
 
@@ -77,7 +82,7 @@ export default function HostApp() {
       color: KART_STYLES[p.slot % KART_STYLES.length].color,
     })));
     setRunId((id) => id + 1);
-    updateRoom(code, { phase: 'racing', laps });
+    updateRoom(code, { phase: 'racing', laps, trackId });
   };
 
   const backToLobby = () => {
@@ -120,12 +125,17 @@ export default function HostApp() {
     );
   }
 
+  if (screen === 'menu') {
+    return <MenuScreen onPlay={() => setScreen('lobby')} />;
+  }
+
   if (phase === 'racing' && racePlayers) {
     return (
       <Shell subtitle={`pokój ${code}`}>
         <RaceScreen
           players={racePlayers}
           laps={room?.laps ?? laps}
+          trackId={room?.trackId ?? trackId}
           runId={runId}
           getInput={(slotIdx) =>
             inputsRef.current.get(slotToIdRef.current[slotIdx]) ?? NEUTRAL_INPUT}
@@ -178,6 +188,11 @@ export default function HostApp() {
             {players.length === 0 && (
               <p className="text-neutral-600 text-sm">Czekam na graczy… (max {MAX_PLAYERS})</p>
             )}
+          </div>
+
+          <div>
+            <p className="text-xs text-neutral-500 mb-1">Trasa:</p>
+            <TrackPicker value={trackId} onChange={setTrackId} />
           </div>
 
           <div className="flex items-center gap-4">

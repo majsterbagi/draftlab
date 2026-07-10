@@ -133,12 +133,19 @@ Ułatwi to też ewentualne wydzielenie projektu w przyszłości.
 - [x] Tryb lokalny też ma przedmioty (Enter / lewy Ctrl) — do szybkich testów bez telefonów
 - [x] Zweryfikowane headless: pełny cykl złap→pocisk→trafienie→spin, blokada tarczą
 
-### v0.4 — Szlif
+### v0.4 — Szlif (w toku)
+- [x] Ekran menu (checkerboard jak linia mety, "GRAJ ▶", link do trybu lokalnego) —
+      pokój tworzy się w tle od razu, więc QR jest gotowy zanim gracz kliknie GRAJ
+- [x] Druga trasa "Szeroka Pętla" (kontrast do pierwszej: szerokie łuki zamiast
+      wąskiego zacisku) — trasy jako dane w game/tracks.js, wybór kartami z miniaturką
+      (ten sam rysunek co w grze) w lobby hosta i w trybie lokalnym
+- [x] Powiększony obszar gry na ekranie (canvas do min(1220px, 95vw), było 960px/92vw;
+      fizyka i tuning bez zmian — to tylko powiększenie renderu w CSS)
 - [ ] Docelowy pixel art trasy i kart
 - [ ] Trzeci tryb sterowania (touch-slider)
 - [ ] Tryb Grand Prix (seria wyścigów, punktacja, klasyfikacja generalna)
 - [ ] Minimalne audio: start, item, meta
-- [ ] Podpięcie do strony głównej DraftLab
+- [x] Podpięcie do strony głównej DraftLab (wpis w bazie projektów, aktualizowany co wersję)
 
 ### Później (backlog)
 - Kolejne trasy (każda z własnym motywem)

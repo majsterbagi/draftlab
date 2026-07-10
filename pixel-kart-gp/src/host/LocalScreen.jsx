@@ -3,11 +3,14 @@
 
 import { useEffect, useRef, useState } from 'react';
 import RaceScreen from './RaceScreen.jsx';
+import TrackPicker from './TrackPicker.jsx';
 import { createKeyboard } from './keyboard.js';
+import { DEFAULT_TRACK_ID } from '../game/tracks.js';
 
 export default function LocalScreen() {
   const [players, setPlayers] = useState(2);
   const [laps, setLaps] = useState(3);
+  const [trackId, setTrackId] = useState(DEFAULT_TRACK_ID);
   const [runId, setRunId] = useState(0);
   const keyboardRef = useRef(null);
 
@@ -26,6 +29,7 @@ export default function LocalScreen() {
       <RaceScreen
         players={players}
         laps={laps}
+        trackId={trackId}
         runId={runId}
         getInput={(i) => keyboardRef.current?.inputFor(i) ?? { steer: 0, throttle: 0, drift: false }}
         pollAction={(i) => (keyboardRef.current?.itemPressed(i) ? 'item' : null)}
@@ -37,6 +41,8 @@ export default function LocalScreen() {
           </footer>
         }
       />
+
+      <TrackPicker value={trackId} onChange={setTrackId} />
 
       <div className="flex flex-wrap items-center gap-4 text-sm">
         <label className="flex items-center gap-2">

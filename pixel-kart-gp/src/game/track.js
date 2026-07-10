@@ -1,10 +1,7 @@
-// Tor jako zamknięta pętla: punkty kontrolne wygładzone krzywą Catmull-Rom.
-// Wszystkie jednostki w pikselach świata (świat = 480x270).
+// Tor jako zamknięta pętla: punkty kontrolne (game/tracks.js) wygładzone
+// krzywą Catmull-Rom. Wszystkie jednostki w pikselach świata (480x270).
 
-const CONTROL_POINTS = [
-  [70, 60], [170, 42], [300, 52], [408, 62], [444, 135],
-  [406, 208], [304, 228], [244, 168], [186, 226], [82, 210], [38, 135],
-];
+import { TRACKS, DEFAULT_TRACK_ID } from './tracks.js';
 
 const TRACK_WIDTH = 42; // pełna szerokość asfaltu
 const CHECKPOINTS = 12;
@@ -19,14 +16,17 @@ function catmullRom(p0, p1, p2, p3, t) {
   ];
 }
 
-export function createTrack() {
+export function createTrack(trackId = DEFAULT_TRACK_ID) {
+  const def = TRACKS.find((t) => t.id === trackId) ?? TRACKS[0];
+  const controlPoints = def.points;
+
   const pts = [];
-  const n = CONTROL_POINTS.length;
+  const n = controlPoints.length;
   for (let i = 0; i < n; i++) {
-    const p0 = CONTROL_POINTS[(i - 1 + n) % n];
-    const p1 = CONTROL_POINTS[i];
-    const p2 = CONTROL_POINTS[(i + 1) % n];
-    const p3 = CONTROL_POINTS[(i + 2) % n];
+    const p0 = controlPoints[(i - 1 + n) % n];
+    const p1 = controlPoints[i];
+    const p2 = controlPoints[(i + 1) % n];
+    const p3 = controlPoints[(i + 2) % n];
     for (let t = 0; t < SAMPLES_PER_SEGMENT; t++) {
       pts.push(catmullRom(p0, p1, p2, p3, t / SAMPLES_PER_SEGMENT));
     }
@@ -44,7 +44,10 @@ export function createTrack() {
   const cpS = [];
   for (let i = 0; i < CHECKPOINTS; i++) cpS.push((length * i) / CHECKPOINTS);
 
-  return { pts, cum, length, width: TRACK_WIDTH, cpS, checkpoints: CHECKPOINTS };
+  return {
+    id: def.id, name: def.name,
+    pts, cum, length, width: TRACK_WIDTH, cpS, checkpoints: CHECKPOINTS,
+  };
 }
 
 // Rzut punktu (x, y) na polilinię toru.

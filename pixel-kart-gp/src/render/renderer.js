@@ -18,6 +18,12 @@ export function clearMarks(renderer) {
   renderer.marksLayer.getContext('2d').clearRect(0, 0, WORLD.width, WORLD.height);
 }
 
+// Miniaturka trasy do menu/wyboru — ten sam rysunek co warstwa toru w grze,
+// tylko jako obrazek (data URL) do wpięcia w <img>.
+export function renderTrackThumbnail(track) {
+  return renderTrackLayer(track).toDataURL('image/png');
+}
+
 function renderTrackLayer(track) {
   const c = document.createElement('canvas');
   c.width = WORLD.width;

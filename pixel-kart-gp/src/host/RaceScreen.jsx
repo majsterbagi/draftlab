@@ -10,6 +10,7 @@ const HUD_HZ = 10;
 export default function RaceScreen({
   players,            // liczba lub [{ name, color }]
   laps = 3,
+  trackId,            // id trasy (game/tracks.js); brak = domyślna
   getInput,
   pollAction,         // opcjonalnie: (slotIndex) => 'grab'|'use'|null, odpytywane co klatkę (np. klawiatura)
   actionRef,          // opcjonalnie: ref, do którego wstrzykujemy (slotIndex, action) => void (np. sieć)
@@ -25,7 +26,7 @@ export default function RaceScreen({
   callbacksRef.current = { getInput, pollAction, onSnapshot, onRequestRestart };
 
   useEffect(() => {
-    const track = createTrack();
+    const track = createTrack(trackId);
     const race = createRace(track, { players, laps });
     const renderer = createRenderer(track);
     const ctx = canvasRef.current.getContext('2d');
@@ -87,7 +88,7 @@ export default function RaceScreen({
       window.removeEventListener('keydown', onKey);
       if (actionRef) actionRef.current = null;
     };
-  }, [players, laps, runId]);
+  }, [players, laps, trackId, runId]);
 
   return (
     <div className="flex flex-col items-center gap-3">
@@ -97,7 +98,7 @@ export default function RaceScreen({
           width={WORLD.width}
           height={WORLD.height}
           className="border-4 border-neutral-700 rounded"
-          style={{ imageRendering: 'pixelated', width: 'min(960px, 92vw)' }}
+          style={{ imageRendering: 'pixelated', width: 'min(1220px, 95vw)' }}
         />
 
         {hud?.phase === 'countdown' && (
