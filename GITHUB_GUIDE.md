@@ -49,9 +49,9 @@ To jest największa zaleta Gita. Jeśli zepsujesz kod tak bardzo, że nie wiesz 
 ### Scenariusz A: Chcę cofnąć niezapisane zmiany (Reset)
 Jeśli edytowałeś pliki, strona przestała działać, ale **nie zrobiłeś jeszcze commit**, wpisz:
 ```bash
-git checkout .
+git restore .
 ```
-To "wyczyści" wszystkie Twoje zmiany od ostatniego zapisu i przywróci pliki do idealnego stanu.
+To usunie wszystkie niezapisane zmiany w śledzonych plikach. Przed wykonaniem sprawdź `git status`; nie używaj tej komendy, jeśli chcesz zachować lokalną pracę.
 
 ### Scenariusz B: Chcę wrócić do konkretnej wersji z przeszłości
 Każdy commit ma swój identyfikator. Możesz podejrzeć historię:
@@ -68,4 +68,3 @@ git clone https://github.com/majsterbagi/draftlab.git
 
 ---
 *Pamiętaj: Git jest po to, żebyś mógł eksperymentować bez strachu!*
-

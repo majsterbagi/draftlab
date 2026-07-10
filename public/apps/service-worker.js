@@ -1,4 +1,4 @@
-const CACHE_NAME = 'suntrack-v3';
+const CACHE_NAME = 'suntrack-v5';
 const APP_SHELL = [
     './SunTrack.html',
     './suntrack.webmanifest',
@@ -34,8 +34,14 @@ self.addEventListener('fetch', (event) => {
     if (request.method !== 'GET') return;
 
     const url = new URL(request.url);
+    const isLocalDevelopment = ['localhost', '127.0.0.1'].includes(self.location.hostname);
     const isLocationApi = url.hostname.includes('nominatim');
     const isStaticRequest = url.origin === self.location.origin || EXTERNAL_ASSETS.includes(request.url);
+
+    if (isLocalDevelopment) {
+        event.respondWith(fetch(request));
+        return;
+    }
 
     if (isLocationApi) {
         event.respondWith(

@@ -4,9 +4,25 @@ import { SITE_DATA } from '../data/db.js';
 import { i18n } from '../utils/i18n.js';
 import { observeReveals } from '../utils/reveal.js';
 
+const formatProjectDate = (date, lang) => {
+    if (!date) return '';
+
+    const [datePart] = date.split(/\s+/);
+    const [year, month, day] = datePart.split('-').map(Number);
+    if (![year, month, day].every(Number.isFinite)) return datePart;
+
+    return new Intl.DateTimeFormat(lang === 'pl' ? 'pl-PL' : 'en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        timeZone: 'UTC'
+    }).format(new Date(Date.UTC(year, month - 1, day)));
+};
+
 class ProjectGrid extends HTMLElement {
     constructor() {
         super();
+        this.activeCategory = 'all';
     }
 
     connectedCallback() {
@@ -33,13 +49,53 @@ class ProjectGrid extends HTMLElement {
 
         const wrapper = document.createElement('div');
 
+        // Category filter bar
+        const categories = SITE_DATA.config.categories || [];
+        const countFor = (catId) => SITE_DATA.projects.filter(p => p.category === catId).length;
+        const usedCategories = categories.filter(c => countFor(c.id) > 0);
+
+        const filterBar = document.createElement('div');
+        filterBar.className = "flex flex-wrap gap-2 mb-8";
+        filterBar.setAttribute('role', 'tablist');
+
+        const chipClass = (isActive) => isActive
+            ? "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] uppercase tracking-wider font-bold bg-tech-green text-black border border-tech-green cursor-pointer transition-all"
+            : "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] uppercase tracking-wider font-bold text-tech-dim border border-white/10 hover:border-tech-green/40 hover:text-tech-green cursor-pointer transition-all";
+
+        const txtAll = lang === 'pl' ? 'Wszystkie' : 'All';
+        const chips = [
+            { id: 'all', label: txtAll, icon: 'layout-grid', count: SITE_DATA.projects.length },
+            ...usedCategories.map(c => ({
+                id: c.id,
+                label: lang === 'pl' ? c.name : (c.name_en || c.name),
+                icon: c.icon,
+                count: countFor(c.id)
+            }))
+        ];
+
+        chips.forEach(chip => {
+            const btn = document.createElement('button');
+            const isActive = this.activeCategory === chip.id;
+            btn.className = chipClass(isActive);
+            btn.setAttribute('role', 'tab');
+            btn.setAttribute('aria-selected', String(isActive));
+            btn.innerHTML = `<i data-lucide="${chip.icon}" width="13"></i>${chip.label}<span class="${isActive ? 'opacity-60' : 'opacity-50'}">${chip.count}</span>`;
+            btn.addEventListener('click', () => {
+                this.activeCategory = chip.id;
+                this.render();
+            });
+            filterBar.appendChild(btn);
+        });
+
         const grid = document.createElement('div');
         grid.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6";
         grid.id = "projects-grid";
 
-        // Filter active projects
-        const activeProjects = SITE_DATA.projects.filter(p => p.active);
-        const inactiveProjects = SITE_DATA.projects.filter(p => !p.active);
+        // Filter by category, then split into active/inactive
+        const inCategory = (p) => this.activeCategory === 'all' || p.category === this.activeCategory;
+        const visibleProjects = SITE_DATA.projects.filter(inCategory);
+        const activeProjects = visibleProjects.filter(p => p.active);
+        const inactiveProjects = visibleProjects.filter(p => !p.active);
 
         const renderProject = (p, index = 0, isHidden = false) => {
             const baseClass = "group border rounded-card transition-all duration-300 relative overflow-hidden flex flex-col h-full";
@@ -74,6 +130,8 @@ class ProjectGrid extends HTMLElement {
             const desc = lang === 'pl' ? p.desc : (p.desc_en || p.desc);
             const btnRun = i18n.t('ui.run');
             const txtOffline = i18n.t('ui.offline');
+            const latestChange = p.changes?.[0];
+            const lastUpdate = formatProjectDate(latestChange?.date, lang);
             const titleClass = p.id === 'pixel-kart'
                 ? 'text-lg sm:text-xl whitespace-nowrap'
                 : 'text-xl';
@@ -107,19 +165,26 @@ class ProjectGrid extends HTMLElement {
                     <div class="mb-3">
                         <div class="flex items-center justify-between gap-2">
                             <div class="flex min-w-0 items-center gap-3 sm:gap-4">
-                            <div class="w-12 h-12 min-w-[3rem] bg-white/5 rounded-xl flex items-center justify-center ${iconColor} border border-white/10 ${greenBorder} transition-colors">
-                                <i data-lucide="${A}" width="24"></i>
-                            </div>
-                            <h3 class="${titleClass} font-bold ${isLive ? 'group-hover:text-white' : 'text-tech-dim'} transition-colors">${title}</h3>
+                                <div class="w-12 h-12 min-w-[3rem] bg-white/5 rounded-xl flex items-center justify-center ${iconColor} border border-white/10 ${greenBorder} transition-colors">
+                                    <i data-lucide="${A}" width="24"></i>
+                                </div>
+                                <h3 class="${titleClass} font-bold ${isLive ? 'group-hover:text-white' : 'text-tech-dim'} transition-colors">${title}</h3>
                             </div>
                             ${statusBadge}
                         </div>
+                        ${lastUpdate ? `<span class="mt-1 block text-right text-[9px] uppercase tracking-wider text-tech-dim/70 whitespace-nowrap">${i18n.t('term.now_updated')}: ${lastUpdate}</span>` : ''}
                     </div>
 
                     <p class="text-tech-dim text-sm mb-2 flex-grow leading-relaxed">${desc}</p>
 
                     <div class="flex flex-wrap gap-2 mb-2">
-                        ${p.tags.map(t => `<span class="text-[10px] text-tech-green bg-tech-green/10 px-2 py-1 rounded-full border border-tech-green/20">${t}</span>`).join('')}
+                        ${(() => {
+                            const cat = (SITE_DATA.config.categories || []).find(c => c.id === p.category);
+                            if (!cat) return '';
+                            const catLabel = lang === 'pl' ? cat.name : (cat.name_en || cat.name);
+                            return `<span class="flex items-center gap-1 text-[10px] uppercase text-white/70 bg-white/5 px-2 py-1 rounded-full border border-white/15"><i data-lucide="${cat.icon}" width="11"></i>${catLabel}</span>`;
+                        })()}
+                        ${p.tags.map(t => `<span class="inline-flex items-center justify-center text-center text-[10px] text-tech-green bg-tech-green/10 px-2 py-1 rounded-full border border-tech-green/20">${t}</span>`).join('')}
                     </div>
 
                     ${actionButtons}
@@ -136,10 +201,10 @@ class ProjectGrid extends HTMLElement {
             mappedProjects.push(renderProject(p, activeProjects.length + idx, !showEmpty));
         });
 
-        // Calculate missing phantom slots
-        const totalItems = SITE_DATA.projects.length;
+        // Calculate missing phantom slots (only in the "all" view)
+        const totalItems = visibleProjects.length;
         const remainder = totalItems % 3;
-        const missing = remainder === 0 ? 0 : 3 - remainder;
+        const missing = (this.activeCategory === 'all' && remainder !== 0) ? 3 - remainder : 0;
 
         if (missing > 0) {
             for (let i = 0; i < missing; i++) {
@@ -196,8 +261,9 @@ class ProjectGrid extends HTMLElement {
             this.render(); // Re-render with new state
         });
 
+        wrapper.appendChild(filterBar);
         wrapper.appendChild(grid);
-        wrapper.appendChild(toggleBtn);
+        if (this.activeCategory === 'all') wrapper.appendChild(toggleBtn);
         this.appendChild(wrapper);
 
         // Mouse-tracking spotlight on live cards

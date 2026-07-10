@@ -165,8 +165,23 @@
         let currentFilter = 'ALL';
         let filteredData = [];
 
-        // App Components List (for filtering)
-        const APP_COMPONENTS = ['ATMOSPHERE', 'SUNTRACK', 'DRAFTCARGO', 'NUCLEUS'];
+        // Project identifiers are read from generated Git metadata, so new projects do not require a code edit here.
+        const APP_COMPONENTS = new Set(
+            GIT_LOG_DATA.flatMap(log => log.projects || [])
+                .map(project => project.toUpperCase())
+        );
+
+        const projectLabels = (log) => {
+            if (Array.isArray(log.projects) && log.projects.length > 0) {
+                return log.projects.map(project => project.toUpperCase()).join(' · ');
+            }
+            return (log.component || 'SYSTEM').toUpperCase();
+        };
+
+        const isProjectLog = (log) => {
+            if (Array.isArray(log.projects) && log.projects.length > 0) return true;
+            return APP_COMPONENTS.has((log.component || '').toUpperCase());
+        };
 
         // DOM
         const container = document.getElementById('log-container');
@@ -186,7 +201,7 @@
             const log = GIT_LOG_DATA.find(l => l.hash === hash);
             if (!log) return;
 
-            mComponent.innerText = (log.component || 'SYSTEM').toUpperCase();
+            mComponent.innerText = projectLabels(log);
             mDate.innerText = log.date;
             mHash.innerText = '#' + log.hash;
             mDesc.innerText = log.desc;
@@ -213,9 +228,9 @@
             if (currentFilter === 'ALL') {
                 filteredData = GIT_LOG_DATA;
             } else if (currentFilter === 'APPS') {
-                filteredData = GIT_LOG_DATA.filter(l => APP_COMPONENTS.includes(l.component?.toUpperCase()));
+                filteredData = GIT_LOG_DATA.filter(isProjectLog);
             } else { // SYTEM
-                filteredData = GIT_LOG_DATA.filter(l => !APP_COMPONENTS.includes(l.component?.toUpperCase()));
+                filteredData = GIT_LOG_DATA.filter(l => !isProjectLog(l));
             }
 
             // Reset Page on Filter Change
@@ -256,7 +271,7 @@
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-3">
                         <div class="flex items-center gap-3">
                             <span class="text-[10px] font-bold px-2 py-1 rounded border ${typeColor}">${log.type}</span>
-                            <span class="text-white font-bold text-sm tracking-wide">${(log.component || 'SYSTEM').toUpperCase()}</span>
+                            <span class="text-white font-bold text-sm tracking-wide">${projectLabels(log)}</span>
                         </div>
                         
                         <div class="flex items-center gap-4 text-xs font-mono text-tech-dim">

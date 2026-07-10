@@ -97,6 +97,34 @@
             opacity: 0.4;
         }
 
+        .stars-layer {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0;
+            background-image:
+                radial-gradient(circle at 8% 28%, rgba(255, 255, 255, 0.95) 0 1px, transparent 1.6px),
+                radial-gradient(circle at 18% 16%, rgba(190, 220, 255, 0.85) 0 1px, transparent 1.5px),
+                radial-gradient(circle at 31% 35%, rgba(255, 255, 255, 0.8) 0 1px, transparent 1.4px),
+                radial-gradient(circle at 43% 13%, rgba(255, 244, 205, 0.9) 0 1.2px, transparent 1.8px),
+                radial-gradient(circle at 57% 31%, rgba(210, 230, 255, 0.9) 0 1px, transparent 1.6px),
+                radial-gradient(circle at 69% 18%, rgba(255, 255, 255, 0.8) 0 1px, transparent 1.5px),
+                radial-gradient(circle at 82% 37%, rgba(255, 240, 190, 0.85) 0 1.2px, transparent 1.8px),
+                radial-gradient(circle at 93% 21%, rgba(220, 235, 255, 0.9) 0 1px, transparent 1.5px);
+            background-size: 360px 210px, 420px 260px, 310px 190px, 470px 280px,
+                390px 240px, 340px 230px, 450px 270px, 320px 220px;
+            transition: opacity 0.5s ease;
+        }
+
+        .sky-container.timelapse-running .stars-layer {
+            animation: star-drift 18s linear infinite;
+        }
+
+        @keyframes star-drift {
+            to { background-position: 18px 4px, -12px 7px, 9px -4px, -16px 6px, 13px 3px, -8px -5px, 12px 6px, -10px 4px; }
+        }
+
         .trajectory-svg {
             position: absolute;
             top: 0;
@@ -133,6 +161,14 @@
 
         .trajectory-winter {
             stroke: #87ceeb;
+        }
+
+        .trajectory-moon {
+            stroke: #d8e7ff;
+            stroke-width: 1.8;
+            stroke-dasharray: 2 2.5;
+            opacity: 0.82;
+            filter: drop-shadow(0 0 2px rgba(190, 220, 255, 0.8));
         }
 
         /* === SEASON TOGGLE PANEL === */
@@ -433,6 +469,50 @@
             color: #000;
         }
 
+        .timelapse-btn {
+            min-width: 86px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border: 1px solid rgba(255, 205, 95, 0.45);
+            border-radius: 16px;
+            color: #ffd66b;
+            background: rgba(255, 190, 60, 0.12);
+            font: 700 10px 'JetBrains Mono', monospace;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: color 0.2s, background 0.2s, box-shadow 0.2s;
+        }
+
+        .timelapse-btn[aria-pressed="true"] {
+            color: #111;
+            background: #ffd66b;
+            box-shadow: 0 0 18px rgba(255, 205, 95, 0.45);
+        }
+
+        .timelapse-speed {
+            height: 30px;
+            padding: 0 8px;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 9px;
+            color: rgba(255, 255, 255, 0.72);
+            background: rgba(0, 0, 0, 0.35);
+            font: 700 10px 'JetBrains Mono', monospace;
+            color-scheme: dark;
+            cursor: pointer;
+        }
+
+        .sky-container.timelapse-running {
+            --grid-line: rgba(255, 255, 255, 0.08);
+        }
+
+        .sky-container.timelapse-running .sun-orb,
+        .sky-container.timelapse-running .moon-orb {
+            transition: none;
+        }
+
         /* === DASHBOARD === */
         .dashboard {
             flex: 1;
@@ -655,6 +735,245 @@
             color: var(--accent-color);
             text-transform: uppercase;
             letter-spacing: 0.5px;
+        }
+
+        /* === INTERACTIVE PLANNERS === */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(220px, 0.8fr);
+            gap: 10px;
+        }
+
+        .feature-card {
+            min-width: 0;
+            padding: 14px;
+            overflow: hidden;
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            backdrop-filter: blur(10px);
+        }
+
+        .feature-card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .feature-card-title {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            color: rgba(255, 255, 255, 0.88);
+            font: 700 11px 'JetBrains Mono', monospace;
+            letter-spacing: 0.7px;
+            text-transform: uppercase;
+        }
+
+        .feature-card-subtitle {
+            margin-top: 4px;
+            color: var(--text-dim);
+            font-size: 10px;
+        }
+
+        .height-control {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .height-control label {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-dim);
+            font: 700 9px 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+        }
+
+        .height-slider {
+            width: 100%;
+            accent-color: var(--accent-color);
+        }
+
+        .height-value {
+            min-width: 52px;
+            color: var(--accent-color);
+            font: 700 11px 'JetBrains Mono', monospace;
+            text-align: right;
+        }
+
+        .shadow-layout {
+            display: grid;
+            grid-template-columns: 132px 1fr;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .shadow-compass {
+            position: relative;
+            width: 132px;
+            height: 132px;
+            border: 1px solid rgba(0, 255, 157, 0.18);
+            border-radius: 50%;
+            background:
+                radial-gradient(circle, rgba(0, 255, 157, 0.08) 0 2px, transparent 3px),
+                linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+                radial-gradient(circle, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.18));
+            background-size: auto, 33px 33px, 33px 33px, auto;
+            box-shadow: inset 0 0 24px rgba(0, 255, 157, 0.04);
+        }
+
+        .compass-point {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.36);
+            font: 700 8px 'JetBrains Mono', monospace;
+        }
+
+        .compass-point.n { top: 5px; left: 50%; transform: translateX(-50%); color: #ff8278; }
+        .compass-point.e { top: 50%; right: 6px; transform: translateY(-50%); }
+        .compass-point.s { bottom: 5px; left: 50%; transform: translateX(-50%); }
+        .compass-point.w { top: 50%; left: 6px; transform: translateY(-50%); }
+
+        .shadow-ray {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 48px;
+            height: 7px;
+            transform-origin: 0 50%;
+            border-radius: 0 999px 999px 0;
+            background: linear-gradient(90deg, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.05));
+            filter: blur(0.5px);
+            transition: transform 0.16s linear, width 0.16s linear, opacity 0.2s;
+        }
+
+        .shadow-object {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 9px;
+            height: 9px;
+            transform: translate(-50%, -50%);
+            border: 2px solid #fff;
+            border-radius: 50%;
+            background: var(--accent-color);
+            box-shadow: 0 0 12px rgba(0, 255, 157, 0.65);
+        }
+
+        .shadow-metrics {
+            display: grid;
+            gap: 8px;
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            color: var(--text-dim);
+            font-size: 9px;
+            text-transform: uppercase;
+        }
+
+        .metric-row:last-child {
+            padding-bottom: 0;
+            border-bottom: 0;
+        }
+
+        .metric-row strong {
+            color: rgba(255, 255, 255, 0.9);
+            font: 700 10px 'JetBrains Mono', monospace;
+            text-align: right;
+        }
+
+        .shadow-night .shadow-ray {
+            opacity: 0;
+        }
+
+        .moon-summary {
+            display: grid;
+            grid-template-columns: 76px 1fr;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .moon-preview {
+            display: grid;
+            place-items: center;
+            width: 76px;
+            height: 76px;
+            border: 1px solid rgba(190, 220, 255, 0.14);
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(190, 220, 255, 0.12), rgba(5, 9, 18, 0.1) 68%);
+            color: #fff;
+            font-size: 45px;
+            filter: drop-shadow(0 0 12px rgba(190, 220, 255, 0.28));
+        }
+
+        .moon-phase-name {
+            color: #fff;
+            font: 700 12px 'JetBrains Mono', monospace;
+            line-height: 1.25;
+        }
+
+        .moon-illumination {
+            margin-top: 4px;
+            color: #bcd9ff;
+            font: 700 10px 'JetBrains Mono', monospace;
+        }
+
+        .moon-toggle-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 8px;
+            border: 1px solid rgba(190, 220, 255, 0.3);
+            border-radius: 9px;
+            color: #cfe2ff;
+            background: rgba(190, 220, 255, 0.08);
+            font: 700 9px 'JetBrains Mono', monospace;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .moon-toggle-btn[aria-pressed="true"] {
+            color: #08111e;
+            background: #cfe2ff;
+        }
+
+        .moon-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .moon-metric {
+            padding: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 9px;
+            background: rgba(0, 0, 0, 0.13);
+        }
+
+        .moon-metric span {
+            display: block;
+            color: var(--text-dim);
+            font-size: 8px;
+            text-transform: uppercase;
+        }
+
+        .moon-metric strong {
+            display: block;
+            margin-top: 3px;
+            color: #fff;
+            font: 700 10px 'JetBrains Mono', monospace;
         }
 
         /* === STATS GRID === */
@@ -898,7 +1217,35 @@
         }
 
         /* === RESPONSIVE === */
+        @media (max-width: 640px) {
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         @media (max-width: 480px) {
+            .sky-slider-overlay {
+                padding-inline: 10px;
+            }
+
+            .sky-slider-container {
+                gap: 7px;
+            }
+
+            .timelapse-btn {
+                min-width: 34px;
+                padding-inline: 8px;
+            }
+
+            .timelapse-btn span {
+                display: none;
+            }
+
+            .timelapse-speed {
+                width: 56px;
+                padding-inline: 4px;
+            }
+
             .date-control {
                 align-items: flex-start;
                 flex-direction: column;
@@ -926,6 +1273,15 @@
 
             .stat-card {
                 padding: 12px;
+            }
+
+            .shadow-layout {
+                grid-template-columns: 120px 1fr;
+            }
+
+            .shadow-compass {
+                width: 120px;
+                height: 120px;
             }
         }
 
@@ -1104,6 +1460,7 @@
     <!-- Sky Visualization -->
     <div class="sky-container" id="sky-container">
         <div class="sky-grid"></div>
+        <div class="stars-layer" id="stars-layer" aria-hidden="true"></div>
 
         <!-- Sky Search -->
         <div class="sky-search">
@@ -1124,6 +1481,7 @@
             <path class="trajectory-season trajectory-summer" id="trajectory-summer"></path>
             <path class="trajectory-season trajectory-autumn" id="trajectory-autumn"></path>
             <path class="trajectory-season trajectory-winter" id="trajectory-winter"></path>
+            <path class="trajectory-season trajectory-moon" id="trajectory-moon"></path>
         </svg>
         <div class="sun-orb" id="sun-orb"></div>
         <div class="moon-orb" id="moon-orb">
@@ -1179,6 +1537,11 @@
                 <span class="icon">❄️</span>
                 <span class="label" data-i18n="sun.season.winter.short">ZIM</span>
             </label>
+            <label class="season-toggle" data-season="moon" id="toggle-moon-label">
+                <input type="checkbox" name="season" value="moon" checked>
+                <span class="icon">🌙</span>
+                <span class="label" data-i18n="sun.moon.short">KSI</span>
+            </label>
         </div>
 
         <div class="landscape">
@@ -1193,8 +1556,18 @@
         <div class="sky-slider-overlay">
             <div class="sky-slider-container">
                 <button type="button" class="now-btn sky-now-btn" id="sky-now-btn" data-i18n="sun.now">NOW</button>
+                <button type="button" class="timelapse-btn" id="timelapse-toggle" aria-pressed="false">
+                    <span id="timelapse-icon" aria-hidden="true">▶</span>
+                    <span id="timelapse-label" data-i18n="sun.timelapse.play">ODTWÓRZ</span>
+                </button>
                 <input type="range" class="sky-slider" id="sky-slider" min="0" max="1439" value="720"
                     data-i18n="sun.time_slider" data-i18n-target="aria-label" aria-label="Czas dnia">
+                <select class="timelapse-speed" id="timelapse-speed" data-i18n="sun.timelapse.speed"
+                    data-i18n-target="aria-label" aria-label="Tempo animacji">
+                    <option value="32">45 s</option>
+                    <option value="60" selected>24 s</option>
+                    <option value="120">12 s</option>
+                </select>
             </div>
         </div>
     </div>
@@ -1221,6 +1594,70 @@
                 <div class="current-phase" role="status" aria-live="polite">DAY</div>
             </div>
         </div>
+
+        <section class="feature-grid" data-i18n="sun.features.label" data-i18n-target="aria-label"
+            aria-label="Narzędzia planowania">
+            <article class="feature-card" id="shadow-card">
+                <div class="feature-card-header">
+                    <div>
+                        <div class="feature-card-title"><i data-lucide="move-diagonal-2" width="14"></i>
+                            <span data-i18n="sun.shadow.title">SYMULATOR CIENIA</span>
+                        </div>
+                        <div class="feature-card-subtitle" data-i18n="sun.shadow.subtitle">Kierunek i długość dla wybranego obiektu</div>
+                    </div>
+                </div>
+                <div class="height-control">
+                    <label for="object-height">
+                        <span data-i18n="sun.shadow.height">Wysokość obiektu</span>
+                        <span id="object-height-label">1.8 m</span>
+                    </label>
+                    <input class="height-slider" type="range" id="object-height" min="0.5" max="30" step="0.1" value="1.8">
+                    <output class="height-value" id="object-height-output" for="object-height">1.8 m</output>
+                </div>
+                <div class="shadow-layout">
+                    <div class="shadow-compass" id="shadow-compass" aria-hidden="true">
+                        <span class="compass-point n">N</span>
+                        <span class="compass-point e">E</span>
+                        <span class="compass-point s">S</span>
+                        <span class="compass-point w">W</span>
+                        <div class="shadow-ray" id="shadow-ray"></div>
+                        <div class="shadow-object"></div>
+                    </div>
+                    <div class="shadow-metrics">
+                        <div class="metric-row"><span data-i18n="sun.shadow.length">Długość</span><strong id="shadow-length">--</strong></div>
+                        <div class="metric-row"><span data-i18n="sun.shadow.direction">Kierunek</span><strong id="shadow-direction">--</strong></div>
+                        <div class="metric-row"><span data-i18n="sun.shadow.ratio">Stosunek</span><strong id="shadow-ratio">--</strong></div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="feature-card" id="moon-card">
+                <div class="feature-card-header">
+                    <div>
+                        <div class="feature-card-title"><i data-lucide="moon-star" width="14"></i>
+                            <span data-i18n="sun.moon.title">KSIĘŻYC</span>
+                        </div>
+                        <div class="feature-card-subtitle" data-i18n="sun.moon.subtitle">Faza i trasa dla wybranej daty</div>
+                    </div>
+                    <button type="button" class="moon-toggle-btn" id="moon-trajectory-toggle" aria-pressed="false">
+                        <i data-lucide="orbit" width="11"></i><span data-i18n="sun.moon.trajectory">TRASA</span>
+                    </button>
+                </div>
+                <div class="moon-summary">
+                    <div class="moon-preview" id="moon-preview" aria-hidden="true">🌕</div>
+                    <div>
+                        <div class="moon-phase-name" id="moon-phase-name">--</div>
+                        <div class="moon-illumination" id="moon-illumination">--%</div>
+                    </div>
+                </div>
+                <div class="moon-metrics">
+                    <div class="moon-metric"><span data-i18n="sun.moon.rise">Wschód</span><strong id="moon-rise">--:--</strong></div>
+                    <div class="moon-metric"><span data-i18n="sun.moon.set">Zachód</span><strong id="moon-set">--:--</strong></div>
+                    <div class="moon-metric"><span data-i18n="sun.moon.altitude">Wysokość</span><strong id="moon-altitude">--°</strong></div>
+                    <div class="moon-metric"><span data-i18n="sun.moon.azimuth">Azymut</span><strong id="moon-azimuth">--°</strong></div>
+                </div>
+            </article>
+        </section>
 
         <!-- Info Grid -->
         <div class="section-label" data-i18n="sun.dashboard">DATA DASHBOARD</div>
@@ -1262,8 +1699,7 @@
             </div>
         </div>
 
-        </div>
-
+    </main>
 
         <script>
             let LAT = 52.2297; // Default: Warsaw
@@ -1276,6 +1712,11 @@
             let selectedDateKey = '';
             let locationSource = 'default';
             let initialized = false;
+            let timelapseRunning = false;
+            let timelapseFrame = null;
+            let timelapseLastTimestamp = null;
+            let timelapseMinuteFloat = 0;
+            let moonDayCache = null;
 
             let savedToggleStates = null;
 
@@ -1306,6 +1747,7 @@
                     window.i18n.subscribe(() => {
                         window.i18n.updateStaticElements();
                         window.updateApp();
+                        syncTimelapseButton();
                     });
                 }
             });
@@ -1325,7 +1767,8 @@
                         spring: toggleSpring.checked,
                         summer: toggleSummer.checked,
                         autumn: toggleAutumn.checked,
-                        winter: toggleWinter.checked
+                        winter: toggleWinter.checked,
+                        moon: toggleMoon.checked
                     };
 
                     // Enable all trajectories in stealth mode
@@ -1334,6 +1777,7 @@
                     toggleAutumn.checked = true;
                     toggleAutumn.checked = true;
                     toggleWinter.checked = true;
+                    toggleMoon.checked = true;
                 } else {
                     icon.setAttribute('data-lucide', 'eye');
                     icon.style.color = '#00ff9d';
@@ -1344,6 +1788,7 @@
                         toggleSummer.checked = savedToggleStates.summer;
                         toggleAutumn.checked = savedToggleStates.autumn;
                         toggleWinter.checked = savedToggleStates.winter;
+                        toggleMoon.checked = savedToggleStates.moon;
                     }
                 }
                 initSeasonToggles();
@@ -1359,14 +1804,34 @@
 
             // === DOM REFS ===
             const skyContainer = document.getElementById('sky-container');
+            const starsLayer = document.getElementById('stars-layer');
             const sunOrb = document.getElementById('sun-orb');
             const moonOrb = document.getElementById('moon-orb');
             const skySlider = document.getElementById('sky-slider');
             const skyNowBtn = document.getElementById('sky-now-btn');
+            const timelapseToggle = document.getElementById('timelapse-toggle');
+            const timelapseSpeed = document.getElementById('timelapse-speed');
+            const timelapseIcon = document.getElementById('timelapse-icon');
             const citySearch = document.getElementById('city-search');
             const useLocationBtn = document.getElementById('use-location-btn');
             const dateInput = document.getElementById('sun-date');
             const todayBtn = document.getElementById('today-btn');
+            const objectHeightInput = document.getElementById('object-height');
+            const objectHeightOutput = document.getElementById('object-height-output');
+            const objectHeightLabel = document.getElementById('object-height-label');
+            const shadowCard = document.getElementById('shadow-card');
+            const shadowRay = document.getElementById('shadow-ray');
+            const shadowLength = document.getElementById('shadow-length');
+            const shadowDirection = document.getElementById('shadow-direction');
+            const shadowRatio = document.getElementById('shadow-ratio');
+            const moonTrajectoryToggle = document.getElementById('moon-trajectory-toggle');
+            const moonPreview = document.getElementById('moon-preview');
+            const moonPhaseName = document.getElementById('moon-phase-name');
+            const moonIllumination = document.getElementById('moon-illumination');
+            const moonRise = document.getElementById('moon-rise');
+            const moonSet = document.getElementById('moon-set');
+            const moonAltitude = document.getElementById('moon-altitude');
+            const moonAzimuth = document.getElementById('moon-azimuth');
 
             const lensFlare = document.getElementById('lens-flare');
             const flareItems = document.querySelectorAll('.flare-item');
@@ -1377,10 +1842,12 @@
             const trajectorySummer = document.getElementById('trajectory-summer');
             const trajectoryAutumn = document.getElementById('trajectory-autumn');
             const trajectoryWinter = document.getElementById('trajectory-winter');
+            const trajectoryMoon = document.getElementById('trajectory-moon');
             const toggleSpring = document.querySelector('label[data-season="spring"] input');
             const toggleSummer = document.querySelector('label[data-season="summer"] input');
             const toggleAutumn = document.querySelector('label[data-season="autumn"] input');
             const toggleWinter = document.querySelector('label[data-season="winter"] input');
+            const toggleMoon = document.querySelector('label[data-season="moon"] input');
 
             const isValidDate = (date) => date instanceof Date && !Number.isNaN(date.getTime());
             const getAzimuthDegrees = (position) => {
@@ -1515,6 +1982,179 @@
                 ? '--:--'
                 : `${fmt(start)} - ${fmt(end)}`;
 
+            const getText = (key) => window.i18n ? window.i18n.t(key) : key;
+
+            const formatMeters = (value) => {
+                if (!Number.isFinite(value)) return '--';
+                if (value >= 1000) return `${(value / 1000).toFixed(value >= 10000 ? 0 : 1)} km`;
+                return `${value.toFixed(value >= 100 ? 0 : value >= 10 ? 1 : 2)} m`;
+            };
+
+            const getCardinalDirection = (azimuth) => {
+                if (!Number.isFinite(azimuth)) return '--';
+                const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+                return directions[Math.round(azimuth / 45) % 8];
+            };
+
+            const getMoonDayData = (date) => {
+                const day = parseDateKey(getDateKey(date));
+                if (!day) return { samples: [], rise: null, set: null, alwaysUp: false, alwaysDown: true };
+
+                const cacheKey = `${getDateKey(day)}|${LAT.toFixed(5)}|${LNG.toFixed(5)}`;
+                if (moonDayCache?.key === cacheKey) return moonDayCache.data;
+
+                const samples = [];
+                const stepMinutes = 5;
+                const start = day.getTime();
+
+                for (let minute = 0; minute <= 1440; minute += stepMinutes) {
+                    const timestamp = start + minute * 60000;
+                    const position = SunCalc.getMoonPosition(new Date(timestamp), LAT, LNG);
+                    samples.push({ timestamp, position, altitude: position.altitude });
+                }
+
+                let rise = null;
+                let set = null;
+                for (let index = 1; index < samples.length; index++) {
+                    const previous = samples[index - 1];
+                    const current = samples[index];
+                    const crossesHorizon = (previous.altitude < 0 && current.altitude >= 0) ||
+                        (previous.altitude >= 0 && current.altitude < 0);
+                    if (!crossesHorizon) continue;
+
+                    const fraction = Math.abs(previous.altitude) /
+                        (Math.abs(previous.altitude) + Math.abs(current.altitude));
+                    const crossing = new Date(previous.timestamp +
+                        (current.timestamp - previous.timestamp) * fraction);
+                    if (previous.altitude < 0 && !rise) rise = crossing;
+                    else if (previous.altitude >= 0 && !set) set = crossing;
+                }
+
+                const aboveCount = samples.filter(sample => sample.altitude >= 0).length;
+                const data = {
+                    samples,
+                    rise,
+                    set,
+                    alwaysUp: aboveCount === samples.length,
+                    alwaysDown: aboveCount === 0
+                };
+                moonDayCache = { key: cacheKey, data };
+                return data;
+            };
+
+            const getMoonPhasePresentation = (date) => {
+                const illumination = SunCalc.getMoonIllumination(date);
+                const index = Math.round(illumination.phase * 8) % 8;
+                const keys = [
+                    'sun.moon.phase.new', 'sun.moon.phase.waxing_crescent',
+                    'sun.moon.phase.first_quarter', 'sun.moon.phase.waxing_gibbous',
+                    'sun.moon.phase.full', 'sun.moon.phase.waning_gibbous',
+                    'sun.moon.phase.last_quarter', 'sun.moon.phase.waning_crescent'
+                ];
+                const icons = ['🌑', '🌒', '🌓', '🌔', '🌕', '🌖', '🌗', '🌘'];
+                return { illumination, key: keys[index], icon: icons[index] };
+            };
+
+            function updateMoonDashboard(date, projection) {
+                const presentation = getMoonPhasePresentation(date);
+                const dayData = getMoonDayData(date);
+                const illuminationPercent = Math.round(presentation.illumination.fraction * 100);
+
+                if (moonPreview) moonPreview.textContent = presentation.icon;
+                if (moonPhaseName) moonPhaseName.textContent = getText(presentation.key);
+                if (moonIllumination) moonIllumination.textContent = `${illuminationPercent}% ${getText('sun.moon.illuminated')}`;
+                if (moonRise) moonRise.textContent = dayData.rise
+                    ? fmt(dayData.rise)
+                    : getText(dayData.alwaysUp ? 'sun.moon.always_up' : 'sun.state.no_data');
+                if (moonSet) moonSet.textContent = dayData.set
+                    ? fmt(dayData.set)
+                    : getText(dayData.alwaysUp ? 'sun.moon.always_up' : 'sun.state.no_data');
+                if (moonAltitude) moonAltitude.textContent = projection.altitude === null
+                    ? '--°'
+                    : `${Math.round(projection.altitude)}°`;
+                if (moonAzimuth) moonAzimuth.textContent = projection.azimuth === null
+                    ? '--°'
+                    : `${Math.round(projection.azimuth)}°`;
+            }
+
+            function updateShadowSimulator(sunPosition) {
+                if (!objectHeightInput || !shadowRay || !shadowCard) return;
+
+                const objectHeight = Number(objectHeightInput.value);
+                const altitude = Number(sunPosition?.altitude);
+                const sunAzimuth = getAzimuthDegrees(sunPosition);
+                const heightLabel = `${objectHeight.toFixed(1)} m`;
+
+                if (objectHeightOutput) objectHeightOutput.textContent = heightLabel;
+                if (objectHeightLabel) objectHeightLabel.textContent = heightLabel;
+
+                if (!Number.isFinite(altitude) || altitude <= 0 || sunAzimuth === null) {
+                    shadowCard.classList.add('shadow-night');
+                    shadowRay.dataset.direction = '';
+                    shadowRay.dataset.length = '';
+                    if (shadowLength) shadowLength.textContent = getText('sun.shadow.none');
+                    if (shadowDirection) shadowDirection.textContent = '--';
+                    if (shadowRatio) shadowRatio.textContent = '--';
+                    return;
+                }
+
+                const ratio = 1 / Math.tan(altitude * Math.PI / 180);
+                const length = objectHeight * ratio;
+                const shadowAzimuth = (sunAzimuth + 180) % 360;
+                const visualLength = Math.min(56, 12 + Math.log1p(Math.max(0, ratio)) * 19);
+
+                shadowCard.classList.remove('shadow-night');
+                shadowRay.style.width = `${visualLength}px`;
+                shadowRay.style.transform = `rotate(${shadowAzimuth - 90}deg)`;
+                shadowRay.dataset.direction = shadowAzimuth.toFixed(2);
+                shadowRay.dataset.length = length.toFixed(3);
+
+                if (shadowLength) shadowLength.textContent = formatMeters(length);
+                if (shadowDirection) shadowDirection.textContent = `${getCardinalDirection(shadowAzimuth)} · ${Math.round(shadowAzimuth)}°`;
+                if (shadowRatio) shadowRatio.textContent = `1 : ${ratio.toFixed(ratio >= 10 ? 0 : 2)}`;
+            }
+
+            function syncTimelapseButton() {
+                if (!timelapseToggle) return;
+                timelapseToggle.setAttribute('aria-pressed', String(timelapseRunning));
+                if (timelapseIcon) timelapseIcon.textContent = timelapseRunning ? 'Ⅱ' : '▶';
+                const label = document.getElementById('timelapse-label');
+                if (label) label.textContent = getText(timelapseRunning ? 'sun.timelapse.pause' : 'sun.timelapse.play');
+                skyContainer?.classList.toggle('timelapse-running', timelapseRunning);
+            }
+
+            function stopTimelapse() {
+                timelapseRunning = false;
+                timelapseLastTimestamp = null;
+                if (timelapseFrame !== null) cancelAnimationFrame(timelapseFrame);
+                timelapseFrame = null;
+                syncTimelapseButton();
+            }
+
+            function runTimelapseFrame(timestamp) {
+                if (!timelapseRunning || !skySlider) return;
+                if (timelapseLastTimestamp === null) timelapseLastTimestamp = timestamp;
+                const elapsedSeconds = Math.min(0.1, (timestamp - timelapseLastTimestamp) / 1000);
+                timelapseLastTimestamp = timestamp;
+                const speed = Number(timelapseSpeed?.value) || 60;
+                timelapseMinuteFloat = (timelapseMinuteFloat + elapsedSeconds * speed) % 1440;
+                const nextMinute = Math.floor(timelapseMinuteFloat);
+
+                skySlider.value = String(nextMinute);
+                update(nextMinute, selectedDateKey);
+                timelapseFrame = requestAnimationFrame(runTimelapseFrame);
+            }
+
+            function startTimelapse() {
+                if (!skySlider || timelapseRunning) return;
+                isLive = false;
+                timelapseRunning = true;
+                timelapseLastTimestamp = null;
+                timelapseMinuteFloat = Number(skySlider.value);
+                syncTimelapseButton();
+                timelapseFrame = requestAnimationFrame(runTimelapseFrame);
+            }
+
             // === SKY GRADIENT ===
             // === SKY GRADIENT (Smooth Interpolation) ===
             function lerpColor(a, b, amount) {
@@ -1608,6 +2248,7 @@
             // === MOON PHASE RENDERING ===
             // Renders the moon phase as an SVG shadow overlay
             function updateMoonPhase(date) {
+                if (!window.SunCalc) return;
                 const moonPhasePath = document.getElementById('moon-phase-shadow');
                 if (!moonPhasePath) return;
 
@@ -1692,6 +2333,7 @@
 
             // === UPDATE FUNCTION ===
             function update(mins, dateKey = selectedDateKey) {
+                if (!window.SunCalc) return;
                 const safeMins = Math.max(0, Math.min(1439, Number.isFinite(mins) ? mins : 0));
                 const h = Math.floor(safeMins / 60);
                 const m = Math.floor(safeMins % 60);
@@ -1781,6 +2423,10 @@
 
                 // Sky gradient
                 const grad = getGradient(altDeg);
+                if (starsLayer) {
+                    const starsOpacity = Math.max(0, Math.min(0.95, (-altDeg - 2) / 10));
+                    starsLayer.style.opacity = starsOpacity.toFixed(3);
+                }
 
                 if (stealthMode) {
                     // In stealth mode, we allow the gradient to extend.
@@ -1882,10 +2528,13 @@
 
                 // Keep the phase current even while the Moon is below the horizon.
                 updateMoonPhase(d);
+                updateMoonDashboard(d, moonProjection);
+                updateShadowSimulator(pos);
             }
 
             // === SEASONAL TRAJECTORIES ===
             function drawSeasonalTrajectories() {
+                if (!window.SunCalc) return;
                 const currentYear = parseDateKey(selectedDateKey)?.getFullYear() || new Date().getFullYear();
                 const seasonDates = {
                     spring: new Date(currentYear, 2, 21),  // Mar 21
@@ -1939,6 +2588,43 @@
                     path.setAttribute('d', pathData.trim());
                     path.dataset.referenceDate = getDateKey(date);
                 });
+
+                drawMoonTrajectory();
+            }
+
+            function drawMoonTrajectory() {
+                if (!trajectoryMoon) return;
+                const date = parseDateKey(selectedDateKey) || parseDateKey(getDateKey());
+                if (!date) {
+                    trajectoryMoon.setAttribute('d', '');
+                    return;
+                }
+
+                const { horizonY, skyRange } = getHorizonConfig();
+                const dayData = getMoonDayData(date);
+                let pathData = '';
+                let previousX = null;
+                let drawing = false;
+
+                dayData.samples.forEach(sample => {
+                    if (sample.altitude < 0) {
+                        drawing = false;
+                        previousX = null;
+                        return;
+                    }
+
+                    const projection = projectSkyPosition(sample.position, { horizonY, skyRange });
+                    const x = projection.x;
+                    const y = 100 - projection.bottom;
+                    const crossesPanoramaSeam = previousX !== null && Math.abs(x - previousX) > 50;
+                    const command = !drawing || crossesPanoramaSeam ? 'M' : 'L';
+                    pathData += `${command} ${x} ${y} `;
+                    drawing = true;
+                    previousX = x;
+                });
+
+                trajectoryMoon.setAttribute('d', pathData.trim());
+                trajectoryMoon.dataset.referenceDate = getDateKey(date);
             }
 
             let seasonTogglesInitialized = false;
@@ -1948,28 +2634,26 @@
                     spring: { toggle: toggleSpring, path: trajectorySpring, label: document.getElementById('toggle-spring-label') },
                     summer: { toggle: toggleSummer, path: trajectorySummer, label: document.getElementById('toggle-summer-label') },
                     autumn: { toggle: toggleAutumn, path: trajectoryAutumn, label: document.getElementById('toggle-autumn-label') },
-                    winter: { toggle: toggleWinter, path: trajectoryWinter, label: document.getElementById('toggle-winter-label') }
+                    winter: { toggle: toggleWinter, path: trajectoryWinter, label: document.getElementById('toggle-winter-label') },
+                    moon: { toggle: toggleMoon, path: trajectoryMoon, label: document.getElementById('toggle-moon-label') }
                 };
 
                 Object.entries(toggles).forEach(([season, { toggle, path, label }]) => {
                     // Load from localStorage and sync visual state
                     const saved = localStorage.getItem(`suntrack-${season}`);
-                    if (saved === 'true') {
-                        toggle.checked = true;
-                        path.classList.add('active');
-                        label.classList.add('active');
-                    } else {
-                        path.classList.toggle('active', toggle.checked);
-                        label.classList.toggle('active', toggle.checked);
-                    }
+                    if (saved !== null) toggle.checked = saved === 'true';
+                    path.classList.toggle('active', toggle.checked);
+                    label.classList.toggle('active', toggle.checked);
 
                     // Add event listeners only once
                     if (!seasonTogglesInitialized) {
                         toggle.addEventListener('change', () => {
-                            console.log(`SEASON TOGGLE: ${season} -> ${toggle.checked}`);
                             path.classList.toggle('active', toggle.checked);
                             label.classList.toggle('active', toggle.checked);
                             localStorage.setItem(`suntrack-${season}`, toggle.checked);
+                            if (season === 'moon' && moonTrajectoryToggle) {
+                                moonTrajectoryToggle.setAttribute('aria-pressed', String(toggle.checked));
+                            }
                             if (toggle.checked) {
                                 try {
                                     drawSeasonalTrajectories();
@@ -1982,6 +2666,9 @@
                 });
 
                 seasonTogglesInitialized = true;
+                if (moonTrajectoryToggle && toggleMoon) {
+                    moonTrajectoryToggle.setAttribute('aria-pressed', String(toggleMoon.checked));
+                }
 
                 // Draw if any active
                 if (Object.values(toggles).some(({ toggle }) => toggle.checked)) {
@@ -2114,6 +2801,37 @@
             }
 
             // === EVENTS ===
+            if (timelapseToggle) {
+                timelapseToggle.addEventListener('click', () => {
+                    if (timelapseRunning) stopTimelapse();
+                    else startTimelapse();
+                });
+            }
+
+            if (timelapseSpeed) {
+                timelapseSpeed.addEventListener('change', () => {
+                    localStorage.setItem('suntrack_timelapse_speed', timelapseSpeed.value);
+                });
+            }
+
+            if (objectHeightInput) {
+                objectHeightInput.addEventListener('input', () => {
+                    localStorage.setItem('suntrack_object_height', objectHeightInput.value);
+                    if (skySlider) update(parseInt(skySlider.value, 10), selectedDateKey);
+                });
+            }
+
+            if (moonTrajectoryToggle && toggleMoon) {
+                moonTrajectoryToggle.addEventListener('click', () => {
+                    toggleMoon.checked = !toggleMoon.checked;
+                    toggleMoon.dispatchEvent(new Event('change', { bubbles: true }));
+                });
+            }
+
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) stopTimelapse();
+            });
+
             if (citySearch) {
                 citySearch.addEventListener('input', (e) => {
                     clearTimeout(searchTimeout);
@@ -2146,6 +2864,7 @@
                         city: result.dataset.city || result.textContent.trim().split(',')[0],
                         source: 'manual'
                     });
+                    stopTimelapse();
                     setSearchVisibility(false);
                     if (skySlider) {
                         drawSeasonalTrajectories();
@@ -2155,13 +2874,17 @@
             }
 
             if (useLocationBtn) {
-                useLocationBtn.addEventListener('click', () => requestCurrentLocation(true));
+                useLocationBtn.addEventListener('click', () => {
+                    stopTimelapse();
+                    requestCurrentLocation(true);
+                });
             }
 
             if (dateInput) {
                 dateInput.addEventListener('change', (event) => {
                     const nextDate = parseDateKey(event.target.value);
                     if (!nextDate) return;
+                    stopTimelapse();
                     selectedDateKey = getDateKey(nextDate);
                     isLive = false;
                     if (skySlider) {
@@ -2173,6 +2896,7 @@
 
             if (todayBtn) {
                 todayBtn.addEventListener('click', () => {
+                    stopTimelapse();
                     const now = new Date();
                     selectedDateKey = getDateKey(now);
                     isLive = true;
@@ -2187,6 +2911,7 @@
 
             if (skySlider) {
                 skySlider.addEventListener('input', (e) => {
+                    stopTimelapse();
                     isLive = false;
                     update(parseInt(e.target.value, 10), selectedDateKey);
                 });
@@ -2194,6 +2919,7 @@
 
             if (skyNowBtn) {
                 skyNowBtn.addEventListener('click', () => {
+                    stopTimelapse();
                     isLive = true;
                     const now = new Date();
                     const mins = now.getHours() * 60 + now.getMinutes();
@@ -2232,6 +2958,16 @@
                         citySearch.value = 'Warszawa';
                     }
 
+                    const savedHeight = Number(localStorage.getItem('suntrack_object_height'));
+                    if (objectHeightInput && Number.isFinite(savedHeight) && savedHeight >= 0.5 && savedHeight <= 30) {
+                        objectHeightInput.value = String(savedHeight);
+                    }
+
+                    const savedSpeed = localStorage.getItem('suntrack_timelapse_speed');
+                    if (timelapseSpeed && ['32', '60', '120'].includes(savedSpeed)) {
+                        timelapseSpeed.value = savedSpeed;
+                    }
+
                     selectedDateKey = getDateKey(new Date());
                     if (dateInput) dateInput.value = selectedDateKey;
 
@@ -2265,6 +3001,7 @@
 
                         if (window.lucide) lucide.createIcons();
                         initSeasonToggles();
+                        syncTimelapseButton();
                         requestAnimationFrame(() => {
                             drawSeasonalTrajectories();
                             if (skySlider) update(parseInt(skySlider.value, 10), selectedDateKey);

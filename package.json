@@ -1,11 +1,17 @@
 {
   "name": "aktualny-projekt",
   "version": "2.0.0",
-  "main": "index.js",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
+    "agent:update": "node scripts/update_agent_context.js",
+    "predev": "npm run agent:update",
     "dev": "node scripts/generate_git_log.js && vite",
-    "prebuild": "node scripts/generate_git_log.js && cd bobolog && npm run build && cd .. && rm -rf public/bobolog && cp -r bobolog/dist public/bobolog && cd neon-quiz-86 && npm run build && cd .. && rm -rf public/neonquiz && cp -r neon-quiz-86/dist public/neonquiz",
+    "prebuild": "node scripts/build.js",
     "build": "vite build",
+    "postbuild": "node scripts/verify_dist.js",
     "preview": "vite preview",
     "snapshot:legacy": "node scripts/snapshot_legacy.js"
   },
@@ -14,15 +20,9 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "@vitejs/plugin-react": "^5.1.2",
     "autoprefixer": "^10.4.23",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17",
     "vite": "^7.3.0"
-  },
-  "dependencies": {
-    "lucide-react": "^0.562.0",
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3"
   }
 }

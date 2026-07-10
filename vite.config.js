@@ -1,40 +1,49 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
 import fs from 'fs';
+import { fileURLToPath } from 'url';
 
-// Helper to get all HTML files in apps/ directory
+const ROOT = fileURLToPath(new URL('.', import.meta.url));
+
+// Collect every HTML entry under apps/, including archived prototypes.
 function getAppEntries() {
-    const appsDir = resolve(__dirname, 'apps');
+    const appsDir = resolve(ROOT, 'apps');
     const entries = {};
 
-    if (fs.existsSync(appsDir)) {
-        const files = fs.readdirSync(appsDir);
-        files.forEach(file => {
-            if (file.endsWith('.html')) {
-                const name = `apps/${file.replace('.html', '')}`;
-                entries[name] = resolve(appsDir, file);
+    function visit(dir, relativeDir) {
+        if (!fs.existsSync(dir)) return;
+
+        for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+            const absolutePath = resolve(dir, entry.name);
+            const relativePath = `${relativeDir}/${entry.name}`;
+
+            if (entry.isDirectory()) {
+                visit(absolutePath, relativePath);
+            } else if (entry.name.endsWith('.html')) {
+                const name = relativePath.replace(/\.html$/, '');
+                entries[name] = absolutePath;
             }
-        });
+        }
     }
+
+    visit(appsDir, 'apps');
     return entries;
 }
 
-import react from '@vitejs/plugin-react';
-
 export default defineConfig({
-    plugins: [react()],
     base: './',
     build: {
         emptyOutDir: true,
         rollupOptions: {
             input: {
-                main: resolve(__dirname, 'index.html'),
-                about: resolve(__dirname, 'about.html'),
+                main: resolve(ROOT, 'index.html'),
+                about: resolve(ROOT, 'about.html'),
                 ...getAppEntries()
             }
         }
     },
     server: {
-        open: true
+        open: true,
+        port: process.env.PORT ? Number(process.env.PORT) : undefined
     }
 });
