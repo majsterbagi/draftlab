@@ -8,16 +8,20 @@ export const WORLD = { width: 480, height: 270 };
 const COUNTDOWN = 3;
 const CP_WINDOW = 16; // px wzdłuż toru, w których zalicza się checkpoint
 
-const KART_STYLES = [
+export const KART_STYLES = [
   { color: '#ff5555', name: 'Gracz 1' },
   { color: '#55aaff', name: 'Gracz 2' },
   { color: '#ffcc44', name: 'Gracz 3' },
   { color: '#66dd77', name: 'Gracz 4' },
 ];
 
+// players: liczba (style domyślne) lub tablica [{ name, color }].
 export function createRace(track, { players = 2, laps = 3 } = {}) {
-  const grid = startPositions(track, players);
-  const karts = grid.map((slot, i) => createKart({ ...slot, ...KART_STYLES[i] }));
+  const configs = Array.isArray(players)
+    ? players.map((p, i) => ({ ...KART_STYLES[i], ...p }))
+    : KART_STYLES.slice(0, players);
+  const grid = startPositions(track, configs.length);
+  const karts = grid.map((slot, i) => createKart({ ...slot, ...configs[i] }));
   karts.forEach((k) => {
     const proj = projectToTrack(track, k.x, k.y);
     k.s = proj.s;

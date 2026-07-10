@@ -108,11 +108,14 @@ Ułatwi to też ewentualne wydzielenie projektu w przyszłości.
 
 **Cel:** samą jazdą po torze ma być przyjemnie sterować. To tu rozstrzyga się "fajna fizyka".
 
-### v0.2 — Telefony jako pady
-- [ ] Lobby: pokój, QR, dołączanie, nazwa + awatar (wzorzec z NEON QUIZ 86)
-- [ ] WebRTC: sygnalizacja przez RTDB, kanał input/stan
-- [ ] Sterowanie: tryb przyciski + tryb żyroskop
-- [ ] 4 karty na torze sterowane z telefonów
+### v0.2 — Telefony jako pady ✅
+- [x] Lobby: pokój, QR, dołączanie, nick + awatar (ta sama baza RTDB co NEON QUIZ,
+      pokoje rooms/{kod} z polem app: 'pixelkart' — bez zmian reguł w konsoli)
+- [x] WebRTC: pad inicjuje ofertę, sygnalizacja przez RTDB, DataChannel bez retransmisji
+      (input 30 Hz → host, stan 10 Hz → pad); automatyczny fallback przez RTDB po 5 s
+- [x] Sterowanie: przyciski (◀ ▶ GAZ DRIFT) + tryb żyroskopu (beta, z obsługą zgody iOS)
+- [x] Do 4 kart sterowanych z telefonów; tryb lokalny na klawiaturze został pod #/local
+- [x] Zweryfikowane E2E: pad w iframe → lobby → P2P → wyścig → stan zwrotny na padzie
 
 ### v0.3 — MVP: "działa na imprezie" 🎉
 - [ ] Power-upy: pocisk (w gracza przed tobą), banan, boost, tarcza

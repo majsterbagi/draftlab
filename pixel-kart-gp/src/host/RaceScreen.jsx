@@ -2,22 +2,30 @@ import { useEffect, useRef, useState } from 'react';
 import { createTrack } from '../game/track.js';
 import { createRace, stepRace, WORLD } from '../game/race.js';
 import { createRenderer, clearMarks, drawFrame, kartSpeed } from '../render/renderer.js';
-import { createKeyboard } from './keyboard.js';
 
 const HUD_HZ = 10;
 
-export default function RaceScreen() {
+// Uniwersalny ekran wyścigu (host TV). Skąd pochodzi input, decyduje rodzic:
+// getInput(slotIndex) => { steer, throttle, drift }.
+export default function RaceScreen({
+  players,            // liczba lub [{ name, color }]
+  laps = 3,
+  getInput,
+  onSnapshot,         // opcjonalnie: (hud) => void, ~10 Hz — np. do wysyłki na pady
+  finishedActions,    // opcjonalnie: dodatkowe przyciski na ekranie wyników
+  footer,             // opcjonalnie: pasek pomocy pod planszą
+  runId = 0,          // zmiana wartości = restart wyścigu
+  onRequestRestart,   // wywoływane po R / przycisku restartu
+}) {
   const canvasRef = useRef(null);
-  const [players, setPlayers] = useState(2);
-  const [laps, setLaps] = useState(3);
   const [hud, setHud] = useState(null);
-  const [runId, setRunId] = useState(0); // inkrementacja = restart wyścigu
+  const callbacksRef = useRef({});
+  callbacksRef.current = { getInput, onSnapshot, onRequestRestart };
 
   useEffect(() => {
     const track = createTrack();
     const race = createRace(track, { players, laps });
     const renderer = createRenderer(track);
-    const keyboard = createKeyboard();
     const ctx = canvasRef.current.getContext('2d');
     clearMarks(renderer);
 
@@ -29,13 +37,13 @@ export default function RaceScreen() {
       const dt = Math.min(1 / 30, (now - last) / 1000);
       last = now;
 
-      const inputs = race.karts.map((_, i) => keyboard.inputFor(i));
+      const inputs = race.karts.map((_, i) => callbacksRef.current.getInput(i));
       stepRace(race, track, inputs, dt);
       drawFrame(renderer, ctx, race);
 
       if (now - hudLast > 1000 / HUD_HZ) {
         hudLast = now;
-        setHud({
+        const snapshot = {
           phase: race.phase,
           countdown: Math.ceil(race.countdown),
           time: race.time,
@@ -49,31 +57,26 @@ export default function RaceScreen() {
             finishTime: k.finishTime,
           })),
           order: [...race.order],
-        });
+        };
+        setHud(snapshot);
+        callbacksRef.current.onSnapshot?.(snapshot);
       }
       raf = requestAnimationFrame(frame);
     };
     raf = requestAnimationFrame(frame);
 
-    const onRestartKey = (e) => {
-      if (e.code === 'KeyR') setRunId((id) => id + 1);
+    const onKey = (e) => {
+      if (e.code === 'KeyR') callbacksRef.current.onRequestRestart?.();
     };
-    window.addEventListener('keydown', onRestartKey);
-
+    window.addEventListener('keydown', onKey);
     return () => {
       cancelAnimationFrame(raf);
-      keyboard.dispose();
-      window.removeEventListener('keydown', onRestartKey);
+      window.removeEventListener('keydown', onKey);
     };
   }, [players, laps, runId]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center gap-3 p-4 text-neutral-200 font-mono">
-      <header className="flex items-baseline gap-4">
-        <h1 className="text-2xl font-bold tracking-widest text-amber-300">PIXEL KART GP</h1>
-        <span className="text-xs text-neutral-500">v0.1 — prototyp jazdy</span>
-      </header>
-
+    <div className="flex flex-col items-center gap-3">
       <div className="relative">
         <canvas
           ref={canvasRef}
@@ -103,7 +106,15 @@ export default function RaceScreen() {
                   </div>
                 );
               })}
-              <p className="mt-4 text-sm text-neutral-400">R — jeszcze raz</p>
+              <div className="mt-5 flex flex-wrap justify-center gap-3">
+                <button
+                  onClick={() => callbacksRef.current.onRequestRestart?.()}
+                  className="bg-amber-500 text-black font-bold rounded px-4 py-2 hover:bg-amber-400"
+                >
+                  Jeszcze raz (R)
+                </button>
+                {finishedActions}
+              </div>
             </div>
           </div>
         )}
@@ -115,7 +126,7 @@ export default function RaceScreen() {
                 const k = hud.karts[ki];
                 return (
                   <div key={ki} style={{ color: k.color }}>
-                    {place + 1}. {k.name} · L{k.lap}/{hud.laps} · {k.speed} px/s
+                    {place + 1}. {k.name} · L{k.lap}/{hud.laps}
                     {k.finished && ' 🏁'}
                   </div>
                 );
@@ -125,48 +136,12 @@ export default function RaceScreen() {
           </div>
         )}
       </div>
-
-      <div className="flex flex-wrap items-center gap-4 text-sm">
-        <label className="flex items-center gap-2">
-          Gracze:
-          <select
-            value={players}
-            onChange={(e) => setPlayers(Number(e.target.value))}
-            className="bg-neutral-800 rounded px-2 py-1"
-          >
-            <option value={1}>1</option>
-            <option value={2}>2</option>
-          </select>
-        </label>
-        <label className="flex items-center gap-2">
-          Okrążenia:
-          <select
-            value={laps}
-            onChange={(e) => setLaps(Number(e.target.value))}
-            className="bg-neutral-800 rounded px-2 py-1"
-          >
-            {[1, 2, 3, 4, 5].map((n) => (
-              <option key={n} value={n}>{n}</option>
-            ))}
-          </select>
-        </label>
-        <button
-          onClick={() => setRunId((id) => id + 1)}
-          className="bg-amber-500 text-black font-bold rounded px-3 py-1 hover:bg-amber-400"
-        >
-          Restart (R)
-        </button>
-      </div>
-
-      <footer className="text-xs text-neutral-500 text-center">
-        <span className="text-red-400">P1</span>: strzałki + spacja (drift) ·{' '}
-        <span className="text-sky-400">P2</span>: WASD + lewy Shift (drift) · drift ≥0.7s = mini-boost
-      </footer>
+      {footer}
     </div>
   );
 }
 
-function formatTime(t) {
+export function formatTime(t) {
   const m = Math.floor(t / 60);
   const s = Math.floor(t % 60);
   const cs = Math.floor((t * 100) % 100);
