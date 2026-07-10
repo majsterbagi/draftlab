@@ -1,9 +1,7 @@
 import './components/AppHeader.js';
 import './components/AppFooter.js';
 import './components/ProjectGrid.js';
-import './components/SystemLog.js';
 import './components/TechStack.js';
-import './components/DlReturn.js';
 import './components/CommandPalette.js';
 import './components/NeuralTerminal.js';
 import './components/UnifiedLog.js';
@@ -14,10 +12,13 @@ import { GIT_LOG_DATA } from './data/git_log_data.js';
 
 // i18n init
 document.addEventListener('DOMContentLoaded', () => {
+    document.documentElement.lang = i18n.lang;
     i18n.updateStaticElements();
+    if (typeof window.updateApp === 'function') window.updateApp();
     i18n.subscribe(() => {
         i18n.updateStaticElements();
         document.documentElement.lang = i18n.lang;
+        if (typeof window.updateApp === 'function') window.updateApp();
     });
 });
 
@@ -35,10 +36,17 @@ const animateCount = (el, target) => {
 
 document.addEventListener('DOMContentLoaded', () => {
     const appsCount = SITE_DATA.projects.filter(p => p.active && p.url && p.url !== '#').length;
+    const releasesCount = SITE_DATA.projects.reduce((sum, p) => sum + (p.changes ? p.changes.length : 0), 0);
+    const techCount = new Set(SITE_DATA.projects.flatMap(p => p.tags || [])).size;
+
     const statApps = document.getElementById('stat-apps');
     const statCommits = document.getElementById('stat-commits');
+    const statReleases = document.getElementById('stat-releases');
+    const statTech = document.getElementById('stat-tech');
     if (statApps) animateCount(statApps, appsCount);
     if (statCommits) animateCount(statCommits, GIT_LOG_DATA.length);
+    if (statReleases) animateCount(statReleases, releasesCount);
+    if (statTech) animateCount(statTech, techCount);
 
     // Hero fade-in
     const heroText = document.getElementById('hero-init-text');

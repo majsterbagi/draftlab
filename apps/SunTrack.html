@@ -4,11 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <link rel="icon" type="image/svg+xml" href="../favicon.svg">
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>SunTrack | DraftLab.pl</title>
 
+    <meta name="description" content="Solar path and golden hour tracker for photographers.">
     <meta name="theme-color" content="#0b0c0e">
+    <link rel="manifest" href="./suntrack.webmanifest">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
@@ -20,7 +21,10 @@
     <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
 
     <!-- SunCalc Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.9.0/suncalc.min.js"></script>
+    <script type="module">
+        import * as SunCalc from 'https://cdn.jsdelivr.net/npm/suncalc@2.0.0/+esm';
+        window.SunCalc = SunCalc;
+    </script>
 
     <!-- Styles & Core -->
     <link rel="stylesheet" href="../src/style.css">
@@ -217,7 +221,29 @@
             color: rgba(255, 255, 255, 0.6);
             font-family: 'JetBrains Mono', monospace;
             font-size: 11px;
-            width: 120px;
+            width: clamp(110px, 22vw, 180px);
+            padding-right: 2px;
+        }
+
+        .location-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            flex: 0 0 24px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 6px;
+            color: rgba(255, 255, 255, 0.45);
+            cursor: pointer;
+            transition: color 0.2s, border-color 0.2s, background 0.2s;
+        }
+
+        .location-btn:hover,
+        .location-btn:focus-visible {
+            color: var(--accent-color);
+            border-color: rgba(0, 255, 157, 0.45);
+            background: rgba(0, 255, 157, 0.08);
         }
 
         .sky-search-input::-moz-placeholder {
@@ -247,19 +273,33 @@
         }
 
         .sky-search-result {
+            width: 100%;
+            display: block;
+            text-align: left;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.7);
+            border: 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             padding: 10px 12px;
+            font: inherit;
             font-size: 12px;
             cursor: pointer;
-            color: rgba(255, 255, 255, 0.7);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .sky-search-result:hover {
-            background: rgba(255, 255, 255, 0.05);
         }
 
         .sky-search-result:last-child {
-            border-bottom: none;
+            border-bottom: 0;
+        }
+
+        .sky-search-result:hover,
+        .sky-search-result:focus-visible {
+            background: rgba(0, 255, 157, 0.1);
+            color: #fff;
+        }
+
+        .sky-search-status {
+            padding: 10px 12px;
+            color: var(--text-dim);
+            font-size: 11px;
         }
 
         .sun-orb {
@@ -404,6 +444,69 @@
             max-width: 700px;
             margin: 0 auto;
             width: 100%;
+        }
+
+        .date-control {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 10px 12px;
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            backdrop-filter: blur(10px);
+        }
+
+        .date-control-label {
+            color: var(--text-dim);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .date-control-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .date-input {
+            min-width: 132px;
+            padding: 6px 8px;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 7px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color-scheme: dark;
+        }
+
+        .date-input:focus-visible {
+            border-color: var(--accent-color);
+            outline: 2px solid rgba(0, 255, 157, 0.15);
+            outline-offset: 1px;
+        }
+
+        .today-btn {
+            padding: 6px 9px;
+            color: var(--accent-color);
+            background: rgba(0, 255, 157, 0.08);
+            border: 1px solid rgba(0, 255, 157, 0.28);
+            border-radius: 7px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .today-btn:hover,
+        .today-btn:focus-visible {
+            color: #000;
+            background: var(--accent-color);
         }
 
         /* === SEARCH PANEL === */
@@ -796,6 +899,19 @@
 
         /* === RESPONSIVE === */
         @media (max-width: 480px) {
+            .date-control {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .date-control-actions {
+                width: 100%;
+            }
+
+            .date-input {
+                flex: 1;
+            }
+
             .current-time {
                 font-size: 40px;
             }
@@ -992,8 +1108,15 @@
         <!-- Sky Search -->
         <div class="sky-search">
             <i data-lucide="map-pin" class="sky-search-icon" width="12"></i>
-            <input type="text" class="sky-search-input" id="city-search" placeholder="Miasto..." autocomplete="off">
-            <div class="sky-search-results" id="search-results"></div>
+            <input type="text" class="sky-search-input" id="city-search"
+                data-i18n="sun.search.placeholder" data-i18n-target="placeholder"
+                placeholder="Miasto..." autocomplete="off" role="combobox"
+                aria-controls="search-results" aria-autocomplete="list" aria-expanded="false">
+            <button type="button" class="location-btn" id="use-location-btn"
+                data-i18n="sun.location.current" data-i18n-target="aria-label" aria-label="Użyj mojej lokalizacji">
+                <i data-lucide="crosshair" width="13"></i>
+            </button>
+            <div class="sky-search-results" id="search-results" role="listbox" aria-live="polite"></div>
         </div>
 
         <svg class="trajectory-svg" id="trajectory-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -1069,8 +1192,9 @@
         <!-- Slider Overlay -->
         <div class="sky-slider-overlay">
             <div class="sky-slider-container">
-                <div class="now-btn sky-now-btn" id="sky-now-btn" data-i18n="sun.now">NOW</div>
-                <input type="range" class="sky-slider" id="sky-slider" min="0" max="1440" value="720">
+                <button type="button" class="now-btn sky-now-btn" id="sky-now-btn" data-i18n="sun.now">NOW</button>
+                <input type="range" class="sky-slider" id="sky-slider" min="0" max="1439" value="720"
+                    data-i18n="sun.time_slider" data-i18n-target="aria-label" aria-label="Czas dnia">
             </div>
         </div>
     </div>
@@ -1080,12 +1204,21 @@
 
 
 
+        <div class="date-control">
+            <span class="date-control-label" data-i18n="sun.date">DATA PLANOWANIA</span>
+            <div class="date-control-actions">
+                <input type="date" class="date-input" id="sun-date"
+                    data-i18n="sun.date_input" data-i18n-target="aria-label" aria-label="Wybierz datę">
+                <button type="button" class="today-btn" id="today-btn" data-i18n="sun.today">DZIŚ</button>
+            </div>
+        </div>
+
         <!-- Time Card -->
         <div class="time-display">
-            <div class="current-time">12:00</div>
+            <div class="current-time" aria-live="polite" aria-atomic="true">12:00</div>
             <div class="flex flex-col">
-                <div class="current-date">MON, 12 DEC</div>
-                <div class="current-phase">DAY</div>
+                <div class="current-date" aria-live="polite">MON, 12 DEC</div>
+                <div class="current-phase" role="status" aria-live="polite">DAY</div>
             </div>
         </div>
 
@@ -1096,25 +1229,25 @@
                 <div class="stat-label"><i data-lucide="sunrise" width="12"></i> <span
                         data-i18n="sun.stat.sunrise">SUNRISE</span></div>
                 <div class="stat-value" id="val-sunrise">--:--</div>
-                <div class="stat-sub">Azimuth: <span id="val-az-rise">--</span>°</div>
+                <div class="stat-sub"><span data-i18n="sun.stat.azimuth">Azimuth</span>: <span id="val-az-rise">--</span>°</div>
             </div>
             <div class="stat-card">
                 <div class="stat-label"><i data-lucide="sunset" width="12"></i> <span
                         data-i18n="sun.stat.sunset">SUNSET</span></div>
                 <div class="stat-value" id="val-sunset">--:--</div>
-                <div class="stat-sub">Azimuth: <span id="val-az-set">--</span>°</div>
+                <div class="stat-sub"><span data-i18n="sun.stat.azimuth">Azimuth</span>: <span id="val-az-set">--</span>°</div>
             </div>
             <div class="stat-card">
                 <div class="stat-label"><i data-lucide="sun" width="12"></i> <span data-i18n="sun.stat.noon">SOLAR
                         NOON</span></div>
                 <div class="stat-value" id="val-noon">--:--</div>
-                <div class="stat-sub">Max Elev: <span id="val-elev">--</span>°</div>
+                <div class="stat-sub"><span data-i18n="sun.stat.max_elev">Max Elev</span>: <span id="val-elev">--</span>°</div>
             </div>
             <div class="stat-card">
                 <div class="stat-label"><i data-lucide="clock" width="12"></i> <span data-i18n="sun.stat.daylen">DAY
                         LENGTH</span></div>
                 <div class="stat-value" id="val-len">--h --m</div>
-                <div class="stat-sub"><span id="val-diff">--</span> <span id="day-diff-label">od najdłuższego</span>
+                <div class="stat-sub"><span id="val-diff">--</span> <span id="day-diff-label" data-i18n="sun.stat.daydiff">od najdłuższego</span>
                 </div>
             </div>
             <div class="stat-card">
@@ -1138,13 +1271,33 @@
             let isLive = true;
             let stealthMode = localStorage.getItem('suntrack_stealth') === 'true';
             let searchTimeout = null;
+            let searchAbortController = null;
+            let searchRequestId = 0;
+            let selectedDateKey = '';
+            let locationSource = 'default';
+            let initialized = false;
 
             let savedToggleStates = null;
 
+            const getDateKey = (date = new Date()) => {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            };
+
+            const parseDateKey = (dateKey) => {
+                const [year, month, day] = String(dateKey).split('-').map(Number);
+                if (![year, month, day].every(Number.isFinite)) return null;
+                const date = new Date(year, month - 1, day);
+                date.setHours(0, 0, 0, 0);
+                return Number.isNaN(date.getTime()) ? null : date;
+            };
+
             // Expose update function for i18n subscription
             window.updateApp = () => {
-                const sliderVal = document.getElementById('sky-slider').value;
-                update(parseInt(sliderVal));
+                const slider = document.getElementById('sky-slider');
+                if (slider) update(parseInt(slider.value, 10));
             };
 
             // Subscribe to language changes
@@ -1210,11 +1363,10 @@
             const moonOrb = document.getElementById('moon-orb');
             const skySlider = document.getElementById('sky-slider');
             const skyNowBtn = document.getElementById('sky-now-btn');
-            // const skyTimeDisplay = document.getElementById('sky-time-display'); // Removed?
-            const citySearch = document.getElementById('city-search'); // Removed? Search inputs have classes now
-            // Re-bind correct elements
-            const searchInputs = document.querySelectorAll('.search-input, .sky-search-input');
-            const searchResultsList = document.querySelectorAll('.search-results, .sky-search-results');
+            const citySearch = document.getElementById('city-search');
+            const useLocationBtn = document.getElementById('use-location-btn');
+            const dateInput = document.getElementById('sun-date');
+            const todayBtn = document.getElementById('today-btn');
 
             const lensFlare = document.getElementById('lens-flare');
             const flareItems = document.querySelectorAll('.flare-item');
@@ -1229,6 +1381,62 @@
             const toggleSummer = document.querySelector('label[data-season="summer"] input');
             const toggleAutumn = document.querySelector('label[data-season="autumn"] input');
             const toggleWinter = document.querySelector('label[data-season="winter"] input');
+
+            const isValidDate = (date) => date instanceof Date && !Number.isNaN(date.getTime());
+            const getAzimuthDegrees = (position) => {
+                if (!position || !Number.isFinite(position.azimuth)) return null;
+                return ((position.azimuth % 360) + 360) % 360;
+            };
+
+            // SunCalc 2 returns degrees clockwise from north.
+            // Render the whole horizon as a 360° panorama: N | E | S | W | N.
+            const projectSkyPosition = (position, { horizonY, skyRange }) => {
+                const azimuth = getAzimuthDegrees(position);
+                const altitude = position && Number.isFinite(position.altitude)
+                    ? position.altitude
+                    : null;
+
+                return {
+                    azimuth,
+                    altitude,
+                    x: azimuth === null ? 50 : (azimuth / 360) * 100,
+                    bottom: altitude === null ? horizonY : horizonY + (altitude / 90) * skyRange
+                };
+            };
+
+            const readSavedLocation = () => {
+                const savedLat = localStorage.getItem('suntrack_lat');
+                const savedLng = localStorage.getItem('suntrack_lng');
+                if (savedLat === null || savedLng === null || savedLat.trim() === '' || savedLng.trim() === '') {
+                    return null;
+                }
+
+                const lat = Number(savedLat);
+                const lng = Number(savedLng);
+                if (!Number.isFinite(lat) || !Number.isFinite(lng) || Math.abs(lat) > 90 || Math.abs(lng) > 180) {
+                    return null;
+                }
+
+                return {
+                    lat,
+                    lng,
+                    city: localStorage.getItem('suntrack_city') || 'Warszawa',
+                    source: localStorage.getItem('suntrack_location_source') || 'legacy'
+                };
+            };
+
+            const saveLocation = ({ lat, lng, city, source }) => {
+                LAT = lat;
+                LNG = lng;
+                locationSource = source;
+                localStorage.setItem('suntrack_lat', String(lat));
+                localStorage.setItem('suntrack_lng', String(lng));
+                if (city) {
+                    localStorage.setItem('suntrack_city', city);
+                    if (citySearch) citySearch.value = city;
+                }
+                localStorage.setItem('suntrack_location_source', source);
+            };
 
             // Configuration - Dynamic calculation to match standard mode pixels
             const getHorizonConfig = () => {
@@ -1271,17 +1479,18 @@
             };
 
             // === HELPERS ===
-            const fmt = date => (date && !isNaN(date))
+            const fmt = date => isValidDate(date)
                 ? date.getHours().toString().padStart(2, '0') + ':' + date.getMinutes().toString().padStart(2, '0')
                 : '--:--';
 
             const fmtDateDiff = (ms) => {
+                if (!Number.isFinite(ms) || ms < 0) return '--';
                 const h = Math.floor(ms / 3600000);
                 const m = Math.floor((ms % 3600000) / 60000);
                 return `${h}h ${m}m`;
             };
 
-            const fmtRange = (start, end) => (!start || !end || isNaN(start) || isNaN(end))
+            const fmtRange = (start, end) => (!isValidDate(start) || !isValidDate(end))
                 ? '--:--'
                 : `${fmt(start)} - ${fmt(end)}`;
 
@@ -1461,97 +1670,92 @@
             }
 
             // === UPDATE FUNCTION ===
-            function update(mins) {
-                const h = Math.floor(mins / 60);
-                const m = Math.floor(mins % 60);
+            function update(mins, dateKey = selectedDateKey) {
+                const safeMins = Math.max(0, Math.min(1439, Number.isFinite(mins) ? mins : 0));
+                const h = Math.floor(safeMins / 60);
+                const m = Math.floor(safeMins % 60);
+                const d = parseDateKey(dateKey) || parseDateKey(getDateKey()) || new Date();
+                d.setHours(h, m, 0, 0);
+
+                const text = (key) => window.i18n ? window.i18n.t(key) : key;
+                const setText = (id, value) => {
+                    const element = document.getElementById(id);
+                    if (element) element.textContent = value;
+                };
+
+                selectedDateKey = getDateKey(d);
+                if (dateInput && dateInput.value !== selectedDateKey) dateInput.value = selectedDateKey;
 
                 // Time display
                 const timeStr = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
                 document.querySelectorAll('.current-time').forEach(el => el.textContent = timeStr);
 
                 // Date
-                const d = new Date();
-                d.setHours(h, m, 0);
-
-                // i18n Date
                 const lang = (window.i18n && window.i18n.lang) || 'pl';
                 const locale = lang === 'en' ? 'en-US' : 'pl-PL';
                 const dateStr = d.toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long' }).toUpperCase();
-
                 document.querySelectorAll('.current-date').forEach(el => el.textContent = dateStr);
 
                 // Sun calculations
                 const times = SunCalc.getTimes(d, LAT, LNG);
                 const pos = SunCalc.getPosition(d, LAT, LNG);
-                const altDeg = pos.altitude * (180 / Math.PI);
+                const altDeg = pos.altitude;
+                const sunrise = isValidDate(times.sunrise) ? times.sunrise : null;
+                const sunset = isValidDate(times.sunset) ? times.sunset : null;
+                const solarNoon = isValidDate(times.solarNoon) ? times.solarNoon : null;
+                const polarState = text(altDeg >= 0 ? 'sun.state.polar_day' : 'sun.state.polar_night');
 
                 // Phase
-                let phaseKey = "sun.phase.night"; // Fallback
-                if (altDeg > 6) phaseKey = "sun.phase.day";
-                else if (altDeg > -4) phaseKey = "sun.phase.golden";
-                else if (altDeg > -12) phaseKey = "sun.phase.blue";
-
-                // Translation map for phases (simpler than adding to i18n for now, or use t() if keys existed)
-                // I'll add simple translation logic here or assume i18n keys exist?
-                // I didn't add phase keys to i18n.js. I'll translate inline for now.
-                let phase = "NOC";
-                if (lang === 'en') {
-                    if (altDeg > 6) phase = "DAY";
-                    else if (altDeg > -4) phase = "GOLDEN HOUR";
-                    else if (altDeg > -12) phase = "BLUE HOUR";
-                    else phase = "NIGHT";
-                } else {
-                    if (altDeg > 6) phase = "DZIEŃ";
-                    else if (altDeg > -4) phase = "ZŁOTA GODZINA";
-                    else if (altDeg > -12) phase = "BLUE HOUR";
-                    else phase = "NOC";
-                }
-
-                document.querySelectorAll('.current-phase').forEach(el => el.textContent = phase);
+                let phaseKey = 'sun.phase.night';
+                if (altDeg > 6) phaseKey = 'sun.phase.day';
+                else if (altDeg > -4) phaseKey = 'sun.phase.golden';
+                else if (altDeg > -12) phaseKey = 'sun.phase.blue';
+                document.querySelectorAll('.current-phase').forEach(el => el.textContent = text(phaseKey));
 
                 // Stats
-                document.getElementById('val-sunrise').textContent = fmt(times.sunrise);
-                document.getElementById('val-sunset').textContent = fmt(times.sunset);
-                document.getElementById('val-golden-am').textContent = fmtRange(times.sunrise, times.goldenHourEnd);
-                document.getElementById('val-golden-pm').textContent = fmtRange(times.goldenHour, times.sunset);
-                document.getElementById('val-noon').textContent = fmt(times.solarNoon);
+                setText('val-sunrise', sunrise ? fmt(sunrise) : polarState);
+                setText('val-sunset', sunset ? fmt(sunset) : polarState);
+                setText('val-golden-am', fmtRange(sunrise, times.goldenHourEnd));
+                setText('val-golden-pm', fmtRange(times.goldenHour, sunset));
+                setText('val-noon', solarNoon ? fmt(solarNoon) : '--:--');
 
                 // Azimuth/Elevation
-                const azDegRise = (SunCalc.getPosition(times.sunrise || d, LAT, LNG).azimuth * 180 / Math.PI + 180) % 360;
-                const azDegSet = (SunCalc.getPosition(times.sunset || d, LAT, LNG).azimuth * 180 / Math.PI + 180) % 360;
-                const noonPos = SunCalc.getPosition(times.solarNoon || d, LAT, LNG);
-                const noonElev = noonPos.altitude * 180 / Math.PI;
+                const risePos = sunrise ? SunCalc.getPosition(sunrise, LAT, LNG) : null;
+                const setPos = sunset ? SunCalc.getPosition(sunset, LAT, LNG) : null;
+                const noonPos = solarNoon ? SunCalc.getPosition(solarNoon, LAT, LNG) : null;
+                const azDegRise = getAzimuthDegrees(risePos);
+                const azDegSet = getAzimuthDegrees(setPos);
+                const noonElev = noonPos && Number.isFinite(noonPos.altitude) ? noonPos.altitude : null;
 
-                document.getElementById('val-az-rise').textContent = Math.round(azDegRise);
-                document.getElementById('val-az-set').textContent = Math.round(azDegSet);
-                document.getElementById('val-elev').textContent = Math.round(noonElev);
+                setText('val-az-rise', azDegRise === null ? '--' : Math.round(azDegRise));
+                setText('val-az-set', azDegSet === null ? '--' : Math.round(azDegSet));
+                setText('val-elev', noonElev === null ? '--' : Math.round(noonElev));
 
-                // Day Length
-                if (times.sunrise && times.sunset) {
-                    const dayLenMs = times.sunset - times.sunrise;
-                    document.getElementById('val-len').textContent = fmtDateDiff(dayLenMs);
+                // Day Length and comparison with the local hemisphere's longest day
+                const dayLenMs = sunrise && sunset ? sunset.getTime() - sunrise.getTime() : null;
+                if (Number.isFinite(dayLenMs) && dayLenMs >= 0) {
+                    setText('val-len', fmtDateDiff(dayLenMs));
 
-                    // Solstice Comparison
                     const currentYear = d.getFullYear();
-                    const winterSolstice = new Date(currentYear, 11, 21); // Dec 21
-                    const summerSolstice = new Date(currentYear, 5, 21);  // Jun 21
+                    const longestDay = LAT >= 0
+                        ? new Date(currentYear, 5, 21)
+                        : new Date(currentYear, 11, 21);
+                    const longestTimes = SunCalc.getTimes(longestDay, LAT, LNG);
+                    const longestSunrise = isValidDate(longestTimes.sunrise) ? longestTimes.sunrise : null;
+                    const longestSunset = isValidDate(longestTimes.sunset) ? longestTimes.sunset : null;
+                    const longestLen = longestSunrise && longestSunset
+                        ? longestSunset.getTime() - longestSunrise.getTime()
+                        : null;
 
-                    // Get times for solstices at current location
-                    const winterTimes = SunCalc.getTimes(winterSolstice, LAT, LNG);
-                    const summerTimes = SunCalc.getTimes(summerSolstice, LAT, LNG);
-
-                    const winterLen = winterTimes.sunset - winterTimes.sunrise;
-                    const summerLen = summerTimes.sunset - summerTimes.sunrise;
-
-                    // Always show difference from longest day
-                    const diffFromLongest = summerLen - dayLenMs;
-                    document.getElementById('val-diff').textContent = '-' + fmtDateDiff(Math.abs(diffFromLongest));
-                    // Check if label exists before setting
-                    const diffLabel = document.getElementById('day-diff-label');
-                    if (diffLabel) diffLabel.textContent = 'od najdłuższego';
+                    if (Number.isFinite(longestLen) && longestLen >= dayLenMs) {
+                        const diff = longestLen - dayLenMs;
+                        setText('val-diff', diff < 60000 ? '0h 0m' : `-${fmtDateDiff(diff)}`);
+                    } else {
+                        setText('val-diff', '--');
+                    }
                 } else {
-                    document.getElementById('val-len').textContent = '--';
-                    document.getElementById('val-diff').textContent = '--';
+                    setText('val-len', polarState);
+                    setText('val-diff', '--');
                 }
 
                 // Sky gradient
@@ -1580,22 +1784,25 @@
                     skyContainer.style.background = `linear-gradient(180deg, ${grad.top}, ${grad.mid}, ${grad.bottom})`;
                 }
 
-                // Sun position
-                const xPercent = (mins / 1440) * 100;
-
                 // Layout Tuning
                 const { horizonY, skyRange } = getHorizonConfig();
+                const sunProjection = projectSkyPosition(pos, { horizonY, skyRange });
+                const xPercent = sunProjection.x;
 
-                let yPercent = horizonY + (altDeg / 90) * skyRange;
+                let yPercent = sunProjection.bottom;
                 // In stealth mode, allow sun to go much further below horizon
                 const minY = stealthMode ? -60 : -20;
                 yPercent = Math.max(minY, Math.min(120, yPercent));
 
                 sunOrb.style.left = xPercent + '%';
                 sunOrb.style.bottom = yPercent + '%';
+                sunOrb.dataset.azimuth = sunProjection.azimuth?.toFixed(4) ?? '';
+                sunOrb.dataset.altitude = sunProjection.altitude?.toFixed(4) ?? '';
 
                 // Sun visibility & Opacity
-                const isSunVisible = altDeg > -8 || stealthMode;
+                // -0.833° is the standard sunrise/sunset altitude used by SunCalc
+                // (the upper edge of the solar disc touches the horizon).
+                const isSunVisible = altDeg >= -0.833 || stealthMode;
                 if (isSunVisible) {
                     sunOrb.style.display = 'block';
                     // Opacity logic:
@@ -1625,26 +1832,31 @@
                     lensFlare.style.opacity = 0;
                 }
 
-                // Moon - only visible at night (sun below -6°)
+                // The Moon can be above the horizon during the day, so its visibility
+                // depends on its own altitude rather than the Sun's altitude.
                 const moonPos = SunCalc.getMoonPosition(d, LAT, LNG);
-                const moonAlt = moonPos.altitude * (180 / Math.PI);
-                if (moonAlt > -5 && altDeg < -6) {
-                    moonOrb.style.display = 'block';
-                    const moonX = 50 + (moonPos.azimuth * (180 / Math.PI) / 180) * 40;
-                    const moonY = horizonY + (moonAlt / 90) * skyRange;
-                    moonOrb.style.left = Math.max(5, Math.min(95, moonX)) + '%';
-                    moonOrb.style.bottom = Math.max(10, Math.min(85, moonY)) + '%';
+                const moonProjection = projectSkyPosition(moonPos, { horizonY, skyRange });
+                const moonAlt = moonProjection.altitude;
+                const moonY = Math.max(stealthMode ? -60 : -20, Math.min(120, moonProjection.bottom));
 
-                    // Update moon phase visualization
-                    updateMoonPhase(d);
+                moonOrb.style.left = moonProjection.x + '%';
+                moonOrb.style.bottom = moonY + '%';
+                moonOrb.dataset.azimuth = moonProjection.azimuth?.toFixed(4) ?? '';
+                moonOrb.dataset.altitude = moonProjection.altitude?.toFixed(4) ?? '';
+
+                if (moonAlt !== null && moonAlt >= 0) {
+                    moonOrb.style.display = 'block';
                 } else {
                     moonOrb.style.display = 'none';
                 }
+
+                // Keep the phase current even while the Moon is below the horizon.
+                updateMoonPhase(d);
             }
 
             // === SEASONAL TRAJECTORIES ===
             function drawSeasonalTrajectories() {
-                const currentYear = new Date().getFullYear();
+                const currentYear = parseDateKey(selectedDateKey)?.getFullYear() || new Date().getFullYear();
                 const seasonDates = {
                     spring: new Date(currentYear, 2, 21),  // Mar 21
                     summer: new Date(currentYear, 5, 21),  // Jun 21
@@ -1655,27 +1867,47 @@
                 const { horizonY: horizonSVG, skyRange: skyRangeSVG } = getHorizonConfig();
 
                 Object.entries(seasonDates).forEach(([season, date]) => {
-                    // Calculate solar noon for this date to center the trajectory
                     const times = SunCalc.getTimes(date, LAT, LNG);
-                    const solarNoon = times.solarNoon;
-                    const noonMins = solarNoon.getHours() * 60 + solarNoon.getMinutes();
-                    const offset = noonMins - 720; // Offset from 12:00
-
-                    let pathData = '';
-                    for (let i = 0; i <= 24; i++) {
-                        const testDate = new Date(date);
-                        testDate.setHours(i, 0, 0);
-                        const pos = SunCalc.getPosition(testDate, LAT, LNG);
-                        const alt = pos.altitude * (180 / Math.PI);
-
-                        // Center trajectory: solar noon should be at X=50%
-                        const mins = i * 60;
-                        const x = ((mins - offset) / 1440) * 100;
-                        const y = 100 - (horizonSVG + (alt / 90) * skyRangeSVG);
-
-                        pathData += (i === 0 ? 'M' : 'L') + ` ${x} ${y}`;
+                    const path = document.getElementById(`trajectory-${season}`);
+                    if (!path || !isValidDate(times.sunrise) || !isValidDate(times.sunset)) {
+                        if (path) path.setAttribute('d', '');
+                        return;
                     }
-                    document.getElementById(`trajectory-${season}`).setAttribute('d', pathData);
+
+                    const start = times.sunrise.getTime();
+                    const end = times.sunset.getTime();
+                    const step = 5 * 60 * 1000;
+                    let pathData = '';
+                    let previousX = null;
+
+                    const appendPosition = (position) => {
+                        const projection = projectSkyPosition(position, {
+                            horizonY: horizonSVG,
+                            skyRange: skyRangeSVG
+                        });
+                        const x = projection.x;
+                        const y = 100 - projection.bottom;
+                        const crossesPanoramaSeam = previousX !== null && Math.abs(x - previousX) > 50;
+                        const command = !pathData || crossesPanoramaSeam ? 'M' : 'L';
+
+                        pathData += `${command} ${x} ${y} `;
+                        previousX = x;
+                    };
+
+                    for (let timestamp = start; timestamp <= end; timestamp += step) {
+                        const testDate = new Date(timestamp);
+                        const pos = SunCalc.getPosition(testDate, LAT, LNG);
+                        appendPosition(pos);
+                    }
+
+                    if ((end - start) % step !== 0) {
+                        const testDate = new Date(end);
+                        const pos = SunCalc.getPosition(testDate, LAT, LNG);
+                        appendPosition(pos);
+                    }
+
+                    path.setAttribute('d', pathData.trim());
+                    path.dataset.referenceDate = getDateKey(date);
                 });
             }
 
@@ -1727,62 +1959,196 @@
                 }
             }
 
-            // === CITY SEARCH ===
-            async function searchCity(query) {
-                if (query.length < 2) {
-                    searchResults.classList.remove('active');
+            // === LOCATION SEARCH ===
+            const setSearchVisibility = (visible) => {
+                if (!searchResults) return;
+                searchResults.classList.toggle('active', visible);
+                if (citySearch) citySearch.setAttribute('aria-expanded', String(visible));
+            };
+
+            const renderSearchStatus = (translationKey) => {
+                if (!searchResults) return;
+                searchResults.replaceChildren();
+                const status = document.createElement('div');
+                status.className = 'sky-search-status';
+                status.setAttribute('role', 'status');
+                status.textContent = window.i18n ? window.i18n.t(translationKey) : translationKey;
+                searchResults.appendChild(status);
+                setSearchVisibility(true);
+            };
+
+            const renderSearchResults = (items) => {
+                if (!searchResults) return;
+                searchResults.replaceChildren();
+
+                if (!items.length) {
+                    renderSearchStatus('sun.search.no_results');
                     return;
                 }
 
-                try {
-                    const resp = await fetch(`https://nominatim.openstreetmap.org/search?format=json&countrycodes=pl&q=${encodeURIComponent(query)}&limit=5`);
-                    const data = await resp.json();
+                items.slice(0, 5).forEach(item => {
+                    const result = document.createElement('button');
+                    result.type = 'button';
+                    result.className = 'sky-search-result';
+                    result.setAttribute('role', 'option');
+                    result.dataset.lat = item.lat;
+                    result.dataset.lon = item.lon;
+                    result.dataset.city = item.name || item.display_name.split(',')[0].trim();
+                    result.textContent = item.display_name;
+                    searchResults.appendChild(result);
+                });
 
-                    if (data.length === 0) {
-                        searchResults.classList.remove('active');
-                        return;
-                    }
+                setSearchVisibility(true);
+            };
 
-                    searchResults.innerHTML = data.map(item => `
-                    <div class="sky-search-result" data-lat="${item.lat}" data-lon="${item.lon}">
-                        ${item.display_name}
-                    </div>
-                `).join('');
-                    searchResults.classList.add('active');
-
-                    // Add click handlers
-                    document.querySelectorAll('.sky-search-result').forEach(el => {
-                        el.addEventListener('click', () => {
-                            LAT = parseFloat(el.dataset.lat);
-                            LNG = parseFloat(el.dataset.lon);
-                            citySearch.value = el.textContent.trim().split(',')[0];
-                            searchResults.classList.remove('active');
-                            localStorage.setItem('suntrack_lat', LAT);
-                            localStorage.setItem('suntrack_lng', LNG);
-                            localStorage.setItem('suntrack_city', citySearch.value);
-                            update(parseInt(skySlider.value));
-                        });
-                    });
-                } catch (e) {
-                    console.error('Search error:', e);
+            async function searchCity(query) {
+                const normalizedQuery = query.trim();
+                if (normalizedQuery.length < 2) {
+                    setSearchVisibility(false);
+                    return;
                 }
+
+                searchAbortController?.abort();
+                searchAbortController = new AbortController();
+                const requestId = ++searchRequestId;
+                renderSearchStatus('sun.search.loading');
+
+                try {
+                    const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=5&q=${encodeURIComponent(normalizedQuery)}`;
+                    const resp = await fetch(url, {
+                        signal: searchAbortController.signal,
+                        headers: { Accept: 'application/json' }
+                    });
+                    if (!resp.ok) throw new Error(`Location search failed: ${resp.status}`);
+                    const data = await resp.json();
+                    if (requestId !== searchRequestId) return;
+                    renderSearchResults(Array.isArray(data) ? data : []);
+                } catch (e) {
+                    if (e.name === 'AbortError' || requestId !== searchRequestId) return;
+                    console.error('Search error:', e);
+                    renderSearchStatus('sun.search.error');
+                }
+            }
+
+            async function reverseGeocode(lat, lng) {
+                const resp = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=10&lat=${lat}&lon=${lng}`, {
+                    headers: { Accept: 'application/json' }
+                });
+                if (!resp.ok) throw new Error(`Reverse geocoding failed: ${resp.status}`);
+                const data = await resp.json();
+                const address = data.address || {};
+                return address.city || address.town || address.village || address.municipality || 'Lokalizacja';
+            }
+
+            function requestCurrentLocation(showStatus = true) {
+                if (showStatus) renderSearchStatus('sun.search.loading');
+
+                if (!navigator.geolocation) {
+                    if (showStatus) renderSearchStatus('sun.search.error');
+                    if (!initialized) init();
+                    return;
+                }
+
+                navigator.geolocation.getCurrentPosition(
+                    async (position) => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        const provisionalCity = citySearch?.value || 'Lokalizacja';
+
+                        // Apply coordinates immediately; reverse geocoding should not block the dashboard.
+                        saveLocation({ lat, lng, city: provisionalCity, source: 'geolocation' });
+                        setSearchVisibility(false);
+                        if (!initialized) init();
+                        else if (skySlider) update(parseInt(skySlider.value, 10));
+
+                        try {
+                            const city = await reverseGeocode(lat, lng);
+                            saveLocation({ lat, lng, city, source: 'geolocation' });
+                        } catch (e) {
+                            console.warn('Geocoding failed:', e);
+                        }
+                    },
+                    (err) => {
+                        console.warn('Geolocation denied:', err);
+                        if (showStatus) {
+                            renderSearchStatus('sun.search.error');
+                            setTimeout(() => setSearchVisibility(false), 3500);
+                        }
+                        if (!initialized) init();
+                    },
+                    { timeout: 5000, maximumAge: 300000 }
+                );
             }
 
             // === EVENTS ===
             if (citySearch) {
                 citySearch.addEventListener('input', (e) => {
                     clearTimeout(searchTimeout);
-                    searchTimeout = setTimeout(() => searchCity(e.target.value), 300);
+                    searchTimeout = setTimeout(() => searchCity(e.target.value), 450);
                 });
                 citySearch.addEventListener('blur', () => {
-                    setTimeout(() => searchResults.classList.remove('active'), 200);
+                    setTimeout(() => setSearchVisibility(false), 200);
+                });
+                citySearch.addEventListener('keydown', (event) => {
+                    if (event.key === 'Escape') {
+                        setSearchVisibility(false);
+                        citySearch.blur();
+                    }
+                });
+            }
+
+            if (searchResults) {
+                searchResults.addEventListener('mousedown', (event) => event.preventDefault());
+                searchResults.addEventListener('click', (event) => {
+                    const result = event.target.closest('.sky-search-result');
+                    if (!result) return;
+
+                    const lat = Number(result.dataset.lat);
+                    const lng = Number(result.dataset.lon);
+                    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+
+                    saveLocation({
+                        lat,
+                        lng,
+                        city: result.dataset.city || result.textContent.trim().split(',')[0],
+                        source: 'manual'
+                    });
+                    setSearchVisibility(false);
+                    if (skySlider) update(parseInt(skySlider.value, 10));
+                });
+            }
+
+            if (useLocationBtn) {
+                useLocationBtn.addEventListener('click', () => requestCurrentLocation(true));
+            }
+
+            if (dateInput) {
+                dateInput.addEventListener('change', (event) => {
+                    const nextDate = parseDateKey(event.target.value);
+                    if (!nextDate) return;
+                    selectedDateKey = getDateKey(nextDate);
+                    isLive = false;
+                    if (skySlider) update(parseInt(skySlider.value, 10), selectedDateKey);
+                });
+            }
+
+            if (todayBtn) {
+                todayBtn.addEventListener('click', () => {
+                    const now = new Date();
+                    selectedDateKey = getDateKey(now);
+                    isLive = true;
+                    if (dateInput) dateInput.value = selectedDateKey;
+                    if (skySlider) {
+                        skySlider.value = now.getHours() * 60 + now.getMinutes();
+                        update(parseInt(skySlider.value, 10), selectedDateKey);
+                    }
                 });
             }
 
             if (skySlider) {
                 skySlider.addEventListener('input', (e) => {
                     isLive = false;
-                    update(parseInt(e.target.value));
+                    update(parseInt(e.target.value, 10), selectedDateKey);
                 });
             }
 
@@ -1791,8 +2157,10 @@
                     isLive = true;
                     const now = new Date();
                     const mins = now.getHours() * 60 + now.getMinutes();
+                    selectedDateKey = getDateKey(now);
+                    if (dateInput) dateInput.value = selectedDateKey;
                     if (skySlider) skySlider.value = mins;
-                    update(mins);
+                    update(mins, selectedDateKey);
                 });
             }
 
@@ -1804,7 +2172,7 @@
             window.addEventListener('resize', () => {
                 try {
                     drawSeasonalTrajectories();
-                    if (skySlider) update(parseInt(skySlider.value));
+                    if (skySlider) update(parseInt(skySlider.value, 10), selectedDateKey);
                 } catch (e) {
                     console.error('Resize error:', e);
                 }
@@ -1813,16 +2181,18 @@
             // === INIT ===
             function init() {
                 try {
-                    const savedLat = localStorage.getItem('suntrack_lat');
-                    const savedLng = localStorage.getItem('suntrack_lng');
-                    const savedCity = localStorage.getItem('suntrack_city');
-
-                    if (savedLat && savedLng) {
-                        LAT = parseFloat(savedLat);
-                        LNG = parseFloat(savedLng);
+                    const savedLocation = readSavedLocation();
+                    if (savedLocation) {
+                        LAT = savedLocation.lat;
+                        LNG = savedLocation.lng;
+                        locationSource = savedLocation.source;
+                        if (citySearch) citySearch.value = savedLocation.city;
+                    } else if (citySearch) {
+                        citySearch.value = 'Warszawa';
                     }
 
-                    if (citySearch) citySearch.value = savedCity || 'Warszawa';
+                    selectedDateKey = getDateKey(new Date());
+                    if (dateInput) dateInput.value = selectedDateKey;
 
                     if (stealthMode) {
                         document.body.classList.add('stealth-mode');
@@ -1837,21 +2207,24 @@
                     const mins = now.getHours() * 60 + now.getMinutes();
                     if (skySlider) skySlider.value = mins;
 
-                    if (typeof update === 'function') {
-                        update(mins);
+                    update(mins, selectedDateKey);
+
+                    if (!initialized) {
+                        initialized = true;
+                        setInterval(() => {
+                            if (isLive) {
+                                const now = new Date();
+                                const currentMins = now.getHours() * 60 + now.getMinutes();
+                                selectedDateKey = getDateKey(now);
+                                if (dateInput) dateInput.value = selectedDateKey;
+                                if (skySlider) skySlider.value = currentMins;
+                                update(currentMins, selectedDateKey);
+                            }
+                        }, 60000);
+
+                        if (window.lucide) lucide.createIcons();
+                        initSeasonToggles();
                     }
-
-                    setInterval(() => {
-                        if (isLive) {
-                            const now = new Date();
-                            const mins = now.getHours() * 60 + now.getMinutes();
-                            if (skySlider) skySlider.value = mins;
-                            if (typeof update === 'function') update(mins);
-                        }
-                    }, 60000);
-
-                    if (window.lucide) lucide.createIcons();
-                    initSeasonToggles();
                 } catch (e) {
                     console.error('SunTrack init error:', e);
                 }
@@ -1860,38 +2233,19 @@
             // === BOOTSTRAP ===
             window.addEventListener('load', () => {
                 setTimeout(() => {
-                    if (navigator.geolocation) {
-                        navigator.geolocation.getCurrentPosition(
-                            async (pos) => {
-                                LAT = pos.coords.latitude;
-                                LNG = pos.coords.longitude;
-
-                                try {
-                                    const resp = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${LAT}&lon=${LNG}`);
-                                    const data = await resp.json();
-                                    const addr = data.address || {};
-                                    const cityName = addr.city || addr.town || addr.village || addr.municipality || 'Lokalizacja';
-                                    if (citySearch) citySearch.value = cityName;
-                                    localStorage.setItem('suntrack_city', cityName);
-                                } catch (e) {
-                                    console.warn('Geocoding failed:', e);
-                                }
-
-                                localStorage.setItem('suntrack_lat', LAT);
-                                localStorage.setItem('suntrack_lng', LNG);
-                                init();
-                            },
-                            (err) => {
-                                console.warn('Geolocation denied:', err);
-                                init();
-                            },
-                            { timeout: 5000 }
-                        );
-                    } else {
-                        init();
-                    }
+                    const savedLocation = readSavedLocation();
+                    const hasManualLocation = savedLocation && savedLocation.source === 'manual';
+                    if (hasManualLocation || !navigator.geolocation) init();
+                    else requestCurrentLocation(false);
                 }, 100);
             });
+
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('./service-worker.js', { scope: './' })
+                        .catch(error => console.warn('SunTrack service worker unavailable:', error));
+                }, { once: true });
+            }
         </script>
 </body>
 
