@@ -22,6 +22,7 @@ export default function HostApp() {
   const inputsRef = useRef(new Map());   // playerId -> input
   const slotToIdRef = useRef([]);        // slotIndex (w wyścigu) -> playerId
   const rtcRef = useRef(null);
+  const actionRef = useRef(null);        // (slotIdx, action) => void, ustawiane przez RaceScreen
 
   // Utworzenie pokoju + warstwa sieci. Efekt jest idempotentny (StrictMode
   // w dev montuje dwukrotnie): każde uruchomienie ma własny pokój i sprzątanie.
@@ -45,6 +46,10 @@ export default function HostApp() {
             throttle: clamp(msg.throttle ?? msg.th ?? 0),
             drift: !!(msg.drift ?? msg.d),
           });
+        },
+        onAction: (playerId, action) => {
+          const slotIdx = slotToIdRef.current.indexOf(playerId);
+          if (slotIdx >= 0) actionRef.current?.(slotIdx, action);
         },
       });
       rtcRef.current = rtc;
@@ -96,6 +101,9 @@ export default function HostApp() {
         laps: hud.laps,
         speed: kart.speed,
         finished: kart.finished,
+        item: kart.item,
+        challenge: kart.challenge,
+        shield: kart.shield,
       };
     });
     rtcRef.current.sendState(states);
@@ -121,6 +129,7 @@ export default function HostApp() {
           runId={runId}
           getInput={(slotIdx) =>
             inputsRef.current.get(slotToIdRef.current[slotIdx]) ?? NEUTRAL_INPUT}
+          actionRef={actionRef}
           onSnapshot={onSnapshot}
           onRequestRestart={() => setRunId((id) => id + 1)}
           finishedActions={

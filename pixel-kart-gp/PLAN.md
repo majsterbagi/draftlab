@@ -117,12 +117,21 @@ Ułatwi to też ewentualne wydzielenie projektu w przyszłości.
 - [x] Do 4 kart sterowanych z telefonów; tryb lokalny na klawiaturze został pod #/local
 - [x] Zweryfikowane E2E: pad w iframe → lobby → P2P → wyścig → stan zwrotny na padzie
 
-### v0.3 — MVP: "działa na imprezie" 🎉
-- [ ] Power-upy: pocisk (w gracza przed tobą), banan, boost, tarcza
-- [ ] Mini-wyzwania na telefonie → przydział itemów, rubber-banding
-- [ ] Ekran telefonu: ekwipunek, pozycja, przycisk ITEM
-- [ ] Start (światła 3-2-1), meta, ekran wyników
-- [ ] Ustawienia hosta: długość wyścigu (liczba okrążeń)
+### v0.3 — MVP: "działa na imprezie" 🎉 ✅
+- [x] Power-upy: pocisk (leci po linii prostej, trafia w co jest z przodu), banan
+      (statyczna pułapka za kartem), boost (mini-boost na żądanie), tarcza (blokuje
+      jedno trafienie) — game/items.js + logika w game/race.js
+- [x] Mini-wyzwania na telefonie: kart bez itemu ładuje się (czas zależny od miejsca —
+      rubber-banding), potem ~1.5 s okno "ŁAP! ❓" na padzie; jeden generyczny przycisk
+      ITEM łapie/używa zależnie od stanu karta (host autorytatywnie rozstrzyga sens akcji,
+      więc opóźnienia sieci nie psują znaczenia przycisku)
+- [x] Rubber-banding podwójny: czas ładowania (lider ~7s, ostatni ~3s) i pula itemów
+      (lider głównie boost/tarcza, ostatni głównie pociski)
+- [x] Ekran telefonu: przycisk ITEM z paskiem czasu wyzwania / ikoną trzymanego itemu
+- [x] Start (3-2-1), meta, ekran wyników — z v0.1/v0.2, bez zmian
+- [x] Ustawienia hosta: okrążenia (z v0.2)
+- [x] Tryb lokalny też ma przedmioty (Enter / lewy Ctrl) — do szybkich testów bez telefonów
+- [x] Zweryfikowane headless: pełny cykl złap→pocisk→trafienie→spin, blokada tarczą
 
 ### v0.4 — Szlif
 - [ ] Docelowy pixel art trasy i kart

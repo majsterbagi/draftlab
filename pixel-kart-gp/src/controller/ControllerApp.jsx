@@ -6,6 +6,7 @@ import { isConfigMissing } from '../net/firebase.js';
 import { joinRoom } from '../net/lobby.js';
 import { connectPad } from '../net/webrtc.js';
 import { KART_STYLES } from '../game/race.js';
+import { ITEM_TYPES } from '../game/items.js';
 
 const AVATARS = ['🏎️', '🚗', '🛺', '🚜', '🦊', '🐸', '👾', '🤖'];
 const SEND_HZ = 30;
@@ -131,6 +132,11 @@ function PadScreen({ code, playerId, slot }) {
   });
 
   const racing = hostState?.phase === 'racing' || hostState?.phase === 'countdown';
+  const item = hostState?.item;
+  // Ułamek 0..1 postępu okna wyzwania (null, gdy żadne nie trwa) — liczony na hoście.
+  const challengeFraction = typeof hostState?.challenge === 'number' ? hostState.challenge : null;
+
+  const sendItemAction = () => padRef.current?.sendAction('item');
 
   return (
     <PadShell color={color}>
@@ -146,25 +152,29 @@ function PadScreen({ code, playerId, slot }) {
       </div>
 
       {/* Pad */}
-      <div className="flex-1 grid grid-cols-2 gap-3 p-3 select-none" style={{ touchAction: 'none' }}>
-        <div className="grid grid-rows-2 gap-3">
-          {gyro ? (
-            <div className="row-span-2 rounded-2xl bg-neutral-800/60 flex flex-col items-center justify-center text-neutral-400 text-sm">
-              <span className="text-3xl mb-2">🎛️</span>
-              przechylaj telefon
-              <button onClick={() => setGyro(false)} className="mt-3 text-xs underline">wróć do przycisków</button>
-            </div>
-          ) : (
-            <>
-              <PadButton label="◀" {...hold('steer', -1)} />
-              <PadButton label="▶" {...hold('steer', 1)} />
-            </>
-          )}
+      <div className="flex-1 flex flex-col gap-3 p-3 select-none" style={{ touchAction: 'none' }}>
+        <div className="flex-1 grid grid-cols-2 gap-3">
+          <div className="grid grid-rows-2 gap-3">
+            {gyro ? (
+              <div className="row-span-2 rounded-2xl bg-neutral-800/60 flex flex-col items-center justify-center text-neutral-400 text-sm">
+                <span className="text-3xl mb-2">🎛️</span>
+                przechylaj telefon
+                <button onClick={() => setGyro(false)} className="mt-3 text-xs underline">wróć do przycisków</button>
+              </div>
+            ) : (
+              <>
+                <PadButton label="◀" {...hold('steer', -1)} />
+                <PadButton label="▶" {...hold('steer', 1)} />
+              </>
+            )}
+          </div>
+          <div className="grid grid-rows-3 gap-3">
+            <PadButton label="GAZ" accent {...hold('throttle', 1)} rows={2} />
+            <PadButton label="DRIFT" {...hold('drift', true)} />
+          </div>
         </div>
-        <div className="grid grid-rows-3 gap-3">
-          <PadButton label="GAZ" accent {...hold('throttle', 1)} rows={2} />
-          <PadButton label="DRIFT" {...hold('drift', true)} />
-        </div>
+
+        <ItemButton item={item} challengeFraction={challengeFraction} onUse={sendItemAction} />
       </div>
 
       <div className="px-3 pb-3 flex justify-between text-xs text-neutral-500">
@@ -174,6 +184,41 @@ function PadScreen({ code, playerId, slot }) {
         <span>Pixel Kart GP</span>
       </div>
     </PadShell>
+  );
+}
+
+function ItemButton({ item, challengeFraction, onUse }) {
+  // Trzy stany: pusto (czekamy na ładowanie) / wyzwanie "ŁAP!" (pasek czasu na tapnięcie)
+  // / trzymany przedmiot gotowy do użycia.
+  if (challengeFraction != null) {
+    const remaining = Math.max(0, 1 - challengeFraction);
+    return (
+      <button
+        onClick={onUse}
+        className="relative h-16 rounded-2xl bg-amber-500 text-black font-bold text-lg overflow-hidden active:scale-95 transition-transform"
+        style={{ touchAction: 'none' }}
+      >
+        <span className="absolute inset-y-0 left-0 bg-amber-300/70" style={{ width: `${remaining * 100}%` }} />
+        <span className="relative">ŁAP! ❓</span>
+      </button>
+    );
+  }
+  if (item) {
+    const meta = ITEM_TYPES[item];
+    return (
+      <button
+        onClick={onUse}
+        className="h-16 rounded-2xl font-bold text-lg active:scale-95 transition-transform flex items-center justify-center gap-2"
+        style={{ backgroundColor: meta.color, color: '#111', touchAction: 'none' }}
+      >
+        <span className="text-2xl">{meta.icon}</span> UŻYJ {meta.label}
+      </button>
+    );
+  }
+  return (
+    <div className="h-16 rounded-2xl bg-neutral-900 text-neutral-600 text-sm flex items-center justify-center">
+      brak przedmiotu — czekaj na "ŁAP!"
+    </div>
   );
 }
 

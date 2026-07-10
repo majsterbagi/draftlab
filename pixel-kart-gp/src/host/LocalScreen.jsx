@@ -28,11 +28,12 @@ export default function LocalScreen() {
         laps={laps}
         runId={runId}
         getInput={(i) => keyboardRef.current?.inputFor(i) ?? { steer: 0, throttle: 0, drift: false }}
+        pollAction={(i) => (keyboardRef.current?.itemPressed(i) ? 'item' : null)}
         onRequestRestart={() => setRunId((id) => id + 1)}
         footer={
           <footer className="text-xs text-neutral-500 text-center">
-            <span className="text-red-400">P1</span>: strzałki + spacja (drift) ·{' '}
-            <span className="text-sky-400">P2</span>: WASD + lewy Shift (drift) · drift ≥0.7s = mini-boost
+            <span className="text-red-400">P1</span>: strzałki + spacja (drift) + Enter (przedmiot) ·{' '}
+            <span className="text-sky-400">P2</span>: WASD + lewy Shift (drift) + lewy Ctrl (przedmiot)
           </footer>
         }
       />

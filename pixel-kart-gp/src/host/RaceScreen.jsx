@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { createTrack } from '../game/track.js';
-import { createRace, stepRace, WORLD } from '../game/race.js';
+import { createRace, stepRace, applyAction, WORLD } from '../game/race.js';
 import { createRenderer, clearMarks, drawFrame, kartSpeed } from '../render/renderer.js';
 
 const HUD_HZ = 10;
@@ -11,6 +11,8 @@ export default function RaceScreen({
   players,            // liczba lub [{ name, color }]
   laps = 3,
   getInput,
+  pollAction,         // opcjonalnie: (slotIndex) => 'grab'|'use'|null, odpytywane co klatkę (np. klawiatura)
+  actionRef,          // opcjonalnie: ref, do którego wstrzykujemy (slotIndex, action) => void (np. sieć)
   onSnapshot,         // opcjonalnie: (hud) => void, ~10 Hz — np. do wysyłki na pady
   finishedActions,    // opcjonalnie: dodatkowe przyciski na ekranie wyników
   footer,             // opcjonalnie: pasek pomocy pod planszą
@@ -20,7 +22,7 @@ export default function RaceScreen({
   const canvasRef = useRef(null);
   const [hud, setHud] = useState(null);
   const callbacksRef = useRef({});
-  callbacksRef.current = { getInput, onSnapshot, onRequestRestart };
+  callbacksRef.current = { getInput, pollAction, onSnapshot, onRequestRestart };
 
   useEffect(() => {
     const track = createTrack();
@@ -28,6 +30,10 @@ export default function RaceScreen({
     const renderer = createRenderer(track);
     const ctx = canvasRef.current.getContext('2d');
     clearMarks(renderer);
+
+    if (actionRef) {
+      actionRef.current = (slotIdx, action) => applyAction(race, track, slotIdx, action);
+    }
 
     let raf;
     let last = performance.now();
@@ -39,6 +45,10 @@ export default function RaceScreen({
 
       const inputs = race.karts.map((_, i) => callbacksRef.current.getInput(i));
       stepRace(race, track, inputs, dt);
+      race.karts.forEach((_, i) => {
+        const action = callbacksRef.current.pollAction?.(i);
+        if (action) applyAction(race, track, i, action);
+      });
       drawFrame(renderer, ctx, race);
 
       if (now - hudLast > 1000 / HUD_HZ) {
@@ -55,6 +65,9 @@ export default function RaceScreen({
             speed: Math.round(kartSpeed(k)),
             finished: k.finished,
             finishTime: k.finishTime,
+            item: k.item,
+            challenge: k.challenge ? k.challenge.elapsed / k.challenge.window : null,
+            shield: k.shield,
           })),
           order: [...race.order],
         };
@@ -72,6 +85,7 @@ export default function RaceScreen({
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener('keydown', onKey);
+      if (actionRef) actionRef.current = null;
     };
   }, [players, laps, runId]);
 
@@ -127,6 +141,8 @@ export default function RaceScreen({
                 return (
                   <div key={ki} style={{ color: k.color }}>
                     {place + 1}. {k.name} · L{k.lap}/{hud.laps}
+                    {k.shield && ' 🛡️'}
+                    {k.item && ' ●'}
                     {k.finished && ' 🏁'}
                   </div>
                 );

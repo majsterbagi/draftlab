@@ -4,6 +4,7 @@
 import { WORLD } from '../game/race.js';
 import { pointAt, forwardDist } from '../game/track.js';
 import { kartSpeed } from '../game/kart.js';
+import { ITEM_TYPES } from '../game/items.js';
 
 export function createRenderer(track) {
   const trackLayer = renderTrackLayer(track);
@@ -91,9 +92,35 @@ export function drawFrame(renderer, ctx, race) {
   });
   ctx.drawImage(marksLayer, 0, 0);
 
+  race.hazards?.forEach((h) => drawBanana(ctx, h));
   race.karts.forEach((k) => drawKart(ctx, k));
+  race.projectiles?.forEach((p) => drawShell(ctx, p));
 
   // Strzałka do następnego checkpointu dla lidera? Na razie minimalizm — pomijamy.
+}
+
+function drawBanana(ctx, h) {
+  ctx.save();
+  ctx.translate(Math.round(h.x), Math.round(h.y));
+  ctx.fillStyle = ITEM_TYPES.banana.color;
+  ctx.fillRect(-2, -3, 4, 6);
+  ctx.fillRect(-3, -1, 6, 3);
+  ctx.fillStyle = '#8a7a10';
+  ctx.fillRect(-1, -4, 2, 2);
+  ctx.restore();
+}
+
+function drawShell(ctx, p) {
+  ctx.save();
+  ctx.translate(Math.round(p.x), Math.round(p.y));
+  ctx.rotate(Math.atan2(p.vy, p.vx));
+  ctx.fillStyle = ITEM_TYPES.shell.color;
+  ctx.beginPath();
+  ctx.ellipse(0, 0, 4, 3, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(-1, -1, 2, 2);
+  ctx.restore();
 }
 
 function drawKart(ctx, k) {
@@ -109,7 +136,8 @@ function drawKart(ctx, k) {
     ctx.restore();
   }
 
-  ctx.rotate(k.angle);
+  const spinning = k.spinTime > 0;
+  ctx.rotate(spinning ? k.angle + k.spinTime * 40 : k.angle);
   // Koła.
   ctx.fillStyle = '#141418';
   ctx.fillRect(-5, -4.5, 3, 2);
@@ -117,7 +145,7 @@ function drawKart(ctx, k) {
   ctx.fillRect(-5, 2.5, 3, 2);
   ctx.fillRect(2, 2.5, 3, 2);
   // Nadwozie.
-  ctx.fillStyle = k.color;
+  ctx.fillStyle = spinning ? 'rgba(255,255,255,0.55)' : k.color;
   ctx.fillRect(-6, -3, 12, 6);
   ctx.fillStyle = 'rgba(0,0,0,0.25)';
   ctx.fillRect(-6, -3, 12, 1.5); // cień górnej krawędzi
@@ -129,7 +157,36 @@ function drawKart(ctx, k) {
     ctx.fillStyle = '#8ff0ff';
     ctx.fillRect(-8, -1, 2, 2);
   }
+  if (k.shield) {
+    ctx.strokeStyle = ITEM_TYPES.shield.color;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(0, 0, 8, 0, Math.PI * 2);
+    ctx.stroke();
+  }
   ctx.restore();
+
+  // Znacznik nad kartem: wyzwanie ("?" pulsujące) albo trzymany przedmiot.
+  if (k.challenge) {
+    ctx.save();
+    ctx.translate(Math.round(k.x), Math.round(k.y) - 11);
+    const pulse = 0.6 + 0.4 * Math.sin(k.challenge.elapsed * 14);
+    ctx.globalAlpha = pulse;
+    ctx.fillStyle = '#fff2a8';
+    ctx.fillRect(-3, -3, 6, 6);
+    ctx.fillStyle = '#3a3a10';
+    ctx.font = 'bold 6px monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('?', 0, 0);
+    ctx.restore();
+  } else if (k.item) {
+    ctx.save();
+    ctx.translate(Math.round(k.x), Math.round(k.y) - 11);
+    ctx.fillStyle = ITEM_TYPES[k.item].color;
+    ctx.fillRect(-3, -3, 6, 6);
+    ctx.restore();
+  }
 }
 
 // Dane do minimapki/HUD — postęp okrążenia 0..1 dla paska.

@@ -73,6 +73,16 @@ export function connectPad(code, playerId, { onStatus, onHostMessage } = {}) {
         }
       }
     },
+    // Zdarzenie jednorazowe (łap przedmiot / użyj) — nie jest częścią pętli inputu,
+    // więc idzie osobno: przez DataChannel gdy P2P działa, inaczej push do RTDB
+    // (host odbiera przez onChildAdded i sam usuwa wpis po przetworzeniu).
+    sendAction(action) {
+      if (mode === 'webrtc' && dc.readyState === 'open') {
+        dc.send(JSON.stringify({ t: 'a', action }));
+      } else {
+        push(roomRef(code, `actions/${playerId}`), { action, at: Date.now() }).catch(() => {});
+      }
+    },
     close() {
       clearTimeout(fallbackTimer);
       unsubs.forEach((u) => u());
@@ -85,7 +95,7 @@ export function connectPad(code, playerId, { onStatus, onHostMessage } = {}) {
 
 // ---------- STRONA HOSTA (komputer) ----------
 
-export function createHostRtc(code, { onInput, onPadStatus } = {}) {
+export function createHostRtc(code, { onInput, onPadStatus, onAction } = {}) {
   const peers = new Map(); // playerId -> { pc, dc }
   const unsubs = [];
 
@@ -110,6 +120,7 @@ export function createHostRtc(code, { onInput, onPadStatus } = {}) {
         try {
           const msg = JSON.parse(ev.data);
           if (msg.t === 'i') onInput?.(playerId, msg);
+          else if (msg.t === 'a') onAction?.(playerId, msg.action);
         } catch { /* ignoruj */ }
       };
       entry.dc.onopen = () => onPadStatus?.(playerId, 'webrtc');
@@ -134,6 +145,18 @@ export function createHostRtc(code, { onInput, onPadStatus } = {}) {
     snap.forEach((child) => {
       const input = child.child('input').val();
       if (input) onInput?.(child.key, { t: 'i', ...input });
+    });
+  }));
+
+  // Fallback: akcje (łap/użyj) wpychane przez pady bez P2P — każdy wpis
+  // przetwarzamy raz i od razu usuwamy z bazy.
+  unsubs.push(onValue(roomRef(code, 'actions'), (snap) => {
+    snap.forEach((playerNode) => {
+      const playerId = playerNode.key;
+      playerNode.forEach((actionNode) => {
+        onAction?.(playerId, actionNode.child('action').val());
+        remove(actionNode.ref).catch(() => {});
+      });
     });
   }));
 

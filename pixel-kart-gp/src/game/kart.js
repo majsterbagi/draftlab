@@ -26,6 +26,8 @@ export function createKart({ x, y, angle, color, name }) {
     drifting: false, driftTime: 0, boostTime: 0,
     // stan wyścigu (aktualizowany przez race.js)
     s: 0, offTrack: false, lap: 1, nextCp: 1, finished: false, finishTime: 0,
+    // power-upy (game/items.js) — patrz race.js: stepItems / applyAction
+    item: null, shield: false, spinTime: 0, itemCharge: 0, challenge: null,
   };
 }
 
