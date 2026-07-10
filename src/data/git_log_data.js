@@ -1,5 +1,25 @@
 export const GIT_LOG_DATA = [
     {
+        "hash": "87213cf",
+        "date": "2026-07-10 21:29",
+        "type": "UPDATE",
+        "component": "PIXEL-KART",
+        "projects": [
+            "pixel-kart"
+        ],
+        "desc": "Pixel Kart GP v0.3: power-upy z rubber-bandingiem (MVP)",
+        "details": "- game/items.js: pocisk/banan/boost/tarcza, pula i tempo ładowania\n  zależne od miejsca w wyścigu (rubber-banding: ostatni ładuje się\n  szybciej i losuje mocniejsze przedmioty)\n- game/race.js: mini-wyzwanie \"ŁAP!\" (okno 1.5s) zamiast automatycznego\n  przydziału; jeden generyczny action 'item' (host autorytatywnie\n  rozstrzyga grab vs use, więc opóźnienia sieci nie psują znaczenia\n  przycisku); pociski lecą po linii prostej, banany to statyczne\n  pułapki, trafienie = spin (utrata kontroli), tarcza blokuje 1 hit\n- net/webrtc.js: kanał akcji jednorazowych (P2P + fallback RTDB\n  przez actions/{playerId} z auto-czyszczeniem)\n- ControllerApp.jsx: przycisk ITEM z paskiem czasu wyzwania / ikoną\n  trzymanego przedmiotu; HostApp/RaceScreen przekazują stan itemów\n  do padów i renderują znaczniki nad kartami\n- LocalScreen/keyboard.js: przedmioty też w trybie lokalnym (Enter /\n  lewy Ctrl) do szybkich testów bez telefonów\n- Zweryfikowane headless: pełny cykl złap→pocisk→trafienie→spin,\n  blokada tarczą, plus wcześniejsze testy fizyki/checkpointów\n\nCo-Authored-By: Claude Fable 5 <noreply@anthropic.com>"
+    },
+    {
+        "hash": "fd605d0",
+        "date": "2026-07-10 18:45",
+        "type": "SYS",
+        "component": "CHANGELOG",
+        "projects": [],
+        "desc": "Regeneracja dzienników po premierze GamerLab",
+        "details": "Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>"
+    },
+    {
         "hash": "b03f824",
         "date": "2026-07-10 18:44",
         "type": "FEAT",
@@ -514,28 +534,6 @@ export const GIT_LOG_DATA = [
         "component": "UI",
         "projects": [],
         "desc": "Align project title with icon",
-        "details": null
-    },
-    {
-        "hash": "90b11fe",
-        "date": "2025-12-19 22:43",
-        "type": "STYLE",
-        "component": "ATMOSPHERE",
-        "projects": [
-            "atmosphere"
-        ],
-        "desc": "Fix stat unit spacing overlap",
-        "details": null
-    },
-    {
-        "hash": "8278c3c",
-        "date": "2025-12-19 22:42",
-        "type": "FIX",
-        "component": "ATMOSPHERE",
-        "projects": [
-            "atmosphere"
-        ],
-        "desc": "Dismiss chart tooltip on outside click/touch",
         "details": null
     }
 ];

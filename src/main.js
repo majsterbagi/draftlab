@@ -40,11 +40,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const techCount = new Set(SITE_DATA.projects.flatMap(p => p.tags || [])).size;
 
     const statApps = document.getElementById('stat-apps');
-    const statCommits = document.getElementById('stat-commits');
+    const statUpdate = document.getElementById('stat-update');
     const statReleases = document.getElementById('stat-releases');
     const statTech = document.getElementById('stat-tech');
     if (statApps) animateCount(statApps, appsCount);
-    if (statCommits) animateCount(statCommits, GIT_LOG_DATA.length);
+    if (statUpdate && GIT_LOG_DATA.length) {
+        const last = GIT_LOG_DATA[0];
+        const [y, m, d] = last.date.split(' ')[0].split('-');
+        statUpdate.textContent = `${d}.${m}.${y}`;
+
+        const tip = document.getElementById('stat-update-tip');
+        if (tip) {
+            const tag = document.createElement('span');
+            tag.className = 'text-tech-green font-bold';
+            tag.textContent = `[${last.type}//${last.component}] `;
+            tip.append(tag, last.desc);
+        }
+    }
     if (statReleases) animateCount(statReleases, releasesCount);
     if (statTech) animateCount(statTech, techCount);
 

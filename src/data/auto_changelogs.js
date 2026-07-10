@@ -1,4 +1,55 @@
 export const PROJECT_CHANGES = {
+    "pixel-kart": [
+        {
+            "date": "2026-07-10 21:29",
+            "version": "#87213cf",
+            "type": "UPDATE",
+            "desc": "Pixel Kart GP v0.3: power-upy z rubber-bandingiem (MVP)",
+            "details": "- game/items.js: pocisk/banan/boost/tarcza, pula i tempo ładowania\n  zależne od miejsca w wyścigu (rubber-banding: ostatni ładuje się\n  szybciej i losuje mocniejsze przedmioty)\n- game/race.js: mini-wyzwanie \"ŁAP!\" (okno 1.5s) zamiast automatycznego\n  przydziału; jeden generyczny action 'item' (host autorytatywnie\n  rozstrzyga grab vs use, więc opóźnienia sieci nie psują znaczenia\n  przycisku); pociski lecą po linii prostej, banany to statyczne\n  pułapki, trafienie = spin (utrata kontroli), tarcza blokuje 1 hit\n- net/webrtc.js: kanał akcji jednorazowych (P2P + fallback RTDB\n  przez actions/{playerId} z auto-czyszczeniem)\n- ControllerApp.jsx: przycisk ITEM z paskiem czasu wyzwania / ikoną\n  trzymanego przedmiotu; HostApp/RaceScreen przekazują stan itemów\n  do padów i renderują znaczniki nad kartami\n- LocalScreen/keyboard.js: przedmioty też w trybie lokalnym (Enter /\n  lewy Ctrl) do szybkich testów bez telefonów\n- Zweryfikowane headless: pełny cykl złap→pocisk→trafienie→spin,\n  blokada tarczą, plus wcześniejsze testy fizyki/checkpointów\n\nCo-Authored-By: Claude Fable 5 <noreply@anthropic.com>"
+        },
+        {
+            "date": "2026-07-10 18:44",
+            "version": "#a3e7c08",
+            "type": "SYS",
+            "desc": "Pipeline builda FTP, dokumentacja agentów i porządki warsztatu",
+            "details": "Nowy skrypt builda (scripts/build.js) publikujący podprojekty do public/\nz weryfikacją paczki FTP (verify_dist.js) i automatyczną aktualizacją\ninwentarza projektów (update_agent_context.js + AGENTS.md/CLAUDE.md/GEMINI.md).\nPorządki po refaktorze strony głównej: usunięte nieużywane komponenty\n(GitLog, NewsFeed, SystemLog, DlReturn), pliki .bak i lokalna kopia\nqr-code-styling. Dokumentacja: README, SECURITY, aktualizacja ARCHITECTURE\ni GITHUB_GUIDE. Publikacja builda Pixel Kart GP w public/pixelkart.\n\nCo-Authored-By: Claude Fable 5 <noreply@anthropic.com>"
+        },
+        {
+            "date": "2026-07-10 15:11",
+            "version": "#b1f3c6f",
+            "type": "UPDATE",
+            "desc": "Pixel Kart GP v0.2: telefony jako pady (lobby QR + WebRTC)",
+            "details": "- Lobby na Firebase RTDB (ta sama baza co NEON QUIZ): pokoje rooms/{kod}\n  z app:'pixelkart', nick + awatar, powroty rozłączonych graczy, max 4\n- WebRTC DataChannel bez retransmisji: pad wysyła input 30 Hz, host\n  odsyła stan (pozycja/okrążenie) 10 Hz; sygnalizacja przez RTDB,\n  automatyczny fallback inputu przez RTDB po 5 s (izolacja AP)\n- Pad na telefonie: przyciski ◀ ▶ GAZ DRIFT, tryb żyroskopu (beta,\n  zgoda iOS), wake lock, pasek statusu łącza i pozycji\n- Host: lobby z QR i kodem, start/rewanż/powrót do lobby\n- RaceScreen uniwersalny (input wstrzykiwany), tryb lokalny pod #/local\n- E2E zweryfikowane: pad w iframe → P2P → jazda + stan zwrotny\n\nCo-Authored-By: Claude Fable 5 <noreply@anthropic.com>"
+        },
+        {
+            "date": "2026-07-09 22:05",
+            "version": "#18792aa",
+            "type": "UPDATE",
+            "desc": "Pixel Kart GP: tuning prowadzenia po testach",
+            "details": "Feedback: ciężkie sterowanie, za duża prędkość, za wąska droga.\n- Szerokość asfaltu 30 -> 42 px\n- Prędkość max 155 -> 125 px/s (boost 215 -> 180), przyspieszenie 150 -> 140\n- Skręt 3.0 -> 3.6 rad/s, pełna skuteczność już od 40 px/s (było 55)\n- Drift dostępny od 60 px/s (dopasowanie do niższej prędkości)\nSymulacja headless: mniej wypadnięć z toru (512 -> 166 klatek), testy OK.\n\nCo-Authored-By: Claude Fable 5 <noreply@anthropic.com>"
+        },
+        {
+            "date": "2026-07-09 21:54",
+            "version": "#ddd138e",
+            "type": "UPDATE",
+            "desc": "Pixel Kart GP: base './' w Vite pod hosting w podkatalogu /pixelkart/",
+            "details": "Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>"
+        },
+        {
+            "date": "2026-07-09 21:44",
+            "version": "#2953e0d",
+            "type": "UPDATE",
+            "desc": "Pixel Kart GP v0.1: prototyp jazdy (fizyka, trasa, okrążenia)",
+            "details": "- Fizyka arcade: napęd/opory rozkładane na składowe, drift z mini-boostem,\n  trawa spowalnia; czysta logika w src/game/ bez Reacta i sieci\n- Trasa jako oś Catmull-Rom z projekcją pozycji, checkpointy z blokadą\n  skrótów przez trawę, okrążenia, ranking, meta\n- Render pixel-art na canvasie 480x270 (CSS pixelated), ślady driftu\n- 2 graczy lokalnie na klawiaturze, ustawienia okrążeń, restart\n- Zweryfikowane symulacją headless (pełny wyścig + test anty-skrótowy)\n\nCo-Authored-By: Claude Fable 5 <noreply@anthropic.com>"
+        },
+        {
+            "date": "2026-07-09 21:31",
+            "version": "#b602811",
+            "type": "UPDATE",
+            "desc": "Add Pixel Kart GP project plan",
+            "details": "Nowy podprojekt: gra imprezowa w duchu Mario Kart (host na TV,\ntelefony jako pady przez QR). PLAN.md zawiera decyzje z sesji Q&A,\narchitekturę (WebRTC input + Firebase lobby) i road mapę v0.1-v0.4.\n\nCo-Authored-By: Claude Fable 5 <noreply@anthropic.com>"
+        }
+    ],
     "gamerlab": [
         {
             "date": "2026-07-10 18:44",
@@ -50,50 +101,6 @@ export const PROJECT_CHANGES = {
             "type": "UPDATE",
             "desc": "PRE-UPDATE: Saving state before Phase 2 UI Upgrade",
             "details": null
-        }
-    ],
-    "pixel-kart": [
-        {
-            "date": "2026-07-10 18:44",
-            "version": "#a3e7c08",
-            "type": "SYS",
-            "desc": "Pipeline builda FTP, dokumentacja agentów i porządki warsztatu",
-            "details": "Nowy skrypt builda (scripts/build.js) publikujący podprojekty do public/\nz weryfikacją paczki FTP (verify_dist.js) i automatyczną aktualizacją\ninwentarza projektów (update_agent_context.js + AGENTS.md/CLAUDE.md/GEMINI.md).\nPorządki po refaktorze strony głównej: usunięte nieużywane komponenty\n(GitLog, NewsFeed, SystemLog, DlReturn), pliki .bak i lokalna kopia\nqr-code-styling. Dokumentacja: README, SECURITY, aktualizacja ARCHITECTURE\ni GITHUB_GUIDE. Publikacja builda Pixel Kart GP w public/pixelkart.\n\nCo-Authored-By: Claude Fable 5 <noreply@anthropic.com>"
-        },
-        {
-            "date": "2026-07-10 15:11",
-            "version": "#b1f3c6f",
-            "type": "UPDATE",
-            "desc": "Pixel Kart GP v0.2: telefony jako pady (lobby QR + WebRTC)",
-            "details": "- Lobby na Firebase RTDB (ta sama baza co NEON QUIZ): pokoje rooms/{kod}\n  z app:'pixelkart', nick + awatar, powroty rozłączonych graczy, max 4\n- WebRTC DataChannel bez retransmisji: pad wysyła input 30 Hz, host\n  odsyła stan (pozycja/okrążenie) 10 Hz; sygnalizacja przez RTDB,\n  automatyczny fallback inputu przez RTDB po 5 s (izolacja AP)\n- Pad na telefonie: przyciski ◀ ▶ GAZ DRIFT, tryb żyroskopu (beta,\n  zgoda iOS), wake lock, pasek statusu łącza i pozycji\n- Host: lobby z QR i kodem, start/rewanż/powrót do lobby\n- RaceScreen uniwersalny (input wstrzykiwany), tryb lokalny pod #/local\n- E2E zweryfikowane: pad w iframe → P2P → jazda + stan zwrotny\n\nCo-Authored-By: Claude Fable 5 <noreply@anthropic.com>"
-        },
-        {
-            "date": "2026-07-09 22:05",
-            "version": "#18792aa",
-            "type": "UPDATE",
-            "desc": "Pixel Kart GP: tuning prowadzenia po testach",
-            "details": "Feedback: ciężkie sterowanie, za duża prędkość, za wąska droga.\n- Szerokość asfaltu 30 -> 42 px\n- Prędkość max 155 -> 125 px/s (boost 215 -> 180), przyspieszenie 150 -> 140\n- Skręt 3.0 -> 3.6 rad/s, pełna skuteczność już od 40 px/s (było 55)\n- Drift dostępny od 60 px/s (dopasowanie do niższej prędkości)\nSymulacja headless: mniej wypadnięć z toru (512 -> 166 klatek), testy OK.\n\nCo-Authored-By: Claude Fable 5 <noreply@anthropic.com>"
-        },
-        {
-            "date": "2026-07-09 21:54",
-            "version": "#ddd138e",
-            "type": "UPDATE",
-            "desc": "Pixel Kart GP: base './' w Vite pod hosting w podkatalogu /pixelkart/",
-            "details": "Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>"
-        },
-        {
-            "date": "2026-07-09 21:44",
-            "version": "#2953e0d",
-            "type": "UPDATE",
-            "desc": "Pixel Kart GP v0.1: prototyp jazdy (fizyka, trasa, okrążenia)",
-            "details": "- Fizyka arcade: napęd/opory rozkładane na składowe, drift z mini-boostem,\n  trawa spowalnia; czysta logika w src/game/ bez Reacta i sieci\n- Trasa jako oś Catmull-Rom z projekcją pozycji, checkpointy z blokadą\n  skrótów przez trawę, okrążenia, ranking, meta\n- Render pixel-art na canvasie 480x270 (CSS pixelated), ślady driftu\n- 2 graczy lokalnie na klawiaturze, ustawienia okrążeń, restart\n- Zweryfikowane symulacją headless (pełny wyścig + test anty-skrótowy)\n\nCo-Authored-By: Claude Fable 5 <noreply@anthropic.com>"
-        },
-        {
-            "date": "2026-07-09 21:31",
-            "version": "#b602811",
-            "type": "UPDATE",
-            "desc": "Add Pixel Kart GP project plan",
-            "details": "Nowy podprojekt: gra imprezowa w duchu Mario Kart (host na TV,\ntelefony jako pady przez QR). PLAN.md zawiera decyzje z sesji Q&A,\narchitekturę (WebRTC input + Firebase lobby) i road mapę v0.1-v0.4.\n\nCo-Authored-By: Claude Fable 5 <noreply@anthropic.com>"
         }
     ],
     "suntrack": [

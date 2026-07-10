@@ -210,7 +210,7 @@ const RAW_DATA = {
             desc: 'Wyścigi w duchu Mario Kart w pixel arcie. Host na TV, telefony jako pady — drift z mini-boostem, power-upy w drodze.',
             desc_en: "Mario Kart-style racing in pixel art. Host on TV, phones as gamepads — drift mini-boosts, power-ups on the way.",
             tags: ['React', 'Canvas', 'Party Game', 'Racing'],
-            version: 'v0.2',
+            version: 'v0.3',
             url: 'pixelkart/',
             changelogUrl: 'apps/changelog.html?id=pixel-kart',
             icon: 'flag',
@@ -218,41 +218,47 @@ const RAW_DATA = {
             color: 'amber',
 
             details: {
-                about: "Pixel Kart GP to imprezowa gra wyścigowa inspirowana Mario Kart: komputer lub TV wyświetla cały tor z widoku z góry, a gracze (docelowo do 4 osób) sterują kartami telefonami dołączając przez kod QR. Arcade'owa fizyka z driftem nagradzanym mini-boostem, trawa spowalnia, a checkpointy pilnują uczciwego liczenia okrążeń. Sterowanie z telefonu leci przez WebRTC prosto do hosta (kilka ms po Wi-Fi), z automatycznym trybem awaryjnym przez chmurę. Do wyboru przyciski albo żyroskop — a bez telefonów zostaje tryb lokalny na klawiaturze.",
+                about: "Pixel Kart GP to imprezowa gra wyścigowa inspirowana Mario Kart: komputer lub TV wyświetla cały tor z widoku z góry, a gracze (docelowo do 4 osób) sterują kartami telefonami dołączając przez kod QR. Arcade'owa fizyka z driftem nagradzanym mini-boostem, trawa spowalnia, a checkpointy pilnują uczciwego liczenia okrążeń. Sterowanie z telefonu leci przez WebRTC prosto do hosta (kilka ms po Wi-Fi), z automatycznym trybem awaryjnym przez chmurę. Klasyczne power-upy (pocisk, banan, boost, tarcza) zdobywa się mini-wyzwaniem na telefonie, z rubber-bandingiem premiującym gonitwę z tyłu stawki. Do wyboru przyciski albo żyroskop — a bez telefonów zostaje tryb lokalny na klawiaturze.",
                 features: [
                     { title: "Fizyka driftu", desc: "Poślizg z luzowaniem przyczepności — utrzymany drift ≥0,7 s daje mini-boost z płomieniem, jak u hydraulika." },
+                    { title: "Power-upy z rubber-bandingiem", desc: "Pocisk, banan, boost, tarcza — zdobywane mini-wyzwaniem \"ŁAP!\" na telefonie. Kto z tyłu, ładuje szybciej i trafia w lepszą pulę." },
                     { title: "Cały tor na ekranie", desc: "Widok z góry w pixel arcie 480×270, ślady opon po drifcie i checkpointy blokujące skróty przez trawę." },
-                    { title: "Wyścig kompletny", desc: "Odliczanie 3-2-1, okrążenia (1–5), ranking na żywo, czasy na mecie i szybki restart." },
-                    { title: "Gotowe pod pady", desc: "Logika gry oddzielona od Reacta i sieci — telefony jako kontrolery (WebRTC) wpinają się bez przebudowy." }
+                    { title: "Wyścig kompletny", desc: "Odliczanie 3-2-1, okrążenia (1–5), ranking na żywo, czasy na mecie i szybki restart." }
                 ],
                 techStack: ["React 18", "Vite", "Tailwind CSS", "Canvas 2D"],
                 roadmap: [
                     { done: true, task: "Prototyp jazdy: fizyka, drift, trasa, okrążenia (v0.1)" },
                     { done: true, task: "Lobby z QR i telefony jako pady (WebRTC) (v0.2)" },
-                    { done: false, task: "Power-upy + mini-wyzwania na telefonie (MVP)" },
+                    { done: true, task: "Power-upy + mini-wyzwania na telefonie (MVP) (v0.3)" },
                     { done: false, task: "Docelowy pixel art, tryb Grand Prix, audio" },
                     { done: false, task: "Kolejne trasy i wybór auta" }
                 ]
             },
             details_en: {
-                about: "Pixel Kart GP is a party racing game inspired by Mario Kart: a computer or TV shows the whole top-down track while players (up to 4) steer their karts with phones joined via QR code. Arcade physics with drift rewarded by a mini-boost, grass slows you down, and checkpoints keep lap counting honest. Phone input travels over WebRTC straight to the host (a few ms over Wi-Fi) with an automatic cloud fallback. Choose buttons or gyroscope — or play the local keyboard mode without phones.",
+                about: "Pixel Kart GP is a party racing game inspired by Mario Kart: a computer or TV shows the whole top-down track while players (up to 4) steer their karts with phones joined via QR code. Arcade physics with drift rewarded by a mini-boost, grass slows you down, and checkpoints keep lap counting honest. Phone input travels over WebRTC straight to the host (a few ms over Wi-Fi) with an automatic cloud fallback. Classic power-ups (shell, banana, boost, shield) are earned via a phone mini-challenge, with rubber-banding favoring a comeback from the back of the pack. Choose buttons or gyroscope — or play the local keyboard mode without phones.",
                 features: [
                     { title: "Drift physics", desc: "Slides with loosened grip — holding a drift ≥0.7s grants a flaming mini-boost, plumber style." },
+                    { title: "Rubber-banded power-ups", desc: "Shell, banana, boost, shield — earned via a \"GRAB!\" phone mini-challenge. Last place charges faster and rolls a stronger pool." },
                     { title: "Whole track on screen", desc: "Top-down 480×270 pixel art view, tyre marks from drifting and checkpoints that block grass shortcuts." },
-                    { title: "Complete race", desc: "3-2-1 countdown, laps (1–5), live ranking, finish times and quick restart." },
-                    { title: "Gamepad-ready", desc: "Game logic separated from React and networking — phone controllers (WebRTC) plug in without a rewrite." }
+                    { title: "Complete race", desc: "3-2-1 countdown, laps (1–5), live ranking, finish times and quick restart." }
                 ],
                 techStack: ["React 18", "Vite", "Tailwind CSS", "Canvas 2D"],
                 roadmap: [
                     { done: true, task: "Driving prototype: physics, drift, track, laps (v0.1)" },
                     { done: true, task: "QR lobby and phones as gamepads (WebRTC) (v0.2)" },
-                    { done: false, task: "Power-ups + phone mini-challenges (MVP)" },
+                    { done: true, task: "Power-ups + phone mini-challenges (MVP) (v0.3)" },
                     { done: false, task: "Final pixel art, Grand Prix mode, audio" },
                     { done: false, task: "More tracks and kart selection" }
                 ]
             },
 
             changes: [
+                {
+                    version: "v0.3",
+                    date: "2026-07-10",
+                    type: "FEAT",
+                    desc: "Power-upy na start: pocisk, banan, boost i tarcza — klasyka rodem z Mario Kart. Zdobywa się je mini-wyzwaniem na telefonie: kart bez przedmiotu ładuje się przez kilka sekund (ostatnie miejsce ładuje się szybciej — rubber-banding), potem na padzie pojawia się \"ŁAP! ❓\" z paskiem 1,5 sekundy na tapnięcie. Trafiony przedmiot pokazuje się jako ikona na tym samym przycisku — jedno tapnięcie go zużywa. Pocisk leci po linii prostej i wywala z toru pierwszy napotkany kart, banan to niewidoczna pułapka rzucana za siebie, boost daje chwilowy zastrzyk prędkości, a tarcza blokuje jedno trafienie. Kto jedzie z tyłu stawki, trafia częściej i w mocniejsze przedmioty — szansa na dogonienie czołówki. Przedmioty widać też na ekranie hosta (ikonka nad kartem, pulsujący znak zapytania w trakcie wyzwania). Tryb lokalny na klawiaturze też je obsługuje (Enter / lewy Ctrl)."
+                },
                 {
                     version: "v0.2",
                     date: "2026-07-10",
