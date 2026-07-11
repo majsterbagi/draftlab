@@ -10,7 +10,7 @@ import type { GameState, Player, RoomSettings } from './types'
 const START_CHIPS = 100
 
 export type SessionEvent =
-  | { type: 'PLAYER_JOIN'; playerId: string; nick: string }
+  | { type: 'PLAYER_JOIN'; playerId: string; nick: string; avatar: Player['avatar'] }
   | { type: 'PLAYER_LEAVE'; playerId: string }
   | { type: 'START_MODULE'; moduleId: string }
   | { type: 'MODULE_FINISHED'; chipDelta: Record<string, number> }
@@ -36,11 +36,19 @@ export function createSessionMachine(roomCode: string, settings: RoomSettings) {
         const existing = context.players.find((p) => p.id === event.playerId)
         const players: Player[] = existing
           ? context.players.map((p) =>
-              p.id === event.playerId ? { ...p, nick: event.nick, connected: true } : p,
+              p.id === event.playerId
+                ? { ...p, nick: event.nick, avatar: event.avatar, connected: true }
+                : p,
             )
           : [
               ...context.players,
-              { id: event.playerId, nick: event.nick, chips: START_CHIPS, connected: true },
+              {
+                id: event.playerId,
+                nick: event.nick,
+                avatar: event.avatar,
+                chips: START_CHIPS,
+                connected: true,
+              },
             ]
         return { ...context, players, version: context.version + 1 }
       }),

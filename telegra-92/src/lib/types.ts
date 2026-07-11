@@ -1,9 +1,12 @@
+import type { PlayerAvatar } from './avatars'
+
 // ---- Gracze i pokój ----
 
 export interface Player {
   /** Stały identyfikator urządzenia gracza (localStorage). */
   id: string
   nick: string
+  avatar: PlayerAvatar
   /** Pula żetonów — jedna waluta gry (żetony = punkty). */
   chips: number
   connected: boolean

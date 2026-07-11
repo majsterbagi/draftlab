@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import Marquee from '../../components/Marquee'
 import ConfigWarning from '../../components/ConfigWarning'
 import TicketQR from '../../components/TicketQR'
+import { DEFAULT_AVATAR, getAvatar, isPlayerAvatar } from '../../lib/avatars'
 import { generateRoomCode } from '../../lib/identity'
 import { supabaseConfigured } from '../../lib/supabase'
 import { broadcastState, connectAsHost, type RoomConnection } from '../../lib/realtime'
@@ -27,8 +28,13 @@ export default function HostScreen() {
     if (!supabaseConfigured) return
     const conn = connectAsHost(roomCode, (action) => {
       if (action.type === 'join') {
-        const { nick } = action.payload as { nick: string }
-        send({ type: 'PLAYER_JOIN', playerId: action.playerId, nick })
+        const { nick, avatar } = action.payload as { nick: string; avatar?: unknown }
+        send({
+          type: 'PLAYER_JOIN',
+          playerId: action.playerId,
+          nick,
+          avatar: isPlayerAvatar(avatar) ? avatar : DEFAULT_AVATAR,
+        })
       }
     })
     connRef.current = conn
@@ -84,11 +90,18 @@ export default function HostScreen() {
                 key={p.id}
                 initial={{ y: 12, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                className={`rounded-full border px-5 py-2 text-lg font-bold ${
+                className={`flex items-center gap-3 rounded-full border py-2 pl-2 pr-5 text-lg font-bold ${
                   p.connected ? 'border-neon text-neon' : 'border-linia text-zgaszony'
                 }`}
               >
-                {p.nick}
+                <span
+                  className="grid h-10 w-10 place-items-center rounded-full bg-kosc/10 text-2xl"
+                  aria-label={`Awatar: ${getAvatar(p.avatar).label}`}
+                  role="img"
+                >
+                  {getAvatar(p.avatar).symbol}
+                </span>
+                <span>{p.nick}</span>
               </motion.li>
             ))}
           </ul>
