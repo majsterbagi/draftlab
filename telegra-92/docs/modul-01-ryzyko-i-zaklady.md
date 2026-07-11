@@ -1,6 +1,7 @@
 # Moduł 01: Ryzyko i zakłady — specyfikacja mechaniki
 
-> Status: **zaprojektowany na papierze** (sesja 2026-07-11), do implementacji w Etapie 2.
+> Status: **zaprojektowany kompletnie** (sesje 2026-07-11), do implementacji w Etapie 2.
+> Wszystkie otwarte pytania rozstrzygnięte — patrz "Mechaniki szczegółowe".
 > Wszystkie decyzje podjęte przez właściciela projektu; wartości liczbowe (stawki, mnożniki,
 > czasy) to punkt startowy do strojenia po pierwszych testach na żywo.
 
@@ -61,14 +62,39 @@ tym bardziej gra się ludźmi, nie pytaniami.
 
 Moduł działa w obu trybach platformy:
 - **Indywidualnie**: każdy telefon = gracz z własną pulą.
-- **Drużynowo**: pula wspólna drużyny; szczegóły podejmowania decyzji w drużynie
-  (kapitan? głosowanie? konsensus stawki?) — **do zaprojektowania** (otwarte pytanie).
+- **Drużynowo — wszyscy głosują, system uśrednia**: każdy członek drużyny stawia
+  i odpowiada na swoim telefonie; stawka drużyny = mediana stawek, odpowiedź = większość
+  głosów (remis → losowo spośród wskazanych przez drużynę). Wszyscy klikają cały czas —
+  nikt nie jest widownią.
 
-## Otwarte pytania (na kolejne sesje projektowe)
+## Mechaniki szczegółowe (rozstrzygnięte 2026-07-11)
 
-1. **Tryb drużynowy** — kto w drużynie stawia i odpowiada (kapitan rotacyjny / średnia głosów)?
-2. **Runda sabotażu** — dokładny przebieg: kto kogo wskazuje, jakie stawki, co widzi ofiara?
-3. **Licytacja w akcie III** — format (jawna po kolei / w ciemno jedna runda)? minimalne postąpienie?
-4. **Pytanie o Bank** — jaki typ pytania (szacowanie wydaje się naturalne — zawsze wyłania zwycięzcę)? czy stawia się na nie dodatkowo?
-5. **Czasy** — limity na zakład i odpowiedź per typ pytania (do strojenia na testach).
-6. **Koniec modułu** — sam wynik, czy ceremonia zwycięzcy z podium?
+### Runda sabotażu (wydarzenie w akcie II)
+- Cel wskazuje **głosowanie graczy** (tajne, na telefonach; remis → aktualny lider).
+- Pozostali stawiają za/przeciw: "czy cel odpowie dobrze?". Cel gra normalnie o podwójną stawkę.
+- **Przełącznik w konfiguratorze hosta**: głosowanie ↔ auto-cel (lider tabeli) — wariant
+  bezpieczny dla wrażliwych stołów (dzieci, rodzina); host decyduje przy konfiguracji sesji.
+
+### Licytacja kategorii (akt III)
+- **Jedna runda w ciemno**: każdy składa jedną tajną ofertę (może być 0); najwyższa wygrywa
+  prawo wyboru kategorii, remis rozstrzyga szybsza oferta.
+- Zapłacone żetony **zasilają Bank finałowy** — licytacja podbija kulminację.
+- Dramaturgiczne ujawnienie ofert na TV, spójne z DNA zakładów w ciemno.
+
+### Pytanie o Bank (kulminacja każdego aktu)
+- Zawsze **pytanie szacunkowe** (typ `estimate`): każdy odpowiada, najbliższy zgarnia
+  cały Bank. Bez dodatkowego stawiania — emocją jest sama kwota w Banku.
+- Zawsze wyłania zwycięzcę i daje szansę każdemu niezależnie od wiedzy; jedna prosta
+  zasada powtarzana 3× na moduł.
+
+### Czasy (filozofia: zegar zawsze, dość ciasny)
+- Zakład ~15 s · odpowiedź ABCD / prawda-fałsz ~20 s · szacowanie ~30 s · uporządkuj ~45 s.
+- Brak decyzji w czasie = stawka minimalna / brak odpowiedzi (stawka przepada do Banku).
+- Tykający zegar z eskalującym audio na ekranie TV — element dramaturgii prime-time.
+- Dokładne sekundy do strojenia na testach na żywo.
+
+### Ceremonia końca modułu (pełna — do zbudowania w Etapie 3)
+- Sekwencja na TV: odliczanie od ostatniego miejsca → werble → podium top 3 → konfetti.
+- Statystyki-smaczki: "najodważniejszy zakład wieczoru", "król VA BANQUE",
+  "mistrz szacowania" — to wspomnienie, które sprzedaje kolejną partię.
+- W MVP (Etap 2) wystarczy prosty ekran rankingu; ceremonia dochodzi z oprawą.

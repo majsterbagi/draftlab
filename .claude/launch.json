@@ -15,6 +15,18 @@
       "autoPort": true
     },
     {
+      "name": "telegra-92",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "telegra-92"],
+      "port": 5193
+    },
+    {
+      "name": "telegra-92-docs",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "5192", "--directory", "telegra-92/docs"],
+      "port": 5192
+    },
+    {
       "name": "neon-quiz-86",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev", "--prefix", "neon-quiz-86"],

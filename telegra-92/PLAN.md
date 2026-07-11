@@ -1,7 +1,7 @@
-# TeleGra '92 — dokument założycielski
+# LUNAPARK — dokument założycielski
 
-> Nazwa robocza (branding właściwy później — "TeleGra '92" była wcześniej kandydatem
-> na rebranding NEON QUIZ; tu służy jako placeholder i może zostać, jeśli się obroni).
+> Nazwa produktu: **LUNAPARK** (przyjęta 2026-07-11; wcześniej projekt działał pod
+> roboczą nazwą "TeleGra '92").
 >
 > Status: **faza projektowania** (start 2026-07-11). Projekt rozwijany długofalowo,
 > docelowo komercyjnie. Odrębny od strony głównej DraftLab — ewentualne podlinkowanie
@@ -14,7 +14,7 @@ są pulpitami. Nie pojedyncza gra, lecz **system modułowych rund**, z których 
 wieczór — od szybkiej 20-minutowej partii w pubie po godzinny "odcinek" na domówce.
 
 Czym się różni od NEON QUIZ: NEON QUIZ to jedna zamknięta gra zrobiona w wieczór.
-TeleGra '92 to produkt: biblioteka trybów, biblioteka treści, konfigurowalna rozgrywka,
+LUNAPARK to produkt: biblioteka trybów, biblioteka treści, konfigurowalna rozgrywka,
 jakość oprawy na poziomie komercyjnym.
 
 ## 2. Decyzje podjęte (sesja projektowa 2026-07-11)
@@ -24,6 +24,7 @@ jakość oprawy na poziomie komercyjnym.
 | Odbiorcy | Domówki/znajomi, puby (pub quizy), spotkania rodzinne — **nie** korporacje |
 | Ton | Luźny, ale zasady zrozumiałe dla wszystkich pokoleń naraz |
 | Estetyka | **Nowoczesny minimalizm premium z DNA teleturnieju prime-time** — czysto i "drogo", ale z reflektorami, napięciem, dramaturgią chwili przed odpowiedzią |
+| Kierunek wizualny | **"Lunapark"** (2026-07-11, po 4 rundach moodboardu — `docs/moodboard.html`): nocne wesołe miasteczko. Niebo nocy #171233, żarówka #FFB13D, wata cukrowa #FF5FA2, neon strzelnicy #43E0D8, światło kasy #F7F1E4. Role kolorów: bursztyn = pieniądze, róż = emocje/kulminacje, turkus = decyzje graczy. Żarówki marquee, łuny karuzeli, ciepły gruby grotesk z poświatą. Ryzyko: granica z jarmarcznością — pilnować nowoczesnej typografii i oszczędnego światła. Odrzucone po drodze: Złoty Sygnał, Antena, Aksamit (r. 1 — za ciemne/mało charakterystyczne), Żeton, Fest (r. 2), Rewia, Planetarium (r. 3), Molo, Lampiony, Pokaz (r. 4 — finaliści) |
 | Struktura gry | **Modułowa** — rundy jako klocki, host komponuje sesję (długość 15–60+ min) |
 | Format graczy | **Oba tryby**: indywidualny i drużynowy (wybór przy zakładaniu pokoju) |
 | Rdzeń emocjonalny | Docelowo wszystkie cztery jako wybieralne tryby: ryzyko/zakłady, blef/psychologia, dynamika drużynowa, dramaturgia teleturnieju |
@@ -32,6 +33,8 @@ jakość oprawy na poziomie komercyjnym.
 | Treść | Wszystkie trzy filary: (a) kuratorowane paczki pisane ręcznie, (b) pipeline AI + panel weryfikacji, (c) edytor własnych zestawów dla hostów |
 | Języki | Start po polsku, ale **architektura treści z i18n od pierwszego dnia** (rynek szerszy niż PL w planach) |
 | Stack | "Coś pośrodku": realtime jak w NEON QUIZ, ale **treść w prawdziwej bazie, nie w kodzie**; bez kont i płatności na start (gotowość na nie później) |
+| Backend | **Supabase** (2026-07-11): Postgres na treść, Supabase Realtime na stan pokoju; RLS i konta gotowe pod przyszłą monetyzację |
+| Język | **TypeScript od startu** (2026-07-11) — kontrakt modułów i maszyna stanów wymagają typów |
 | Model biznesowy | Jeszcze nieustalony — najpierw świetny produkt, model dobierzemy po pierwszych graczach |
 
 ## 3. Architektura (propozycja do zatwierdzenia)
@@ -45,13 +48,16 @@ jakość oprawy na poziomie komercyjnym.
    (np. `setup(config) → fazy → wynik rundy`), rejestrowany w katalogu modułów.
    Konfigurator sesji hosta składa playlistę modułów.
 
-### Do rozstrzygnięcia (następna sesja)
-- **Backend**: Firebase (RTDB na stan gry + Firestore na treść — jeden projekt, znany
-  wzorzec) vs Supabase (Postgres na treść + Realtime na stan — znany z GamerLab, lepszy
-  pod przyszłe konta/płatności/panel treści). Wstępna rekomendacja: **Supabase**,
-  bo warstwa treści i przyszły panel weryfikacji AI ciążą ku relacyjnej bazie.
-- Frontend: React + Vite + Tailwind + framer-motion (kontynuacja sprawdzonego stacku)
-  — czy coś zmieniamy (np. TypeScript od startu? rekomendacja: **tak**, projekt długofalowy).
+### Rozstrzygnięte (2026-07-11)
+- **Backend: Supabase** — Postgres na treść (paczki/pytania/i18n), Supabase Realtime
+  na stan pokoju. Wzorzec "host mózgiem gry" przenosimy świadomie na model Realtime.
+- **Frontend: React + Vite + Tailwind + framer-motion, TypeScript od startu.**
+- **Maszyna stanów: XState** (zatwierdzone przy starcie Etapu 1) — formalna maszyna faz
+  sesji i modułów; framer-motion jako baza animacji, warstwa "fajerwerków" (marquee,
+  ceremonie) do rozstrzygnięcia w Etapie 3 (CSS/canvas/GSAP). Dźwięk: Howler.js w Etapie 3.
+- **Układ aplikacji**: jedna appka Vite, routy `/host` (ekran TV) i `/play` (telefon).
+
+### Do rozstrzygnięcia
 - Dźwięk: oprawa audio (sygnały napięcia, fanfary) to część DNA prime-time — kiedy wchodzi.
 
 ## 4. Pierwszy moduł: "Ryzyko i zakłady"
@@ -66,8 +72,12 @@ sabotaż, licytacja, czasy) wylistowane w specyfikacji.
 
 ## 5. Roadmapa (zgrubna)
 
-- **Etap 0 — projekt** *(teraz)*: ~~mechanika modułu 1 na papierze~~ ✔ (2026-07-11),
-  model danych treści, wybór backendu, moodboard estetyki premium/prime-time.
+- **Etap 0 — projekt** *(teraz)*: ~~mechanika modułu 1 na papierze~~ ✔, ~~wybór
+  backendu~~ ✔ (Supabase + TS), ~~model danych treści~~ ✔ (`docs/model-danych-tresci.md`)
+  ~~otwarte detale mechaniki modułu 01~~ ✔, ~~moodboard estetyki~~ ✔ (wybrany
+  kierunek "Lunapark" po 4 rundach), ~~lista rdzeniowych kategorii~~ ✔ (16 kategorii
+  w `docs/kategorie.html` — zaakceptowane jako punkt wyjściowy; flavor texty to szkice
+  do przepisania przy pierwszej paczce, **bez nazwisk i marek**). **ETAP 0 ZAMKNIĘTY.**
 - **Etap 1 — szkielet platformy**: pokoje + lobby (kod, dołączanie telefonem), maszyna
   stanów sesji, kontrakt modułów, konfigurator rund hosta, treść ładowana z bazy.
 - **Etap 2 — moduł Ryzyko i zakłady** (surowy, grywalny end-to-end) + pierwsza
