@@ -1,0 +1,72 @@
+<meta charset="utf-8">
+<title>LUNAPARK — Rdzeniowe kategorie (propozycja)</title>
+<style>
+  /* Jednomotywowy ciemny — kategorie żyją w świecie Lunaparku. */
+  :root{
+    --noc:#171233; --panel:#221b47; --linia:#3a2f66; --tekst:#f7f1e4; --przygaszony:#9d94bd;
+    --zarowka:#ffb13d; --wata:#ff5fa2; --neon:#43e0d8;
+    color-scheme: dark;
+  }
+  html{background:var(--noc);}
+  body{font-family:"Avenir Next","Segoe UI",system-ui,sans-serif; color:var(--tekst); line-height:1.5; margin:0;
+    background:
+      radial-gradient(80% 60% at 10% -10%, rgba(74,29,94,.55) 0%, transparent 60%),
+      radial-gradient(80% 60% at 95% -5%, rgba(20,64,92,.5) 0%, transparent 60%),
+      var(--noc);}
+  .wrap{max-width:1020px; margin:0 auto; padding:56px 24px 96px;}
+  .eyebrow{font-size:12px; letter-spacing:.22em; text-transform:uppercase; color:var(--przygaszony);}
+  h1{font-size:clamp(28px,4.6vw,42px); line-height:1.08; margin:.35em 0 .4em; font-weight:800; text-wrap:balance;}
+  .lede{max-width:64ch; color:var(--przygaszony); font-size:16px; margin:0 0 10px;}
+  .lede b{color:var(--tekst);}
+
+  .grid{display:grid; gap:16px; margin-top:40px; grid-template-columns:repeat(auto-fill,minmax(290px,1fr));}
+  .kat{border:1px solid var(--linia); border-radius:14px; background:var(--panel); padding:18px 20px 16px;
+       display:flex; flex-direction:column; gap:6px; position:relative; overflow:hidden;}
+  .kat::after{content:""; position:absolute; inset:auto 0 0 0; height:3px;
+       background:linear-gradient(90deg, var(--wata), var(--zarowka)); opacity:.85;}
+  .kat-top{display:flex; align-items:center; gap:12px;}
+  .ikona{font-size:26px;}
+  .nazwa{font-size:19px; font-weight:800; letter-spacing:.02em; margin:0;}
+  .flavor{margin:0; color:var(--przygaszony); font-size:14px;}
+  .nr{position:absolute; top:12px; right:14px; font-size:11px; color:var(--przygaszony); letter-spacing:.12em;}
+
+  .sekcja{margin-top:56px;}
+  .sekcja h2{font-size:13px; letter-spacing:.2em; text-transform:uppercase; color:var(--zarowka); font-weight:700;}
+  .sekcja p{color:var(--przygaszony); max-width:64ch; font-size:14.5px;}
+</style>
+
+<div class="wrap">
+  <p class="eyebrow">LUNAPARK · Etap 0 · Kategorie rdzeniowe — propozycja do wykreślania</p>
+  <h1>16 szyldów wesołego miasteczka</h1>
+  <p class="lede">Kategoria to element rozgrywki: gracz widzi <b>tylko ją i trudność</b>, gdy stawia w ciemno.
+  Nazwa + ikona + jedno zdanie „smaku" muszą wystarczyć do decyzji „czy ryzykuję". Flavor text pojawia się
+  pod nazwą na ekranie TV. <b>Lista zaakceptowana jako punkt wyjściowy</b> — flavor texty to szkice
+  do przepisania przy pierwszej paczce pytań (bez nazw własnych i marek).</p>
+
+  <div class="grid">
+    <div class="kat"><span class="nr">01</span><div class="kat-top"><span class="ikona">🎬</span><p class="nazwa">Kino i seriale</p></div><p class="flavor">Kadry, cytaty i bohaterowie, których zna każdy.</p></div>
+    <div class="kat"><span class="nr">02</span><div class="kat-top"><span class="ikona">🎵</span><p class="nazwa">Muzyka</p></div><p class="flavor">Refreny, które zna cała Polska.</p></div>
+    <div class="kat"><span class="nr">03</span><div class="kat-top"><span class="ikona">🏛️</span><p class="nazwa">Historia</p></div><p class="flavor">Daty, władcy i bitwy — bez zakuwania.</p></div>
+    <div class="kat"><span class="nr">04</span><div class="kat-top"><span class="ikona">🔬</span><p class="nazwa">Nauka</p></div><p class="flavor">Fizyka bez wzorów, chemia bez wybuchów. Zwykle.</p></div>
+    <div class="kat"><span class="nr">05</span><div class="kat-top"><span class="ikona">⚽</span><p class="nazwa">Sport</p></div><p class="flavor">Od skoków Małysza po igrzyska w Tokio.</p></div>
+    <div class="kat"><span class="nr">06</span><div class="kat-top"><span class="ikona">🌍</span><p class="nazwa">Geografia</p></div><p class="flavor">Stolice, rzeki i miejsca, do których nie dojedziesz.</p></div>
+    <div class="kat"><span class="nr">07</span><div class="kat-top"><span class="ikona">🍜</span><p class="nazwa">Jedzenie</p></div><p class="flavor">Kuchnia babci i cały świat na talerzu.</p></div>
+    <div class="kat"><span class="nr">08</span><div class="kat-top"><span class="ikona">🐙</span><p class="nazwa">Zwierzęta</p></div><p class="flavor">Od dżdżownicy po płetwala błękitnego.</p></div>
+    <div class="kat"><span class="nr">09</span><div class="kat-top"><span class="ikona">🧺</span><p class="nazwa">Życie codzienne</p></div><p class="flavor">Rzeczy, które wszyscy robimy, a nikt nie wie jak.</p></div>
+    <div class="kat"><span class="nr">10</span><div class="kat-top"><span class="ikona">📱</span><p class="nazwa">Technologia</p></div><p class="flavor">Od walkmana do sztucznej inteligencji.</p></div>
+    <div class="kat"><span class="nr">11</span><div class="kat-top"><span class="ikona">🔤</span><p class="nazwa">Język polski</p></div><p class="flavor">Przysłowia, zagwozdki i słowa-pułapki.</p></div>
+    <div class="kat"><span class="nr">12</span><div class="kat-top"><span class="ikona">😂</span><p class="nazwa">Popkultura i internet</p></div><p class="flavor">Memy, trendy i gwiazdy jednego sezonu.</p></div>
+    <div class="kat"><span class="nr">13</span><div class="kat-top"><span class="ikona">📏</span><p class="nazwa">Liczby i rekordy</p></div><p class="flavor">Ile, jak dużo, jak daleko — królestwo szacowania.</p></div>
+    <div class="kat"><span class="nr">14</span><div class="kat-top"><span class="ikona">🎨</span><p class="nazwa">Sztuka i literatura</p></div><p class="flavor">Obrazy, książki i lektury, których nie doczytałeś.</p></div>
+    <div class="kat"><span class="nr">15</span><div class="kat-top"><span class="ikona">🗺️</span><p class="nazwa">Polska</p></div><p class="flavor">Nasze podwórko: od Bałtyku po Giewont.</p></div>
+    <div class="kat"><span class="nr">16</span><div class="kat-top"><span class="ikona">🧸</span><p class="nazwa">Dzieciństwo</p></div><p class="flavor">Bajki, podwórko i smaki, które pamiętasz.</p></div>
+  </div>
+
+  <div class="sekcja">
+    <h2>Zasady doboru</h2>
+    <p>Mieszanka pokoleniowa (babcia i nastolatek znajdą swoje), mieszanka powagi (Historia obok Memów),
+    każda kategoria pojemna na wszystkie 4 typy pytań i 3 trudności. „Liczby i rekordy" celowo wspiera
+    Pytania o Bank (szacowanie). Ikony to na razie emoji-placeholdery — docelowo własne ikony-szyldy
+    świecące w stylu Lunaparku.</p>
+  </div>
+</div>

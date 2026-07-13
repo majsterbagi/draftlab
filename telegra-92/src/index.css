@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Niebo Lunaparku: łuny karuzeli w rogach ekranu */
+body {
+  @apply bg-noc text-kosc font-sans antialiased;
+  background-image:
+    radial-gradient(80% 60% at 8% -10%, rgba(74, 29, 94, 0.55) 0%, transparent 60%),
+    radial-gradient(80% 60% at 95% -5%, rgba(20, 64, 92, 0.5) 0%, transparent 60%);
+  background-attachment: fixed;
+  min-height: 100dvh;
+}

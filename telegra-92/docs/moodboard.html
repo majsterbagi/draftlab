@@ -1,0 +1,406 @@
+<meta charset="utf-8">
+<title>LUNAPARK — Moodboard: trzy kierunki</title>
+<style>
+  /* Runda 3: rodzina "noc + ciepłe światło" — Lunapark (baza z rundy 2) i trzy zbliżone
+     warianty różniące się metaforą światła: girlandy mola, żarówki sceny, gwiazdy nieba. */
+  :root{
+    --page-bg:#111019; --page-text:#eceae2; --page-dim:#96939e; --page-line:#2b2937;
+    color-scheme: dark;
+  }
+  html{background:var(--page-bg);}
+  body{font-family:"Avenir Next","Segoe UI",system-ui,sans-serif; color:var(--page-text); line-height:1.55; margin:0;}
+  .wrap{max-width:1060px; margin:0 auto; padding:56px 24px 96px;}
+
+  .eyebrow{font-size:12px; letter-spacing:.22em; text-transform:uppercase; color:var(--page-dim);}
+  h1{font-size:clamp(30px,5vw,44px); line-height:1.08; margin:.35em 0 .4em; font-weight:700; text-wrap:balance;}
+  .lede{max-width:62ch; color:var(--page-dim); font-size:16.5px; margin:0 0 8px;}
+
+  .dir{margin-top:72px; border:1px solid var(--line); border-radius:16px; overflow:hidden; background:var(--bg); color:var(--text);}
+  .dir-head{padding:34px 34px 26px;}
+  .dir-letter{font-size:13px; letter-spacing:.2em; color:var(--accent); text-transform:uppercase; font-weight:700;}
+  .dir h2{margin:.15em 0 .25em; font-size:clamp(26px,4vw,40px); line-height:1.05;}
+  .dir-thesis{color:var(--dim); max-width:64ch; margin:0;}
+  .moods{display:flex; gap:8px; flex-wrap:wrap; margin-top:18px;}
+  .mood{font-size:12px; letter-spacing:.08em; text-transform:uppercase; border:1px solid var(--line); border-radius:999px; padding:5px 12px; color:var(--dim);}
+
+  .dir-body{padding:10px 34px 34px; display:grid; gap:30px;}
+  .row{display:grid; gap:22px;}
+  @media(min-width:800px){ .row-2{grid-template-columns:1fr 1fr;} .row-tv{grid-template-columns:2.2fr 1fr; align-items:stretch;} }
+  .cell h3{font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--dim); font-weight:700; margin:0 0 12px;}
+
+  .swatches{display:flex; gap:10px; flex-wrap:wrap;}
+  .sw{width:112px; border-radius:10px; overflow:hidden; border:1px solid var(--line);}
+  .sw-chip{height:64px;}
+  .sw-meta{padding:7px 10px; font-size:11px; line-height:1.35; background:var(--panel); color:var(--dim);}
+  .sw-meta b{display:block; color:var(--text); font-weight:600; font-size:11.5px;}
+
+  .type-card{border:1px solid var(--line); border-radius:12px; background:var(--panel); padding:22px 24px;}
+  .type-display{margin:0 0 6px; font-size:32px;}
+  .type-sub{color:var(--dim); font-size:13.5px; margin:0 0 14px;}
+  .type-body{margin:0; max-width:52ch; font-size:15px;}
+
+  .tv{aspect-ratio:16/9; border-radius:12px; border:1px solid var(--line); background:var(--tv-bg); position:relative; overflow:hidden; display:flex; flex-direction:column; padding:4.5% 5%; box-sizing:border-box; color:var(--text);}
+  .tv-top{display:flex; justify-content:space-between; align-items:center; font-size:clamp(9px,1.4vw,13px); letter-spacing:.16em; text-transform:uppercase; color:var(--dim);}
+  .tv-mid{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:2%;}
+  .tv-cat-label{font-size:clamp(8px,1.2vw,12px); letter-spacing:.28em; text-transform:uppercase; color:var(--dim);}
+  .tv-cat{margin:0; line-height:1; font-size:clamp(24px,5vw,52px); font-weight:800;}
+  .tv-diff{font-size:clamp(9px,1.5vw,14px); letter-spacing:.14em; text-transform:uppercase; color:var(--accent2);}
+  .tv-bottom{display:flex; justify-content:space-between; align-items:flex-end; gap:12px;}
+  .tv-bank-label{font-size:clamp(8px,1.1vw,11px); letter-spacing:.22em; text-transform:uppercase; color:var(--dim);}
+  .tv-bank{font-size:clamp(16px,3vw,30px); font-weight:800; font-variant-numeric:tabular-nums; color:var(--accent); text-shadow:0 0 16px var(--glow);}
+  .tv-players{display:flex; gap:6px;}
+  .pl{width:clamp(18px,3vw,30px); height:clamp(18px,3vw,30px); border-radius:50%; border:1.5px solid var(--line); display:flex; align-items:center; justify-content:center; font-size:clamp(8px,1.2vw,12px); color:var(--dim);}
+  .pl.done{border-color:var(--accent3); color:var(--accent3);}
+  .tv-timer{position:absolute; left:0; bottom:0; height:6px; width:62%; background:linear-gradient(90deg,var(--accent2),var(--accent));}
+
+  .lights{display:flex; gap:8px; justify-content:center; margin-top:2%;}
+  .dot{width:clamp(5px,.9vw,9px); height:clamp(5px,.9vw,9px); border-radius:50%;}
+
+  .phone{max-width:210px; margin:0 auto; border-radius:26px; border:1px solid var(--line); background:var(--panel); padding:18px 14px 16px; box-sizing:border-box; display:flex; flex-direction:column; gap:12px; min-height:100%;}
+  .ph-top{display:flex; justify-content:space-between; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--dim);}
+  .ph-top b{color:var(--text); font-variant-numeric:tabular-nums;}
+  .ph-q{font-size:12.5px; color:var(--dim); text-align:center; margin:2px 0 0;}
+  .stakes{display:grid; grid-template-columns:repeat(3,1fr); gap:8px;}
+  .stake{border:1.5px solid var(--line); background:transparent; color:var(--text); border-radius:999px; padding:12px 0; text-align:center; font-weight:700; font-size:15px; font-variant-numeric:tabular-nums;}
+  .stake.sel{border-color:var(--accent3); color:var(--accent3);}
+  .vabanque{border-radius:999px; padding:13px 0; text-align:center; font-weight:800; letter-spacing:.14em; font-size:13px; background:linear-gradient(90deg,var(--accent2),var(--accent)); color:var(--va-text,#241536); box-shadow:0 0 22px var(--glow);}
+  .ph-timer{height:3px; background:var(--line); border-radius:2px; overflow:hidden;}
+  .ph-timer i{display:block; height:100%; width:55%; background:var(--accent);}
+
+  .notes{display:grid; gap:18px;}
+  @media(min-width:800px){ .notes{grid-template-columns:1fr 1fr;} }
+  .note{border-top:1px solid var(--line); padding-top:12px; font-size:14px; color:var(--dim);}
+  .note b{color:var(--text); display:block; margin-bottom:4px; font-size:12px; letter-spacing:.16em; text-transform:uppercase;}
+
+  .footer{margin-top:72px; color:var(--page-dim); font-size:14px; max-width:66ch;}
+  .footer b{color:var(--page-text);}
+
+  /* ============ 1: LUNAPARK (baza) ============ */
+  .dir-lp{
+    --bg:#171233; --panel:#221b47; --line:#3a2f66; --text:#f7f1e4; --dim:#9d94bd;
+    --accent:#ffb13d; --accent2:#ff5fa2; --accent3:#43e0d8; --glow:rgba(255,177,61,.5);
+    --tv-bg:radial-gradient(90% 120% at 20% 110%, #4a1d5e 0%, transparent 55%),
+            radial-gradient(90% 120% at 85% 115%, #14405c 0%, transparent 55%), #171233;
+  }
+  .dir-lp .tv-cat{text-shadow:0 0 24px rgba(255,177,61,.45);}
+  .dir-lp .dot{background:#ffb13d; box-shadow:0 0 10px rgba(255,177,61,.8);}
+  .dir-lp .dot:nth-child(2n){background:#ff5fa2; box-shadow:0 0 10px rgba(255,95,162,.8);}
+  .dir-lp .dot:nth-child(3n){background:#43e0d8; box-shadow:0 0 10px rgba(67,224,216,.8);}
+
+  /* ============ 2: MOLO ============ */
+  .dir-mo{
+    --bg:#0d2431; --panel:#153344; --line:#28495c; --text:#f2ede2; --dim:#8fa8b3;
+    --accent:#ffcf7d; --accent2:#ff7a59; --accent3:#6fd3c3; --glow:rgba(255,207,125,.4);
+    --tv-bg:linear-gradient(180deg, #0d2431 0%, #123240 70%, #1a4152 100%);
+    --va-text:#31200e;
+  }
+  .dir-mo .tv-cat{font-weight:600; letter-spacing:.04em; text-shadow:0 0 20px rgba(255,207,125,.35);}
+  .dir-mo .dot{background:#ffcf7d; box-shadow:0 0 9px rgba(255,207,125,.75);}
+  .dir-mo .dot:nth-child(4n){background:#ff7a59; box-shadow:0 0 9px rgba(255,122,89,.7);}
+  .dir-mo .lights{gap:14px;}
+
+  /* ============ 3: LAMPIONY ============ */
+  .dir-la{
+    --bg:#0f231d; --panel:#183329; --line:#2c5040; --text:#f4efe0; --dim:#93ac9c;
+    --accent:#ffbe69; --accent2:#ff8fa3; --accent3:#cde96a; --glow:rgba(255,190,105,.45);
+    --tv-bg:radial-gradient(70% 90% at 15% -10%, #2b4d3c 0%, transparent 60%),
+            radial-gradient(80% 100% at 90% 115%, #23443a 0%, transparent 55%), #0f231d;
+    --va-text:#33220c;
+  }
+  .dir-la h2, .dir-la .tv-cat, .dir-la .type-display{font-weight:700;}
+  .dir-la .tv-cat{text-shadow:0 0 24px rgba(255,190,105,.4);}
+  .dir-la .dot{background:#ffbe69; box-shadow:0 0 10px rgba(255,190,105,.8); border-radius:3px 3px 6px 6px; width:7px; height:10px;}
+  .dir-la .dot:nth-child(3n){background:#ff8fa3; box-shadow:0 0 10px rgba(255,143,163,.7);}
+  .dir-la .dot:nth-child(5n){background:#cde96a; box-shadow:0 0 8px rgba(205,233,106,.8); width:4px; height:4px; border-radius:50%; transform:translateY(-5px);}
+
+  /* ============ 4: POKAZ (fajerwerki) ============ */
+  .dir-fw{
+    --bg:#12101f; --panel:#1d1a30; --line:#35304f; --text:#f5f2ea; --dim:#98929f;
+    --accent:#ffd166; --accent2:#ff4fa0; --accent3:#4fe3c1; --glow:rgba(255,209,102,.5);
+    --tv-bg:radial-gradient(45% 55% at 75% 20%, rgba(255,79,160,.28) 0%, transparent 70%),
+            radial-gradient(35% 45% at 22% 30%, rgba(255,209,102,.22) 0%, transparent 70%),
+            radial-gradient(25% 35% at 55% 12%, rgba(79,227,193,.18) 0%, transparent 70%), #12101f;
+    --va-text:#301040;
+  }
+  .dir-fw h2, .dir-fw .tv-cat, .dir-fw .type-display{font-weight:800; letter-spacing:.02em;}
+  .dir-fw .tv-cat{text-shadow:0 0 28px rgba(255,79,160,.45);}
+  .dir-fw .dot{background:#ffd166; box-shadow:0 0 9px rgba(255,209,102,.9); width:4px; height:4px;}
+  .dir-fw .dot:nth-child(2n){background:#ff4fa0; box-shadow:0 0 9px rgba(255,79,160,.8); transform:translateY(-6px);}
+  .dir-fw .dot:nth-child(3n){background:#4fe3c1; box-shadow:0 0 9px rgba(79,227,193,.8); transform:translateY(3px);}
+  .dir-fw .dot:nth-child(4n){transform:translateY(-2px) scale(.7);}
+</style>
+
+<div class="wrap">
+  <p class="eyebrow">LUNAPARK · Etap 0 · Moodboard — runda 4</p>
+  <h1>Rodzina Lunaparku: dwie nowe alternatywy</h1>
+  <p class="lede">Z rundy 3 zostają faworyci: Lunapark (pewniak) i Molo (rezerwa). Rewia i Planetarium
+  odpadają — w ich miejsce dwie świeże metafory z tej samej rodziny ciepłej nocy: Lampiony
+  (ogrodowe przyjęcie) i Pokaz (fajerwerki). Ten sam moment gry w każdym wariancie.</p>
+
+  <!-- ================= 1 LUNAPARK ================= -->
+  <section class="dir dir-lp">
+    <div class="dir-head">
+      <span class="dir-letter">Wariant 1 · baza z rundy 2</span>
+      <h2>Lunapark</h2>
+      <p class="dir-thesis">Nocne wesołe miasteczko: fioletowy granat nieba, żarówki marquee w trzech kolorach,
+      różowo-bursztynowe łuny karuzeli i turkus strzelnicy. Najbardziej kolorowy i rozrywkowy wariant rodziny.</p>
+      <div class="moods"><span class="mood">żarówki marquee</span><span class="mood">łuna karuzeli</span><span class="mood">trzy kolory światła</span></div>
+    </div>
+    <div class="dir-body">
+      <div class="row row-2">
+        <div class="cell">
+          <h3>Paleta</h3>
+          <div class="swatches">
+            <div class="sw"><div class="sw-chip" style="background:#171233"></div><div class="sw-meta"><b>Niebo nocy</b>#171233</div></div>
+            <div class="sw"><div class="sw-chip" style="background:#ffb13d"></div><div class="sw-meta"><b>Żarówka</b>#FFB13D</div></div>
+            <div class="sw"><div class="sw-chip" style="background:#ff5fa2"></div><div class="sw-meta"><b>Wata cukrowa</b>#FF5FA2</div></div>
+            <div class="sw"><div class="sw-chip" style="background:#43e0d8"></div><div class="sw-meta"><b>Neon strzelnicy</b>#43E0D8</div></div>
+          </div>
+        </div>
+        <div class="cell">
+          <h3>Typografia</h3>
+          <div class="type-card">
+            <p class="type-display" style="font-weight:800;">Va banque pod gwiazdami</p>
+            <p class="type-sub">Ciepły, gruby grotesk z poświatą — szyld festynu, nie neon-kicz.</p>
+            <p class="type-body">Trzy kolory światła mają role: bursztyn = pieniądze, róż = emocje i kulminacje, turkus = decyzje graczy.</p>
+          </div>
+        </div>
+      </div>
+      <div class="row row-tv">
+        <div class="cell">
+          <h3>Ekran TV — zakład w ciemno</h3>
+          <div class="tv">
+            <div class="tv-top"><span>LUNAPARK</span><span>Akt II · Pytanie 3/5</span></div>
+            <div class="tv-mid">
+              <span class="tv-cat-label">Kategoria</span>
+              <p class="tv-cat">Kino</p>
+              <span class="tv-diff">Trudne · wygrana ×2</span>
+              <div class="lights"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            </div>
+            <div class="tv-bottom">
+              <div><div class="tv-bank-label">Bank</div><div class="tv-bank">340</div></div>
+              <div class="tv-players"><span class="pl done">KP</span><span class="pl done">AS</span><span class="pl">MW</span><span class="pl done">JB</span><span class="pl">EN</span></div>
+            </div>
+            <div class="tv-timer"></div>
+          </div>
+        </div>
+        <div class="cell">
+          <h3>Telefon — stawianie</h3>
+          <div class="phone">
+            <div class="ph-top"><span>Twoje żetony</span><b>125</b></div>
+            <p class="ph-q">Kino · trudne. Ile stawiasz?</p>
+            <div class="stakes"><span class="stake">20</span><span class="stake sel">50</span><span class="stake">100</span></div>
+            <div class="vabanque">VA BANQUE</div>
+            <div class="ph-timer"><i></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="notes">
+        <div class="note"><b>Charakter</b>Najweselszy i najbardziej imprezowy z czwórki; trzy kolory światła dają bogaty język, ale wymagają dyscypliny.</div>
+        <div class="note"><b>Ryzyko</b>Granica z jarmarcznością — nowoczesna typografia i oszczędne łuny muszą pilnować klasy.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 2 MOLO ================= -->
+  <section class="dir dir-mo">
+    <div class="dir-head">
+      <span class="dir-letter">Wariant 2</span>
+      <h2>Molo</h2>
+      <p class="dir-thesis">Nadmorska promenada po zmroku: morski granat zamiast fioletu, jedna długa girlanda
+      ciepłych żarówek nad deskami, koral zachodu w kulminacjach. Ten sam festyn, ale spokojniejszy —
+      wieczór, który się celebruje, nie odpust.</p>
+      <div class="moods"><span class="mood">girlanda nad deskami</span><span class="mood">morska noc</span><span class="mood">koral zachodu</span></div>
+    </div>
+    <div class="dir-body">
+      <div class="row row-2">
+        <div class="cell">
+          <h3>Paleta</h3>
+          <div class="swatches">
+            <div class="sw"><div class="sw-chip" style="background:#0d2431"></div><div class="sw-meta"><b>Morska noc</b>#0D2431</div></div>
+            <div class="sw"><div class="sw-chip" style="background:#ffcf7d"></div><div class="sw-meta"><b>Girlanda</b>#FFCF7D</div></div>
+            <div class="sw"><div class="sw-chip" style="background:#ff7a59"></div><div class="sw-meta"><b>Koral zachodu</b>#FF7A59</div></div>
+            <div class="sw"><div class="sw-chip" style="background:#6fd3c3"></div><div class="sw-meta"><b>Mięta fali</b>#6FD3C3</div></div>
+          </div>
+        </div>
+        <div class="cell">
+          <h3>Typografia</h3>
+          <div class="type-card">
+            <p class="type-display" style="font-weight:600; letter-spacing:.04em;">Va banque nad wodą</p>
+            <p class="type-sub">Lżejszy, elegancki grotesk — mniej krzyku, więcej klasy.</p>
+            <p class="type-body">Jedno źródło światła: ciepła girlanda. Koral tylko dla nieodwracalnych, mięta dla decyzji graczy. Najbliżej „premium” z całej rodziny.</p>
+          </div>
+        </div>
+      </div>
+      <div class="row row-tv">
+        <div class="cell">
+          <h3>Ekran TV — zakład w ciemno</h3>
+          <div class="tv">
+            <div class="tv-top"><span>LUNAPARK</span><span>Akt II · Pytanie 3/5</span></div>
+            <div class="tv-mid">
+              <span class="tv-cat-label">Kategoria</span>
+              <p class="tv-cat">Kino</p>
+              <span class="tv-diff">Trudne · wygrana ×2</span>
+              <div class="lights"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            </div>
+            <div class="tv-bottom">
+              <div><div class="tv-bank-label">Bank</div><div class="tv-bank">340</div></div>
+              <div class="tv-players"><span class="pl done">KP</span><span class="pl done">AS</span><span class="pl">MW</span><span class="pl done">JB</span><span class="pl">EN</span></div>
+            </div>
+            <div class="tv-timer"></div>
+          </div>
+        </div>
+        <div class="cell">
+          <h3>Telefon — stawianie</h3>
+          <div class="phone">
+            <div class="ph-top"><span>Twoje żetony</span><b>125</b></div>
+            <p class="ph-q">Kino · trudne. Ile stawiasz?</p>
+            <div class="stakes"><span class="stake">20</span><span class="stake sel">50</span><span class="stake">100</span></div>
+            <div class="vabanque">VA BANQUE</div>
+            <div class="ph-timer"><i></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="notes">
+        <div class="note"><b>Charakter</b>Najbardziej stonowany wariant — łatwo utrzymać elegancję, dobrze zniesie 60 minut gry bez zmęczenia oczu.</div>
+        <div class="note"><b>Ryzyko</b>Mniej „wow” na pierwszy rzut oka; energia będzie musiała przyjść z animacji i dźwięku.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 3 LAMPIONY ================= -->
+  <section class="dir dir-la">
+    <div class="dir-head">
+      <span class="dir-letter">Wariant 3 · nowy</span>
+      <h2>Lampiony</h2>
+      <p class="dir-thesis">Przyjęcie w ogrodzie po zmroku: głęboka zieleń nocy, papierowe lampiony
+      w bursztynie i różu piwonii, a między nimi świetliki. Ciepło Lunaparku bez jarmarku —
+      światło wisi nad stołem, przy którym się gra.</p>
+      <div class="moods"><span class="mood">lampiony nad stołem</span><span class="mood">zieleń nocy</span><span class="mood">świetliki</span></div>
+    </div>
+    <div class="dir-body">
+      <div class="row row-2">
+        <div class="cell">
+          <h3>Paleta</h3>
+          <div class="swatches">
+            <div class="sw"><div class="sw-chip" style="background:#0f231d"></div><div class="sw-meta"><b>Zieleń nocy</b>#0F231D</div></div>
+            <div class="sw"><div class="sw-chip" style="background:#ffbe69"></div><div class="sw-meta"><b>Lampion</b>#FFBE69</div></div>
+            <div class="sw"><div class="sw-chip" style="background:#ff8fa3"></div><div class="sw-meta"><b>Róż piwonii</b>#FF8FA3</div></div>
+            <div class="sw"><div class="sw-chip" style="background:#cde96a"></div><div class="sw-meta"><b>Świetlik</b>#CDE96A</div></div>
+          </div>
+        </div>
+        <div class="cell">
+          <h3>Typografia</h3>
+          <div class="type-card">
+            <p class="type-display">Va banque w ogrodzie</p>
+            <p class="type-sub">Ciepły, gruby grotesk — jak na Lunaparku, ale z miękkim światłem.</p>
+            <p class="type-body">Bursztyn lampionów = pieniądze, róż piwonii = emocje, świetlik = decyzje graczy (i drobne animowane iskierki życia w tle).</p>
+          </div>
+        </div>
+      </div>
+      <div class="row row-tv">
+        <div class="cell">
+          <h3>Ekran TV — zakład w ciemno</h3>
+          <div class="tv">
+            <div class="tv-top"><span>LUNAPARK</span><span>Akt II · Pytanie 3/5</span></div>
+            <div class="tv-mid">
+              <span class="tv-cat-label">Kategoria</span>
+              <p class="tv-cat">Kino</p>
+              <span class="tv-diff">Trudne · wygrana ×2</span>
+              <div class="lights"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            </div>
+            <div class="tv-bottom">
+              <div><div class="tv-bank-label">Bank</div><div class="tv-bank">340</div></div>
+              <div class="tv-players"><span class="pl done">KP</span><span class="pl done">AS</span><span class="pl">MW</span><span class="pl done">JB</span><span class="pl">EN</span></div>
+            </div>
+            <div class="tv-timer"></div>
+          </div>
+        </div>
+        <div class="cell">
+          <h3>Telefon — stawianie</h3>
+          <div class="phone">
+            <div class="ph-top"><span>Twoje żetony</span><b>125</b></div>
+            <p class="ph-q">Kino · trudne. Ile stawiasz?</p>
+            <div class="stakes"><span class="stake">20</span><span class="stake sel">50</span><span class="stake">100</span></div>
+            <div class="vabanque">VA BANQUE</div>
+            <div class="ph-timer"><i></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="notes">
+        <div class="note"><b>Charakter</b>Złoty środek między Lunaparkiem a Molo: ciepło i zabawa, ale kameralnie — „nasz ogród”, nie wesołe miasteczko. Zieleń wyróżnia na tle konkurencji (wszyscy robią granat).</div>
+        <div class="note"><b>Ryzyko</b>Metafora mniej „widowiskowa” niż lunapark — kulminacjom (Bank, finał) trzeba będzie dopisać własny język świetlny.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 4 POKAZ ================= -->
+  <section class="dir dir-fw">
+    <div class="dir-head">
+      <span class="dir-letter">Wariant 4 · nowy</span>
+      <h2>Pokaz</h2>
+      <p class="dir-thesis">Noc sylwestrowa: prawie czarne niebo, na którym wybuchają fajerwerki — złoto,
+      magenta i turkus. Na co dzień ekran jest spokojny i elegancki, ale każda kulminacja (Bank! VA BANQUE!
+      zwycięzca!) to wybuch na całe niebo. Dramaturgia wpisana w samą estetykę.</p>
+      <div class="moods"><span class="mood">iskry na niebie</span><span class="mood">cisza przed wybuchem</span><span class="mood">kulminacja = pokaz</span></div>
+    </div>
+    <div class="dir-body">
+      <div class="row row-2">
+        <div class="cell">
+          <h3>Paleta</h3>
+          <div class="swatches">
+            <div class="sw"><div class="sw-chip" style="background:#12101f"></div><div class="sw-meta"><b>Niebo sylwestra</b>#12101F</div></div>
+            <div class="sw"><div class="sw-chip" style="background:#ffd166"></div><div class="sw-meta"><b>Złota iskra</b>#FFD166</div></div>
+            <div class="sw"><div class="sw-chip" style="background:#ff4fa0"></div><div class="sw-meta"><b>Magenta rakiety</b>#FF4FA0</div></div>
+            <div class="sw"><div class="sw-chip" style="background:#4fe3c1"></div><div class="sw-meta"><b>Turkus iskier</b>#4FE3C1</div></div>
+          </div>
+        </div>
+        <div class="cell">
+          <h3>Typografia</h3>
+          <div class="type-card">
+            <p class="type-display">Va banque o północy</p>
+            <p class="type-sub">Mocny, pewny grotesk — spokojna baza, na której wybuchają kolory.</p>
+            <p class="type-body">Zasada kontrastu: 90% czasu ekran jest niemal monochromatyczny, kolory eksplodują tylko w kulminacjach. Złoto = pieniądze, magenta = ryzyko, turkus = gracze.</p>
+          </div>
+        </div>
+      </div>
+      <div class="row row-tv">
+        <div class="cell">
+          <h3>Ekran TV — zakład w ciemno</h3>
+          <div class="tv">
+            <div class="tv-top"><span>LUNAPARK</span><span>Akt II · Pytanie 3/5</span></div>
+            <div class="tv-mid">
+              <span class="tv-cat-label">Kategoria</span>
+              <p class="tv-cat">Kino</p>
+              <span class="tv-diff">Trudne · wygrana ×2</span>
+              <div class="lights"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            </div>
+            <div class="tv-bottom">
+              <div><div class="tv-bank-label">Bank</div><div class="tv-bank">340</div></div>
+              <div class="tv-players"><span class="pl done">KP</span><span class="pl done">AS</span><span class="pl">MW</span><span class="pl done">JB</span><span class="pl">EN</span></div>
+            </div>
+            <div class="tv-timer"></div>
+          </div>
+        </div>
+        <div class="cell">
+          <h3>Telefon — stawianie</h3>
+          <div class="phone">
+            <div class="ph-top"><span>Twoje żetony</span><b>125</b></div>
+            <p class="ph-q">Kino · trudne. Ile stawiasz?</p>
+            <div class="stakes"><span class="stake">20</span><span class="stake sel">50</span><span class="stake">100</span></div>
+            <div class="vabanque">VA BANQUE</div>
+            <div class="ph-timer"><i></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="notes">
+        <div class="note"><b>Charakter</b>Najlepsza dramaturgia z całej rodziny: estetyka sama opowiada rytm gry (cisza → wybuch). Ceremonia zwycięzcy = wielki finał pokazu, za darmo.</div>
+        <div class="note"><b>Ryzyko</b>Między kulminacjami ekran jest najskromniejszy z czwórki — jeśli animacje wybuchów nie będą naprawdę dobre, całość może wydać się pusta.</div>
+      </div>
+    </div>
+  </section>
+
+  <p class="footer"><b>Jak wybierać:</b> to jedna rodzina — noc i ciepłe światło — więc elementy są
+  przenaszalne: „zieleń Lampionów + żarówki Lunaparku” albo „Pokaz, ale z girlandą Mola”
+  to pełnoprawne odpowiedzi. Wybrany wariant rozwinę w pełny design system.</p>
+</div>

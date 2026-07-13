@@ -18,6 +18,7 @@ node_modules/
 
 # Vite
 .vite/
+*.tsbuildinfo
 
 # Logs
 npm-debug.log*
